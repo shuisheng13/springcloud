@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pactera.business.dao.LaunApplicationMapper">
+  <resultMap id="BaseResultMap" type="com.pactera.domain.LaunApplication">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="channel_id" jdbcType="VARCHAR" property="channelId" />
+    <result column="logo_path" jdbcType="VARCHAR" property="logoPath" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="package_id" jdbcType="VARCHAR" property="packageId" />
+    <result column="package_name" jdbcType="VARCHAR" property="packageName" />
+    <result column="package_path" jdbcType="VARCHAR" property="packagePath" />
+    <result column="start_count_ratio" jdbcType="VARCHAR" property="startCountRatio" />
+    <result column="yesterday_start_count" jdbcType="INTEGER" property="yesterdayStartCount" />
+  </resultMap>
+  
+  
+  <select id="findByCondition" resultType="com.pactera.vo.LaunApplicationVo">
+	SELECT
+		count(channel.id) megerRow,
+		channel.channel_id channelId,
+		channel.`name` channelName,
+		application.`NAME` name,
+		application.id id,
+		application.package_id packageId,
+		count(poster.id) > 0 configed,
+		application.start_time startTime,
+		application.end_time endTime,
+		application.yesterday_start_count yesterdayStartCount,
+		application.start_count_ratio startCountRatio
+	FROM
+		laun_application application
+	LEFT JOIN laun_channel channel ON application.channel_Id = channel.id
+	LEFT JOIN laun_application_poster poster ON poster.application_id = application.id
+	WHERE	channel.channel_status = 0
+		<if test="channelId != null and channelId != ''">
+			AND channel.channel_id = #{channelId}
+		</if>
+		<if test="keyword != null and keyword != ''">
+			AND (application.name like  #{keyword} OR application.package_id like  #{keyword})
+			
+		</if>
+	GROUP BY
+		application.id
+	ORDER BY
+		channel.create_date DESC,
+		application.create_date DESC,
+		megerRow DESC
+   
+  </select>
+  
+  <select id="findPosterByAppIdAndType" resultType="com.pactera.domain.LaunApplicationPoster">
+  	SELECT
+  		poster.id,
+		poster.width,
+		poster.height,
+		poster.poster_path posterPath,
+		poster.application_id applicationId,
+		poster.type type
+  	FROM
+		laun_application_poster poster
+  	WHERE
+		poster.application_id = #{id} and poster.type = #{type}
+	ORDER BY poster.orders
+  </select>
+  
+  <select id="findCustomPosterByAppId" resultType="com.pactera.domain.LaunApplicationPoster">
+  	SELECT
+  		poster.id,
+		poster.width,
+		poster.height,
+		poster.poster_path posterPath,
+		poster.application_id applicationId,
+		poster.type type
+  	FROM
+		laun_application_poster poster
+  	WHERE
+		poster.application_id = #{id} and poster.type != 0
+	ORDER BY poster.orders
+  </select>
+  
+  <insert id="saveApplication2Channel">
+  	 insert into laun_application_channel
+        (application_id,channel_id)
+        values
+        <foreach collection="channelIds" item="channelId" index="index"
+            separator=",">
+            (
+            #{appId},#{channelId}
+            )
+        </foreach>
+  </insert>
+  <insert id="savePoster">
+  INSERT INTO laun_application_poster (
+	id,
+	application_id,
+	poster_path,
+	width,
+	height,
+	type,
+	orders
+	)
+  VALUES
+	(#{id},#{applicationId},#{posterPath},
+	 #{width},#{height},#{type},#{orders}
+	)
+  </insert>
+  <delete id="deletePosterByAppId">
+  	delete from laun_application_poster 
+  	where 
+  	 application_id=#{applicationId}
+  </delete>
+  
+</mapper>

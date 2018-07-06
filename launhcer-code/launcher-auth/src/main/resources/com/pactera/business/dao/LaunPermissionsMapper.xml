@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pactera.business.dao.LaunPermissionsMapper">
+  <resultMap id="BaseResultMap" type="com.pactera.domain.LaunPermissions" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="introducs" property="introducs" jdbcType="VARCHAR" />
+    <result column="levels" property="levels" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="parent_id" property="parentId" jdbcType="BIGINT" />
+    <result column="resources" property="resources" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="sub_persion" property="subPersion" jdbcType="VARCHAR" />
+  </resultMap>
+<select id="findPermissionsByUserId" parameterType="map" resultMap="BaseResultMap">
+ SELECT    DISTINCT laun_permissions.id,
+    laun_permissions.create_date,
+	laun_permissions.introducs,
+	laun_permissions.levels,
+	laun_permissions.name,
+	laun_permissions.parent_id,
+	laun_permissions.resources,
+	laun_permissions.status,
+	laun_permissions.sub_persion,
+	laun_permissions.update_date
+FROM laun_user_role,laun_role_permissions,laun_permissions
+WHERE 
+<if test="id!=null">
+    laun_user_role.user_id=#{id} AND  
+</if>
+	laun_role_permissions.role_id=laun_user_role.role_id AND 
+	laun_permissions.id=laun_role_permissions.permissions_id
+</select>
+  
+</mapper>

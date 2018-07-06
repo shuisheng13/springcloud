@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pactera.business.dao.LaunApplicationStatisticsMapper">
+
+	<select id="findAppDetailStatic" resultType="com.pactera.domain.LaunApplicationStatistics">
+		SELECT
+		laun_application_statistics.application_id applicationId,
+		laun_application_statistics.start_up_num startUpNum,
+		laun_application_statistics.application_time applicationTime,
+		laun_application.`name`,
+		concat(
+		FORMAT(
+		laun_application_statistics.start_up_num / (
+		SELECT
+		sum(
+		laun_application_statistics.start_up_num
+		)
+		FROM
+		laun_application_statistics,
+		laun_application
+		WHERE
+		laun_application_statistics.application_id = laun_application.id
+		AND
+		laun_application_statistics.application_time &gt;
+		#{sTime}
+		AND
+		laun_application_statistics.application_time &lt; #{eTime}
+		AND
+		laun_application_statistics.channel_id = #{channelId}
+		AND
+		laun_application_statistics.version = #{version}
+		ORDER BY
+		laun_application_statistics.start_up_num DESC
+		),
+		2
+		),
+		'%'
+		) timeProp
+		FROM
+		laun_application_statistics,
+		laun_application
+		WHERE
+		laun_application_statistics.application_id = laun_application.id
+		AND
+		laun_application_statistics.application_time &gt;
+		#{sTime}
+		AND
+		laun_application_statistics.application_time &lt; #{eTime}
+		AND
+		laun_application_statistics.channel_id = #{channelId}
+		AND
+		laun_application_statistics.version = #{version}
+		ORDER BY
+		laun_application_statistics.start_up_num DESC
+	</select>
+</mapper>

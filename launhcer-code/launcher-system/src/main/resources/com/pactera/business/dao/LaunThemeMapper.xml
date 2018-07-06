@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pactera.business.dao.LaunThemeMapper">
+	<resultMap id="BaseResultMap" type="com.pactera.domain.LaunThemeAdministration">
+		<!-- WARNING - @mbg.generated -->
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+		<result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+		<result column="background" jdbcType="VARCHAR" property="background" />
+		<result column="creator_channel_id" jdbcType="BIGINT" property="creatorChannelId" />
+		<result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+		<result column="file_size" jdbcType="BIGINT" property="fileSize" />
+		<result column="fm_app_img_url" jdbcType="VARCHAR" property="fmAppImgUrl" />
+		<result column="folat_point" jdbcType="VARCHAR" property="folatPoint" />
+		<result column="level" jdbcType="BIGINT" property="level" />
+		<result column="long_palace" jdbcType="INTEGER" property="longPalace" />
+		<result column="long_resolution" jdbcType="INTEGER" property="longResolution" />
+		<result column="music_app_img_url" jdbcType="VARCHAR" property="musicAppImgUrl" />
+		<result column="phone_app_img_url" jdbcType="VARCHAR" property="phoneAppImgUrl" />
+		<result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+		<result column="status" jdbcType="INTEGER" property="status" />
+		<result column="title" jdbcType="VARCHAR" property="title" />
+		<result column="basic_json" jdbcType="VARCHAR" property="basicJson" />
+		<result column="widget_json" jdbcType="VARCHAR" property="widgetJson" />
+		<result column="theme_json" jdbcType="VARCHAR" property="themeJson" />
+		<result column="type_id" jdbcType="BIGINT" property="typeId" />
+		<result column="create_id" jdbcType="BIGINT" property="createId" />
+		<result column="version" jdbcType="VARCHAR" property="version" />
+		<result column="zip_url" jdbcType="VARCHAR" property="zipUrl" />
+		<result column="preview_path" jdbcType="VARCHAR" property="previewPath" />
+		<result column="urls" jdbcType="VARCHAR" property="urls" />
+		<result column="property" jdbcType="VARCHAR" property="property" />
+		<result column="weather_app_img_url" jdbcType="VARCHAR"
+			property="weatherAppImgUrl" />
+		<result column="wide_palace" jdbcType="INTEGER" property="widePalace" />
+		<result column="wide_resolution" jdbcType="BIGINT" property="wideResolution" />
+		<result column="width_or_higth_ratio" jdbcType="VARCHAR"
+			property="widthOrHigthRatio" />
+		<result column="channelName" jdbcType="VARCHAR" property="channelName" />
+		<result column="typeName" jdbcType="VARCHAR" property="typeName" />
+		<result column="versionName" jdbcType="VARCHAR" property="versionName" />
+		<result column="createName" jdbcType="VARCHAR" property="createName" />
+	</resultMap>
+
+
+	<resultMap id="BaseResultVoMap" type="com.pactera.vo.LaunThemeVo">
+		<!-- WARNING - @mbg.generated -->
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="creator_channel_id" jdbcType="BIGINT" property="creatorChannelId" />
+		<result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+		<result column="file_size" jdbcType="BIGINT" property="fileSize" />
+		<result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+		<result column="status" jdbcType="INTEGER" property="status" />
+		<result column="title" jdbcType="VARCHAR" property="title" />
+		<result column="basic_json" jdbcType="VARCHAR" property="basicJson" />
+		<result column="widget_json" jdbcType="VARCHAR" property="widgetJson" />
+		<result column="theme_json" jdbcType="VARCHAR" property="themeJson" />
+		<result column="zipUrl" jdbcType="VARCHAR" property="zip_url" />
+		<result column="channelName" jdbcType="VARCHAR" property="channelName" />
+		<result column="typeName" jdbcType="VARCHAR" property="typeName" />
+		<result column="versionName" jdbcType="VARCHAR" property="versionName" />
+	</resultMap>
+
+	<select id="selectByCound" resultMap="BaseResultVoMap">
+		SELECT DISTINCT lta.id,
+		lta.title,lta.version
+		versionName,lta.end_time,lta.start_time,
+		lta.
+		STATUS,lta.create_id,IF
+		(lta.creator_channel_id = 0,'所有渠道',lc. NAME)
+		channelName,lta.creator_channel_id,
+		ltc.classification_name
+		typeName,lta.create_date
+		FROM
+		laun_theme_administration lta
+		LEFT JOIN
+		laun_channel lc ON
+		lta.creator_channel_id = lc.id AND lc.channel_status
+		= 0
+		LEFT JOIN
+		laun_theme_classification ltc ON lta.type_id = ltc.id
+		WHERE
+		(1=1
+		<if test="status != null">
+			AND lta.`status` = #{status}
+		</if>
+		<if test="status == null">
+			AND lta.`status` in (0,1,2,3)
+		</if>
+		<if test="type != null and type!= ''">
+			AND lta.type_id = #{type}
+		</if>
+		<if test="version != null and version != ''">
+			AND lta.version = #{version}
+		</if>
+		<if test="channel != null and channel != ''">
+			<if test="isChannleManager != null and isChannleManager == 1">
+				AND lta.creator_channel_id = #{channel}
+			</if>
+			<if test="isChannleManager != null and isChannleManager != 1">
+				AND lta.creator_channel_id IN (#{channel}, 0)
+			</if>
+		</if>
+		<if test="title != null and title != ''">
+			And lta.title LIKE #{title}
+		</if>
+		)
+
+		<if test="isChannleManager != null and isChannleManager == 1">
+			OR
+			(
+			lta.creator_channel_id = 0
+			<if test="status != null">
+				AND lta.`status` = #{status}
+			</if>
+			<if test="status == null">
+				AND lta.`status` in (1,2,3)
+			</if>
+			<if test="type != null and type!= ''">
+				AND lta.type_id = #{type}
+			</if>
+			<if test="version != null and version != ''">
+				AND lta.version = #{version}
+			</if>
+			<if test="title != null and title != ''">
+				And lta.title LIKE #{title}
+			</if>
+			)
+		</if>
+		ORDER BY
+		lta.create_date DESC
+	</select>
+
+
+	<select id="selectByStatus" resultMap="BaseResultMap">
+		SELECT
+		lta.id,lta.title,lta.version,lta.type_id,lta.zip_url,lta.preview_path,lta.urls,
+		ltc.classification_name
+		typeName,lta.creator_channel_id,lta.wide_resolution,lta.long_resolution,
+		lta.file_size
+		FROM
+		laun_theme_administration lta
+		LEFT JOIN
+		laun_channel lc
+		ON
+		lta.creator_channel_id = lc.id
+		LEFT
+		JOIN
+		laun_theme_classification ltc
+		ON
+		lta.type_id = ltc.id
+		WHERE
+		lta. STATUS
+		= #{status}
+	</select>
+
+	<select id="selectByTheme" resultMap="BaseResultMap">
+		SELECT
+		lta.id,lta.create_date,lta.end_time,lta.file_size,lta.fm_app_img_url,lta.folat_point,lta.creator_channel_id,lta.create_id,
+		lta.`level`,lta.long_palace,lta.long_resolution,lta.music_app_img_url,lta.phone_app_img_url,
+		lta.title,lta.start_time,lta.version,lta.type_id,lta.weather_app_img_url,lta.wide_palace,
+		lta.wide_resolution,lta.widget_json,lta.basic_json,lta.config_json,lta.theme_json,lta.zip_url,
+		lta.isPush,lta.`status`,IF (lta.creator_channel_id =
+		0,'所有渠道',lc.`name`) channelName,
+		ltc.classification_name typeName
+		FROM
+		laun_theme_administration
+		lta
+		LEFT JOIN laun_channel lc ON
+		lta.creator_channel_id
+		= lc.id
+		LEFT JOIN
+		laun_theme_classification ltc on
+		lta.type_id = ltc.id
+		where lta.id
+		= #{id}
+	</select>
+
+
+	<select id="selectTypeList" resultType="com.pactera.domain.LaunThemeClassification">
+		SELECT
+		ltc.id,ltc.classification_name classificationName,lta.num
+		FROM
+		laun_theme_classification ltc
+		LEFT JOIN (
+		SELECT
+		type_id,
+		count(1) num
+		FROM
+		laun_theme_administration
+		GROUP BY
+		type_id
+		) lta ON ltc.id =
+		lta.type_id
+	</select>
+
+
+</mapper>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pactera.business.dao.LaunWidgetMinPropertyMapper">
+  <resultMap id="BaseResultMap" type="com.pactera.domain.LaunWidgetMinProperty">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="complete_type" jdbcType="VARCHAR" property="completeType" />
+    <result column="data_type" jdbcType="INTEGER" property="dataType" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="parant_id" jdbcType="BIGINT" property="parantId" />
+    <result column="value_data" jdbcType="VARCHAR" property="valueData" />
+    <result column="widget_property_id" jdbcType="BIGINT" property="widgetPropertyId" />
+  </resultMap>
+  
+  <select id="selectByWidgetId" resultMap="BaseResultMap">
+		SELECT
+		lwmp.id,lwmp.create_date,lwmp.update_date,lwmp.name,lwmp.parant_id,lwmp.value_data,lwmp.widget_property_id,lwmp.data_type,lwmp.complete_type
+		FROM
+		laun_widget lw
+		LEFT JOIN laun_widget_property lwp ON lw.id = lwp.widget_id
+		LEFT JOIN laun_widget_min_property lwmp ON lwp.id =
+		lwmp.widget_property_id
+		WHERE lw.id = #{widgetId}
+	</select>
+</mapper>

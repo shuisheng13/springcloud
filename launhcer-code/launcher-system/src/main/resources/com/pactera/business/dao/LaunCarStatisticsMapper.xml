@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pactera.business.dao.LaunCarStatisticsMapper">
+  <resultMap id="BaseResultMap" type="com.pactera.domain.LaunCarStatistics">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="add_up_num" jdbcType="BIGINT" property="addUpNum" />
+    <result column="car_active" jdbcType="BIGINT" property="carActive" />
+    <result column="car_avg_time" jdbcType="VARCHAR" property="carAvgTime" />
+    <result column="car_num" jdbcType="BIGINT" property="carNum" />
+    <result column="car_start" jdbcType="BIGINT" property="carStart" />
+    <result column="car_time" jdbcType="TIMESTAMP" property="carTime" />
+    <result column="channel_id" jdbcType="BIGINT" property="channelId" />
+    <result column="up_grade_num" jdbcType="BIGINT" property="upGradeNum" />
+    <result column="version" jdbcType="VARCHAR" property="version" />
+    <result column="start_up_num" jdbcType="BIGINT" property="startUpNum" />
+  </resultMap>
+</mapper>

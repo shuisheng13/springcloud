@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pactera.business.dao.LaunApplicationPosterMapper">
+  <resultMap id="BaseResultMap" type="com.pactera.domain.LaunApplicationPoster">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="application_id" jdbcType="BIGINT" property="applicationId" />
+    <result column="poster_path" jdbcType="VARCHAR" property="posterPath" />
+    <result column="package_name" jdbcType="VARCHAR" property="packageName" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="width" jdbcType="INTEGER" property="width" />
+    <result column="height" jdbcType="INTEGER" property="height" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+  </resultMap>
+  
+  <select id="selectByIds" resultMap="BaseResultMap">
+ 	SELECT
+		lap.id,lap.create_date,lap.update_date,lap.poster_path,lap.width,lap.height,la.end_time,la.start_time
+	FROM
+		laun_application_poster lap
+	LEFT JOIN laun_application la ON la.id = lap.application_id
+	WHERE lap.id in 
+	<foreach collection="ids" separator="," close=")" open="(" item="id">
+		#{id}	
+	</foreach>
+  </select>
+  
+  <select id="selectList" resultType="com.pactera.vo.LaunApplicationPosterVo">
+ 	SELECT
+		lap.id,lap.poster_path posterPath,lap.width,lap.height,la.package_name packageName,la.name
+	FROM
+		laun_application_poster lap
+	LEFT JOIN laun_application la ON la.id = lap.application_id
+	WHERE poster_path IS NOT NULL
+	<if test="id != null">
+		AND la.id = #{id}
+	</if>
+  </select>
+</mapper>
