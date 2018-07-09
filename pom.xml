@@ -55,16 +55,16 @@
 
 
 	<repositories>
-		<repository>
-			<id>SLN-ext-Nexus</id>
-			<name>SLN private ext maven repository via Nexus</name>
-			<url>http://192.168.19.23:8081/repository/maven-thirdparty/</url>
-		</repository>
-		<repository>
-			<id>SLN-Central-Mirror-Nexus</id>
-			<name>SLN central mirror maven repository via Nexus</name>
-			<url>http://192.168.19.23:8081/repository/maven-central/</url>
-		</repository>
+		<!--<repository>-->
+			<!--<id>SLN-ext-Nexus</id>-->
+			<!--<name>SLN private ext maven repository via Nexus</name>-->
+			<!--<url>http://192.168.19.23:8081/repository/maven-thirdparty/</url>-->
+		<!--</repository>-->
+		<!--<repository>-->
+			<!--<id>SLN-Central-Mirror-Nexus</id>-->
+			<!--<name>SLN central mirror maven repository via Nexus</name>-->
+			<!--<url>http://192.168.19.23:8081/repository/maven-central/</url>-->
+		<!--</repository>-->
 		<repository>
 			<id>Aliyun-Central-Mirror-Nexus</id>
 			<name>Aliyun central mirror maven repository via Nexus</name>
@@ -79,7 +79,7 @@
 		<module>launcher-common</module>
 		<module>launcher-sso</module>
 		<module>launcher-system</module>
-		<module>launcher-logs</module>
+		<!--<module>launcher-logs</module>-->
 		<module>launcher-confserver</module>
 		<module>launcher-auth</module>
     <module>launcher-client</module>
