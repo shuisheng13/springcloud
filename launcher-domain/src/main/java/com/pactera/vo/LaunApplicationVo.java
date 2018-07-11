@@ -28,8 +28,6 @@ public class LaunApplicationVo implements Serializable {
 	private @ApiModelProperty("海报结束时间") Date endTime;
 	private @ApiModelProperty("上传文件名称") String fileName;
 	private @ApiModelProperty("主键") Long id;
-	private @ApiModelProperty("创建时间") Date createDate;
-	private @ApiModelProperty("修改时间") Date updateDate;
 
 	// 合并的行数
 	private @ApiModelProperty("合并的行数") Integer megerRow;
