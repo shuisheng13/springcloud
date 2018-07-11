@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pagehelper.PageInfo;
+import com.pactera.business.service.LaunFontService;
 import com.pactera.business.service.LaunThemeClassificationService;
 import com.pactera.business.service.LaunThemeService;
 import com.pactera.business.service.LaunWidgetManagerService;
+import com.pactera.domain.LaunFont;
 import com.pactera.domain.LaunThemeClassification;
 import com.pactera.result.ResultData;
 import com.pactera.vo.LaunThemeClassificationVo;
@@ -46,6 +48,9 @@ public class LaunThemeController {
 	@Autowired
 	private LaunWidgetManagerService launWidgetManagerService;
 
+	@Autowired
+	private LaunFontService launFontService;
+
 	@GetMapping("selectByCount")
 	@ApiOperation("根据条件去查询主题列表")
 	@ApiImplicitParams({ @ApiImplicitParam(name = "type", value = "主题分类"),
@@ -73,6 +78,38 @@ public class LaunThemeController {
 	public ResponseEntity<ResultData> addaType(String classification, String ids) {
 		launThemeClassificationService.addType(classification, ids);
 		return ResponseEntity.ok(new ResultData());
+	}
+
+	/**
+	 * 添加字体
+	 * 
+	 * @author LL
+	 * @date 2018年7月10日 上午10:29:25
+	 * @param
+	 * @return ResponseEntity<ResultData>
+	 */
+	@PostMapping("addFont")
+	@ApiOperation("添加分类")
+	@ApiImplicitParams({ @ApiImplicitParam(name = "fontName", value = "字体名称"),
+			@ApiImplicitParam(name = "filePath", value = "文件地址") })
+	public ResponseEntity<ResultData> addaFont(String fontName, String filePath) {
+		launFontService.addFont(fontName, filePath);
+		return ResponseEntity.ok(new ResultData());
+	}
+
+	/**
+	 * 查询字体列表
+	 * 
+	 * @author LL
+	 * @date 2018年7月10日 上午10:31:54
+	 * @param
+	 * @return ResponseEntity<ResultData>
+	 */
+	@GetMapping("selectFont")
+	@ApiOperation("查询字体列表")
+	public ResponseEntity<ResultData> selectFont(Long id) {
+		List<LaunFont> list = launFontService.getList();
+		return ResponseEntity.ok(new ResultData(list));
 	}
 
 	/**

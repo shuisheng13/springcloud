@@ -30,12 +30,14 @@ public interface LaunClientThemeService {
 	 *            版本
 	 * @param channle
 	 *            渠道名称
+	 * @param type
+	 *            类型1全部;2上架;3未上架
 	 * @date 2018年6月1日 下午7:34:35
 	 * @param
 	 * @return List<Map<String,Object>>
 	 */
 	List<LaunThemeShopVo> getThemeList(String channle, String version, Long screenHeight, Long screenWidth,
-			String userId, String city);
+			String userId, String city, Integer type);
 
 	/**
 	 * 获取强推主题

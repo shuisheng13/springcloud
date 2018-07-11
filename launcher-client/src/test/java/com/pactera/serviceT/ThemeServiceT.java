@@ -23,13 +23,14 @@ public class ThemeServiceT extends Tester {
 	public void test() {
 
 		String channle = "测试A";
-		String version = "2";
+		String version = "1";
 		Long screenHeight = 720L;
 		Long screenWidth = 1080L;
+		Integer type = 1;
 		String userId = null;
 		String city = null;
 		List<LaunThemeShopVo> themeList = launClientThemeService.getThemeList(channle, version, screenHeight,
-				screenWidth, userId, city);
+				screenWidth, userId, city, type);
 
 		System.out.println(themeList.size());
 	}

@@ -29,7 +29,7 @@ public class LaunThemeFileServiceImpl implements LaunThemeFileService {
 		Example example = new Example(LaunThemeFile.class);
 
 		example.createCriteria().andEqualTo("themeId", themeId);
-		example.setOrderByClause("create_date");
+		example.setOrderByClause("index");
 		return launThemeFileMapper.selectByExample(example);
 	}
 

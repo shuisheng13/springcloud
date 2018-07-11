@@ -56,7 +56,7 @@ public class ThemePackageT extends Tester {
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("wKgJElsH20OACU_pAAAiB_pGhMQ389.jpg", "/group1/M00/00/14/wKgJElsH20OACU_pAAAiB_pGhMQ389.jpg");
 		Long themeId = 180526635159592L;
-		launThemeService.saveAssembleConfigJson(themeId, map);
+		launThemeService.saveAssembleConfigJson(null, map);
 	}
 
 	@Test

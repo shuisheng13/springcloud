@@ -55,7 +55,7 @@
 		<result column="basic_json" jdbcType="VARCHAR" property="basicJson" />
 		<result column="widget_json" jdbcType="VARCHAR" property="widgetJson" />
 		<result column="theme_json" jdbcType="VARCHAR" property="themeJson" />
-		<result column="zipUrl" jdbcType="VARCHAR" property="zip_url" />
+		<result column="zip_url" jdbcType="VARCHAR" property="zipUrl" />
 		<result column="channelName" jdbcType="VARCHAR" property="channelName" />
 		<result column="typeName" jdbcType="VARCHAR" property="typeName" />
 		<result column="versionName" jdbcType="VARCHAR" property="versionName" />
@@ -70,15 +70,17 @@
 		(lta.creator_channel_id = 0,'所有渠道',lc. NAME)
 		channelName,lta.creator_channel_id,
 		ltc.classification_name
-		typeName,lta.create_date
+		typeName,lta.create_date,lta.zip_url
 		FROM
 		laun_theme_administration lta
 		LEFT JOIN
 		laun_channel lc ON
-		lta.creator_channel_id = lc.id AND lc.channel_status
+		lta.creator_channel_id = lc.id AND
+		lc.channel_status
 		= 0
 		LEFT JOIN
-		laun_theme_classification ltc ON lta.type_id = ltc.id
+		laun_theme_classification ltc ON
+		lta.type_id = ltc.id
 		WHERE
 		(1=1
 		<if test="status != null">
@@ -136,7 +138,7 @@
 		SELECT
 		lta.id,lta.title,lta.version,lta.type_id,lta.zip_url,lta.preview_path,lta.urls,
 		ltc.classification_name
-		typeName,lta.creator_channel_id,lta.wide_resolution,lta.long_resolution,
+		typeName,lta.creator_channel_id,lta.wide_resolution,lta.long_resolution,lta.end_time,
 		lta.file_size
 		FROM
 		laun_theme_administration lta

@@ -65,7 +65,7 @@ public class widgetToJson {
 		widget.setDefaultSize(widthSize+"*"+heightSize);
 		widget.setType(2);
 		widget.setVersion(version);
-		widget.setCodeId(IdUtlis.Id() + "");
+		widget.setCodeId("ConstraintLayout");
 		widget.setGproperty(widgetjson);
 		widget.setParentId(0L);
 		if ("".equals(channels)) {

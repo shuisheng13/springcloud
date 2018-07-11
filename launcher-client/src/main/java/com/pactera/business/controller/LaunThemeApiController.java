@@ -51,9 +51,9 @@ public class LaunThemeApiController {
 	@GetMapping("getThemeList")
 	@ApiOperation("获取主题列表")
 	public ResponseEntity<ResultData> getThemeList(String channel, String version, Long screenHeight, Long screenWidth,
-			String userId, String city) {
+			String userId, String city, Integer type) {
 		List<LaunThemeShopVo> themeList = launClientThemeService.getThemeList(channel, version, screenHeight,
-				screenWidth, userId, city);
+				screenWidth, userId, city, type);
 		return ResponseEntity.ok(new ResultData(themeList));
 	}
 

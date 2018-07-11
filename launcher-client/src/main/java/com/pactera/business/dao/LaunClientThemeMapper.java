@@ -1,5 +1,6 @@
 package com.pactera.business.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -17,6 +18,9 @@ public interface LaunClientThemeMapper extends BaseMapper<LaunThemeAdministratio
 	/**
 	 * @description 根据条件去查询主题
 	 * @author liudawei
+	 * @param type
+	 *            类型1全部;2上架;3未上架
+	 * @param now当前时间
 	 * @param screenWidth屏宽
 	 * @param screenHeight屏高
 	 * @param version版本
@@ -25,7 +29,8 @@ public interface LaunClientThemeMapper extends BaseMapper<LaunThemeAdministratio
 	 * @return List<LaunThemeAdministration>
 	 */
 	List<LaunThemeAdministration> getThemeList(@Param("channleId") Long channleId, @Param("version") String version,
-			@Param("height") Long screenHeight, @Param("width") Long screenWidth);
+			@Param("height") Long screenHeight, @Param("width") Long screenWidth, @Param("type") Integer type,
+			@Param("now") Date now);
 
 	/**
 	 * @description 查询强推主题

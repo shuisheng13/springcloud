@@ -1,5 +1,6 @@
 package com.pactera.business.service;
 
+import java.util.List;
 import java.util.Map;
 
 import com.github.pagehelper.PageInfo;
@@ -44,7 +45,7 @@ public interface LaunStatisticsService {
 	PageInfo<LaunCarStatistics> selectCarListStatistics(Long startTime, Long endTime, Long channel, Long version,
 			Long type, int pageNum, int pageSize);
 
-	Map<String, Object> selectCarStatistics(Long startTime, Long endTime, Long channel, Long version, Long type);
+	Map<String, Object> selectCarStatistics(Long startTime, Long endTime, Long channel, String version, Long type);
 
 	/**
 	 * @description
@@ -96,7 +97,40 @@ public interface LaunStatisticsService {
 	 * @param
 	 * @return Map<String,Object>
 	 */
-	Map<String, Object> versionStatistics(Long startTime, Long endTime, int pageNum, int pageSize, Long type,
-			String versions);
+
+	Map<String, Object> versionStatistics(Long startTime, Long endTime, Long type, Long channel, String versions);
+
+	/**
+	 * 查询所有的版本
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月5日 上午10:31:04
+	 * @param
+	 * @return List<String>
+	 */
+	List<String> getVersion();
+
+	/**
+	 * 查询详情统计版本的分页
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月9日 下午3:51:12
+	 * @param
+	 * @return PageInfo<LaunCarStatistics>
+	 */
+	PageInfo<LaunCarStatistics> versionXiang(Long startTime, int pageNum, int pageSize);
+
+	/**
+	 * 版本趋势统计
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月9日 下午4:27:42
+	 * @param
+	 * @return List<LaunCarStatistics>
+	 */
+	List<LaunCarStatistics> versionTrend(Long startTime, Long endTime, String versions, Long channel);
 
 }

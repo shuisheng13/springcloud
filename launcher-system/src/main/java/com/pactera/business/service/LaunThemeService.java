@@ -3,6 +3,7 @@ package com.pactera.business.service;
 import java.util.Map;
 
 import com.github.pagehelper.PageInfo;
+import com.pactera.domain.LaunThemeAdministration;
 import com.pactera.vo.LaunThemeVo;
 
 /**
@@ -73,11 +74,11 @@ public interface LaunThemeService {
 	 * 
 	 * @author LL
 	 * @date 2018年5月25日 上午10:31:14
-	 * @param themeId主题主键id
+	 * @param theme主题
 	 * @param themeConfig需要下载的文件集合
 	 * @return Map<String, Object> length:文件大小 length:文件大小
 	 */
-	Map<String, Object> saveAssembleConfigJson(Long themeId, Map<String, String> themeConfig);
+	Map<String, Object> saveAssembleConfigJson(LaunThemeAdministration theme, Map<String, String> themeConfig);
 
 	/**
 	 * @description 修改主题

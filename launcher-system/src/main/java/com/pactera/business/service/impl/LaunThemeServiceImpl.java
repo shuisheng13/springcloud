@@ -10,7 +10,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -97,6 +99,10 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	@Override
 	public PageInfo<LaunThemeVo> selectByCoundy(Long type, String version, Long channle, String title, Integer status,
 			int pageNum, int pageSize) {
+
+		// 更新过期状态
+		updateOverdueTheme();
+
 		PageHelper.startPage(pageNum, pageSize);
 		if (HStringUtlis.isNotEmpty(title)) {
 			title = "%" + title + "%";
@@ -108,7 +114,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 		Integer integer = launUser.getUserType();
 		if (integer == null || integer == 1) {
 			Long channleId = launUser.getChannelId();
-			if (channleId != null) {
+			if (channleId != null && (status == null || status == 1 || status == 2 || status == 3)) {
 				channle = channleId;
 				isChannleManager = 1;
 			}
@@ -116,6 +122,41 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 		List<LaunThemeVo> launList = launThemeMapper.selectByCound(type, version, channle, title, status,
 				isChannleManager);
 		return new PageInfo<LaunThemeVo>(launList);
+	}
+
+	/**
+	 * 批量更新过期主题状态
+	 * 
+	 * @author LL
+	 * @date 2018年7月6日 上午10:30:23
+	 * @param
+	 * @return void
+	 */
+	void updateOverdueTheme() {
+
+		// 查询上架状态的主题
+		Example example = new Example(LaunThemeAdministration.class);
+		example.or().andEqualTo("status", 2);
+		List<LaunThemeAdministration> list = launThemeMapper.selectByExample(example);
+
+		List<Long> ids = new LinkedList<Long>();
+		for (LaunThemeAdministration theme : list) {
+			Date endTime = theme.getEndTime();
+			Date now = new Date();
+			int compareDate = TimeUtils.compareDate(endTime, now);
+			if (compareDate == -1) {
+				ids.add(theme.getId());
+			}
+		}
+		if (ids.size() > 0) {
+			Example updExample = new Example(LaunThemeAdministration.class);
+			updExample.or().andIn("id", ids);
+			LaunThemeAdministration record = new LaunThemeAdministration();
+			record.setStatus(3);
+			launThemeMapper.updateByExampleSelective(record, updExample);
+			launRedisService.initThemeShop();
+
+		}
 	}
 
 	/**
@@ -309,7 +350,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 			// 保存主题配置
 			themeConfig = saveThemeConfig(themeId, baseJson, widgetJson);
 		}
-		Map<String, Object> assembleConfigJson = saveAssembleConfigJson(themeIdList.get(0), themeConfig);
+		Map<String, Object> assembleConfigJson = saveAssembleConfigJson(administration, themeConfig);
 
 		Long fileSize = (Long) assembleConfigJson.get("length");
 
@@ -380,21 +421,30 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 					Map<String, Object> relativeMeg = ThemeWidgetDetail.getRelativeMeg(map);
 					viewpagerJson.putAll(relativeMeg);
 				}
+				// 滚屏属性
+				Map<String, Object> object = (Map<String, Object>) map.get("setting");
+
+				Map<String, Integer> properties = new HashMap<String, Integer>();
+				if (object.get("approw") != null) {
+					properties.put("appColumnNum", Integer.parseInt(object.get("appcol").toString()));
+				}
+				if (object.get("appcol") != null) {
+					properties.put("appColumnNum", Integer.parseInt(object.get("approw").toString()));
+				}
 
 				viewpagerJson.put("id", id);
 				viewpagerJson.put("name", "ViewPager");
 				viewpagerJson.put("codeId", "ViewPager");
 				viewpagerJson.put("type", 1);
+				viewpagerJson.put("properties", properties);
 				LaunThemeConfig viewpagerConfig = ThemeWidgetDetail.getThemeConfigObj(viewpagerJson, parentConfigId,
 						themeId);
 				// 持久化数据
 				Long viewpagerConfigId = configService.save(viewpagerConfig);
 
 				// 滚屏的长宽
-				Map<String, Object> object = (Map<String, Object>) map.get("setting");
 				Integer columnCount = Integer.parseInt(object.get("col").toString());
 				Integer rowCount = Integer.parseInt(object.get("row").toString());
-
 				// 滚动屏下有多个面板(contentLayOut),
 				List<Map<String, Object>> widgetsJsonList = (List<Map<String, Object>>) map.get("widgets");
 				int index = 0;
@@ -466,12 +516,14 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 		}
 
 		StringBuffer urls = new StringBuffer();
+		int index = 0;
 		for (Entry<String, String> map2 : map.entrySet()) {
 			themeFile = new LaunThemeFile();
 			Long id = IdUtlis.Id();
 			themeFile.setFileName(map2.getKey());
 			themeFile.setFilePath(map2.getValue());
 			themeFile.setThemeId(themeId);
+			themeFile.setIndex(index++);
 			themeFile.setId(id);
 
 			if (i == 0) {
@@ -519,12 +571,13 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	}
 
 	@Override
-	public Map<String, Object> saveAssembleConfigJson(Long themeId, Map<String, String> fileMap) {
-
-		log.info("主题管理----------打包主题zip----------id:{}----------", themeId);
+	public Map<String, Object> saveAssembleConfigJson(LaunThemeAdministration theme, Map<String, String> fileMap) {
+		Long themeId = theme.getId();
+		log.info("主题管理----------打包主题zip----------id:{}----------", theme.getId());
 
 		String configImageUrl = themeConfigUrl + "image/";
 		String configLibUrl = themeConfigUrl + "lib/";
+		String configFontUrl = themeConfigUrl + "font/";
 		Map<String, Object> returnMap = new HashMap<String, Object>();
 
 		String filePath = "";
@@ -536,6 +589,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 			// 删除垃圾文件
 			FileTool.deleteDir(configImageUrl);
 			FileTool.deleteDir(configLibUrl);
+			FileTool.deleteDir(configFontUrl);
 
 			File configImgFile = new File(configImageUrl);
 			if (!configImgFile.exists()) {
@@ -545,10 +599,26 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 			if (!configLibFile.exists()) {
 				configLibFile.mkdirs();
 			}
+			File fontUrlFile = new File(configFontUrl);
+			if (!fontUrlFile.exists()) {
+				fontUrlFile.mkdirs();
+			}
 
-			LaunThemeAdministration theme = launThemeMapper.selectByTheme(themeId);
 			List<LaunThemeConfig> themeConfigList = configService.findByThemeId(themeId);
 
+			// 下载文字信息
+			String themeJson = theme.getThemeJson();
+			Map<?, ?> jsonToMap = JsonUtils.JsonToMap(themeJson);
+			Object fonts = jsonToMap.get("fonts");
+			if (fonts != null) {
+				String fontsUrl = fonts.toString();
+				String fontName = FileTool.getFileName(fontsUrl);
+				goalPath = configFontUrl + fontName;
+				strPath = fastDfsPath + fontsUrl;
+				getFileToLocal(strPath, goalPath);
+			}
+
+			// 下载图片,组件信息
 			for (Entry<String, String> file : fileMap.entrySet()) {
 				filePath = file.getValue();
 				fileName = file.getKey();
@@ -804,7 +874,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 		// 保存主题配置
 		Map<String, String> saveThemeConfig = saveThemeConfig(themeId, baseJson, widgetJson);
 
-		Map<String, Object> assembleConfigJson = saveAssembleConfigJson(themeId, saveThemeConfig);
+		Map<String, Object> assembleConfigJson = saveAssembleConfigJson(administration, saveThemeConfig);
 
 		Long fileSize = (Long) assembleConfigJson.get("length");
 
@@ -821,7 +891,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	}
 
 	public static void main(String[] args) {
-		String s = "k,s,f,z,s,";
-		System.out.println(s.split(","));
+		Integer i = 1;
+		System.out.println(i == null);
 	}
 }

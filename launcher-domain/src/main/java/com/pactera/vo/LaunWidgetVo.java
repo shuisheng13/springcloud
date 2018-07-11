@@ -38,5 +38,6 @@ public class LaunWidgetVo implements Serializable{
 	private @ApiModelProperty("版本名称") String versionName;
 	private @ApiModelProperty("使用渠道名称") String channelName;
 	private @ApiModelProperty("创建渠道名称") String channelUserName;
+	private @ApiModelProperty("创建人渠道") String channelId;
 	
 }

@@ -104,13 +104,13 @@ public class ThemeWidgetDetail {
 			// 判断布局该widget布局方式
 			Integer isRelative = (Integer) map.get("isRelative");
 
-			if (flag && ConstantUtlis.LATTICE_LAYOUT == isRelative) {
+			if (flag && ConstantUtlis.LATTICE_LAYOUT != isRelative) {
+				relativeMeg = getRelativeMeg(map);
+				objMap.putAll(relativeMeg);
+			} else {
 				// 计算该widget在此次编辑中的位置
 				lattice = getLattice(map);
 				objMap.put("lattice", lattice);
-			} else {
-				relativeMeg = getRelativeMeg(map);
-				objMap.putAll(relativeMeg);
 			}
 
 			// 添加公共属性

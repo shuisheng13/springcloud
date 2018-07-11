@@ -171,11 +171,12 @@
 		laun_widget.version versionName,
 		laun_widget.description,
 		laun_widget_file.path,
-		laun_widget.creator
+		laun_widget.creator,
+		(select channel_id from laun_user where laun_user.id = laun_widget.creator) channelId
 		FROM
 		laun_widget,
 		laun_widget_type,
-		laun_widget_file
+		laun_widget_file		
 		WHERE
 		laun_widget.category = laun_widget_type.id
 	  	and laun_widget.type in(0,1,2) and laun_widget.parent_id = 0

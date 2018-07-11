@@ -1,4 +1,5 @@
 package com.pactera.utlis;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -13,30 +14,30 @@ import java.util.Locale;
  * @since：2017年8月21日 下午2:00:22
  */
 public class TimeUtils {
-	
+
 	/**
-	 * 目录：
-	 * millis2String            : 将时间戳转为时间字符串
-	 * string2Millis            : 将时间字符串转为时间戳
-	 * string2Date              : 将时间字符串转为Date类型
-	 * date2String              : 将Date类型转为时间字符串
-	 * date2Millis              : 将Date类型转为时间戳
-	 * millis2Date              : 将时间戳转为Date类型
-	 * dateReckon               : 日期+-天数
-	 * getNowTimeMills          : 获取当前毫秒时间戳
-	 * getNowTimeString         : 获取当前时间字符串
-	 * getNowTimeDate           : 获取当前Date
-	 * getWeek, getWeekIndex    : 获取星期
-	 * getWeekOfMonth           : 获取月份中的第几周
-	 * getWeekOfYear            : 获取年份中的第几周
-	 * parseMillisecone         : 时间差计算 return string 0天0时11分55秒
-	 * getDifference			：时间差计算 return int
-	 * getChineseZodiac         : 获取生肖
-	 * getZodiac                : 获取星座
+	 * 目录： 
+	 * millis2String : 将时间戳转为时间字符串 
+	 * string2Millis : 将时间字符串转为时间戳
+	 *  string2Date : 将时间字符串转为Date类型
+	 *  date2String : 将Date类型转为时间字符串 
+	 *  date2Millis : 将Date类型转为时间戳
+	 * millis2Date : 将时间戳转为Date类型 
+	 * dateReckon : 日期+-天数 
+	 * getNowTimeMills :获取当前毫秒时间戳 
+	 * getNowTimeString : 获取当前时间字符串 
+	 * getNowTimeDate : 获取当前Date getWeek,
+	 * getWeekIndex : 获取星期 
+	 * getWeekOfMonth : 获取月份中的第几周 
+	 * getWeekOfYear : 获取年份中的第几周
+	 * parseMillisecone : 时间差计算 return string 0天0时11分55秒
+	 * getDifference ：时间差计算return int 
+	 * getChineseZodiac : 获取生肖 
+	 * getZodiac : 获取星座
 	 * 
 	 * 注意：SimpleDateFormat不是线程安全的，线程安全需用{@code ThreadLocal<SimpleDateFormat>}
 	 */
-	
+
 	static final SimpleDateFormat DEFAULT_SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
 
 	static final SimpleDateFormat DEFAULT_SIMPLE_SDF = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -44,14 +45,15 @@ public class TimeUtils {
 	static final String DEFAULT_TIME = "yyyy-MM-dd HH:mm:ss";
 
 	static final String DEFAULT_SIMPLE_TIME = "yyyy-MM-dd";
-	
+
 	static final long DAY = 1000 * 60 * 60 * 24;
-		
+
 	static final long HOUR = 1000 * 60 * 60;
-	
+
 	static final long MINUTE = 1000 * 60;
-	
+
 	static final long SECOND = 1000;
+
 	/**
 	 * 将时间戳转为时间字符串 格式为yyyy-MM-dd HH:mm:ss
 	 *
@@ -77,8 +79,7 @@ public class TimeUtils {
 	}
 
 	/**
-	 * 将时间字符串转为时间戳
-	 * time格式为yyyy-MM-dd HH:mm:ss
+	 * 将时间字符串转为时间戳 time格式为yyyy-MM-dd HH:mm:ss
 	 *
 	 * @param time
 	 *            时间字符串
@@ -91,8 +92,7 @@ public class TimeUtils {
 	}
 
 	/**
-	 * 将时间字符串转为时间戳
-	 * time格式为pattern
+	 * 将时间字符串转为时间戳 time格式为pattern
 	 *
 	 * @param time
 	 *            时间字符串
@@ -110,8 +110,7 @@ public class TimeUtils {
 	}
 
 	/**
-	 * 将时间字符串转为Date类型
- 	 * time格式为yyyy-MM-dd HH:mm:ss
+	 * 将时间字符串转为Date类型 time格式为yyyy-MM-dd HH:mm:ss
 	 *
 	 * @param time
 	 *            时间字符串
@@ -182,12 +181,12 @@ public class TimeUtils {
 		return new Date(millis);
 	}
 
-	
 	/**
 	 * 日期+-天数
 	 * 
 	 * @param date
-	 * @param num 增加的天数，整数为+，负数-
+	 * @param num
+	 *            增加的天数，整数为+，负数-
 	 * @return Date
 	 */
 	public static Date dateReckon(Date date, Integer num) {
@@ -197,12 +196,13 @@ public class TimeUtils {
 		date = calendar.getTime(); // 这个时间就是日期往后推一天的结果
 		return date;
 	}
-	
+
 	/**
 	 * 日期+-天数
 	 * 
 	 * @param date
-	 * @param num 增加的天数，整数为+，负数-
+	 * @param num
+	 *            增加的天数，整数为+，负数-
 	 * @return Date
 	 */
 	public static Date dateReckon(long millis, Integer num) {
@@ -212,12 +212,13 @@ public class TimeUtils {
 		Date date = calendar.getTime(); // 这个时间就是日期往后推一天的结果
 		return date;
 	}
-	
+
 	/**
 	 * 日期+-天数
 	 * 
 	 * @param date
-	 * @param num 增加的天数，整数为+，负数-
+	 * @param num
+	 *            增加的天数，整数为+，负数-
 	 * @return Date
 	 */
 	public static Date dateReckon(String time, Integer num) {
@@ -227,8 +228,7 @@ public class TimeUtils {
 		Date date = calendar.getTime(); // 这个时间就是日期往后推一天的结果
 		return date;
 	}
-	
-	
+
 	/**
 	 * 获取当前毫秒时间戳
 	 *
@@ -239,27 +239,25 @@ public class TimeUtils {
 	}
 
 	/**
-	 * 获取当前时间字符串
-	 * 格式为yyyy-MM-dd HH:mm:ss
+	 * 获取当前时间字符串 格式为yyyy-MM-dd HH:mm:ss
 	 *
 	 * @return 时间字符串
 	 */
 	public static String getNowTimeString() {
 		return millis2String(System.currentTimeMillis(), DEFAULT_TIME);
 	}
-	
+
 	/**
-     * 获取当前Date
-     *
-     * @return Date类型时间
-     */
-    public static Date getNowTimeDate() {
-        return new Date();
-    }
-    
+	 * 获取当前Date
+	 *
+	 * @return Date类型时间
+	 */
+	public static Date getNowTimeDate() {
+		return new Date();
+	}
+
 	/**
-	 * 获取星期
-	 * time格式为yyyy-MM-dd HH:mm:ss
+	 * 获取星期 time格式为yyyy-MM-dd HH:mm:ss
 	 *
 	 * @param time
 	 *            时间字符串
@@ -270,8 +268,7 @@ public class TimeUtils {
 	}
 
 	/**
-	 * 获取星期
-	 * time格式为pattern
+	 * 获取星期 time格式为pattern
 	 *
 	 * @param time
 	 *            时间字符串
@@ -306,9 +303,7 @@ public class TimeUtils {
 	}
 
 	/**
-	 * 获取星期
-	 * 注意：周日的Index才是1，周六为7
-	 * time格式为yyyy-MM-dd HH:mm:ss
+	 * 获取星期 注意：周日的Index才是1，周六为7 time格式为yyyy-MM-dd HH:mm:ss
 	 *
 	 * @param time
 	 *            时间字符串
@@ -319,9 +314,7 @@ public class TimeUtils {
 	}
 
 	/**
-	 * 获取星期
-	 * 注意：周日的Index才是1，周六为7
-	 * time格式为pattern
+	 * 获取星期 注意：周日的Index才是1，周六为7 time格式为pattern
 	 *
 	 * @param time
 	 *            时间字符串
@@ -334,8 +327,7 @@ public class TimeUtils {
 	}
 
 	/**
-	 * 获取星期
-	 * 注意：周日的Index才是1，周六为7
+	 * 获取星期 注意：周日的Index才是1，周六为7
 	 *
 	 * @param date
 	 *            Date类型时间
@@ -348,8 +340,7 @@ public class TimeUtils {
 	}
 
 	/**
-	 * 获取星期
-	 * 注意：周日的Index才是1，周六为7
+	 * 获取星期 注意：周日的Index才是1，周六为7
 	 *
 	 * @param millis
 	 *            毫秒时间戳
@@ -358,7 +349,7 @@ public class TimeUtils {
 	public static int getWeekIndex(long millis) {
 		return getWeekIndex(millis2Date(millis));
 	}
-	
+
 	/**
 	 * 获取月份中的第几周
 	 * <p>
@@ -377,9 +368,7 @@ public class TimeUtils {
 	}
 
 	/**
-	 * 获取月份中的第几周
-	 * 注意：国外周日才是新的一周的开始
-	 * time格式为pattern
+	 * 获取月份中的第几周 注意：国外周日才是新的一周的开始 time格式为pattern
 	 *
 	 * @param time
 	 *            时间字符串
@@ -392,8 +381,7 @@ public class TimeUtils {
 	}
 
 	/**
-	 * 获取月份中的第几周
-	 * 注意：国外周日才是新的一周的开始
+	 * 获取月份中的第几周 注意：国外周日才是新的一周的开始
 	 *
 	 * @param date
 	 *            Date类型时间
@@ -406,8 +394,7 @@ public class TimeUtils {
 	}
 
 	/**
-	 * 获取月份中的第几周
-	 * 注意：国外周日才是新的一周的开始
+	 * 获取月份中的第几周 注意：国外周日才是新的一周的开始
 	 *
 	 * @param millis
 	 *            毫秒时间戳
@@ -418,9 +405,7 @@ public class TimeUtils {
 	}
 
 	/**
-	 * 获取年份中的第几周
-	 * 注意：国外周日才是新的一周的开始
-	 * time格式为yyyy-MM-dd HH:mm:ss
+	 * 获取年份中的第几周 注意：国外周日才是新的一周的开始 time格式为yyyy-MM-dd HH:mm:ss
 	 *
 	 * @param time
 	 *            时间字符串
@@ -431,9 +416,7 @@ public class TimeUtils {
 	}
 
 	/**
-	 * 获取年份中的第几周
-	 * 注意：国外周日才是新的一周的开始
-	 * time格式为pattern
+	 * 获取年份中的第几周 注意：国外周日才是新的一周的开始 time格式为pattern
 	 *
 	 * @param time
 	 *            时间字符串
@@ -446,8 +429,7 @@ public class TimeUtils {
 	}
 
 	/**
-	 * 获取年份中的第几周
-	 * 注意：国外周日才是新的一周的开始
+	 * 获取年份中的第几周 注意：国外周日才是新的一周的开始
 	 *
 	 * @param date
 	 *            Date类型时间
@@ -460,8 +442,7 @@ public class TimeUtils {
 	}
 
 	/**
-	 * 获取年份中的第几周
-	 * 注意：国外周日才是新的一周的开始
+	 * 获取年份中的第几周 注意：国外周日才是新的一周的开始
 	 *
 	 * @param millis
 	 *            毫秒时间戳
@@ -470,12 +451,11 @@ public class TimeUtils {
 	public static int getWeekOfYear(long millis) {
 		return getWeekOfYear(millis2Date(millis));
 	}
-	
+
 	private static final String[] CHINESE_ZODIAC = { "猴", "鸡", "狗", "猪", "鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊" };
 
 	/**
-	 * 获取生肖
-	 * time格式为yyyy-MM-dd HH:mm:ss
+	 * 获取生肖 time格式为yyyy-MM-dd HH:mm:ss
 	 *
 	 * @param time
 	 *            时间字符串
@@ -486,8 +466,7 @@ public class TimeUtils {
 	}
 
 	/**
-	 * 获取生肖
-	 * time格式为pattern
+	 * 获取生肖 time格式为pattern
 	 *
 	 * @param time
 	 *            时间字符串
@@ -539,8 +518,7 @@ public class TimeUtils {
 	private static final int[] ZODIAC_FLAGS = { 20, 19, 21, 21, 21, 22, 23, 23, 23, 24, 23, 22 };
 
 	/**
-	 * 获取星座
-	 * time格式为yyyy-MM-dd HH:mm:ss
+	 * 获取星座 time格式为yyyy-MM-dd HH:mm:ss
 	 *
 	 * @param time
 	 *            时间字符串
@@ -551,8 +529,7 @@ public class TimeUtils {
 	}
 
 	/**
-	 * 获取星座
-	 * time格式为pattern
+	 * 获取星座 time格式为pattern
 	 *
 	 * @param time
 	 *            时间字符串
@@ -602,40 +579,43 @@ public class TimeUtils {
 	public static String getZodiac(int month, int day) {
 		return ZODIAC[day >= ZODIAC_FLAGS[month - 1] ? month - 1 : (month + 10) % 12];
 	}
-	
+
 	/**
 	 * 时间差计算
 	 * 
-	 * @param time 当前时间
+	 * @param time
+	 *            当前时间
 	 * @return string 0天0时11分55秒
 	 */
 	public static String parseMillisecone(Date time) {
-		
+
 		return parseMillisecone(countTimeDiff(date2Millis(time)));
 	}
-	
+
 	/**
 	 * 时间差计算
 	 * 
-	 * @param time 当前时间
+	 * @param time
+	 *            当前时间
 	 * @return string 0天0时11分55秒
 	 */
 	public static String parseMillisecone(String time) {
-		
+
 		return parseMillisecone(countTimeDiff(string2Millis(time)));
 	}
-	
+
 	/**
 	 * 时间差计算
 	 * 
-	 * @param time 当前时间
+	 * @param time
+	 *            当前时间
 	 * @return string 0天0时11分55秒
 	 */
-	public static String parseMillisecone(String time,String pattern) {
-		
-		return parseMillisecone(countTimeDiff(string2Millis(time,pattern)));
+	public static String parseMillisecone(String time, String pattern) {
+
+		return parseMillisecone(countTimeDiff(string2Millis(time, pattern)));
 	}
-	
+
 	/**
 	 * 时间差计算
 	 * 
@@ -673,43 +653,71 @@ public class TimeUtils {
 	/**
 	 * 时间差计算
 	 * 
-	 * @param time 当前时间
+	 * @param time
+	 *            当前时间
 	 * @return string 0天0时11分55秒
 	 */
 	public static long getDifference(Date time, int f) {
-		
-		return getDifference(countTimeDiff(date2Millis(time)),f);
+
+		return getDifference(countTimeDiff(date2Millis(time)), f);
 	}
-	
+
 	/**
 	 * 时间差计算
 	 * 
-	 * @param time 当前时间
+	 * @param time
+	 *            当前时间
 	 * @return string 0天0时11分55秒
 	 */
 	public static long getDifference(String time, int f) {
-		
-		return getDifference(countTimeDiff(string2Millis(time)),f);
+
+		return getDifference(countTimeDiff(string2Millis(time)), f);
 	}
-	
+
 	/**
 	 * 时间差计算
 	 * 
-	 * @param time 当前时间
+	 * @param time
+	 *            当前时间
 	 * @return string 0天0时11分55秒
 	 */
-	public static long getDifference(String time,String pattern, int f) {
-		
-		return getDifference(countTimeDiff(string2Millis(time,pattern)),f);
+	public static long getDifference(String time, String pattern, int f) {
+
+		return getDifference(countTimeDiff(string2Millis(time, pattern)), f);
 	}
-	
-	
+
+	/**
+	 * 比较两个时间的大小
+	 * 
+	 * @author LL
+	 * @date 2018年7月6日 上午10:25:52
+	 * @param
+	 * @return int 1:前大于后;-1:前小于后;0相等
+	 */
+	public static int compareDate(Date date1, Date date2) {
+
+		if (date1 == null || date2 == null) {
+			throw new NullPointerException();
+		}
+		return compareDate(date1.getTime(), date2.getTime());
+	}
+
+	public static int compareDate(long date1, long date2) {
+		if (date1 > date2) {
+			return 1;
+		} else if (date1 < date2) {
+			return -1;
+		} else {
+			return 0;
+		}
+	}
+
 	/**
 	 * 计算时间与当前时间相差多久
 	 * 
 	 * @param time
 	 * @param f
-	 * 时间差的形式0:秒,1:分种,2:小时,3:天
+	 *            时间差的形式0:秒,1:分种,2:小时,3:天
 	 * @return 返回int类型长度，多出则+1
 	 */
 	public static long getDifference(long time, int f) {
@@ -758,15 +766,33 @@ public class TimeUtils {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * 计算时间差
+	 * 
 	 * @param time时间戳
 	 * @return 时间差的时间戳
 	 */
 	public static long countTimeDiff(long time) {
-		
+
 		return System.currentTimeMillis() - time;
 	}
-	
+
+	/**
+	 * 获取当前时间的前一天
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月9日 下午4:14:32
+	 * @param
+	 * @return Date
+	 */
+	public static String getNextDay(Date date) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.DAY_OF_MONTH, -1);
+		date = calendar.getTime();
+		String string = DEFAULT_SIMPLE_SDF.format(date);
+		return string;
+	}
 }

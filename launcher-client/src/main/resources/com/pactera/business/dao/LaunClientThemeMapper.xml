@@ -47,7 +47,7 @@
 	<select id="getThemeList" resultMap="BaseResultMap">
 		SELECT
 		lta.id,lta.title,lta.version,lta.type_id,lta.zip_url,lta.preview_path,lta.urls,
-		ltc.classification_name typeName,lta.file_size
+		ltc.classification_name typeName,lta.file_size,lta.end_time
 		FROM
 		laun_theme_administration lta
 		LEFT JOIN laun_channel lc ON
@@ -56,11 +56,16 @@
 		JOIN laun_theme_classification ltc
 		ON lta.type_id = ltc.id
 		WHERE
-		lta. STATUS = 2
-		AND
-		wide_resolution = #{width} AND long_resolution = #{height} AND
+		wide_resolution = #{width} AND
+		long_resolution = #{height} AND
 		lta.creator_channel_id in (0,#{channleId}) AND version <![CDATA[<=]]>
-		#{version}
+		#{version} AND end_time > #{now}
+		<if test="type != null">
+			AND status = #{type}
+		</if>
+		<if test="type == null">
+			AND status in (1,2)
+		</if>
 	</select>
 
 	<select id="pushTheme" resultMap="BaseResultMap">

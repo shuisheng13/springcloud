@@ -32,4 +32,14 @@ public interface ConstantUtlis {
 	public static final String THEME_REDIS_FLAG = "themeShop";
 	// 自定义标识字段-宫格布局
 	public static final int LATTICE_LAYOUT = 0;
+	// 自定义标识字段-统计标识
+	public static final String STATISTICS_ONE = "1";
+	// 自定义标识字段-统计标识
+	public static final String STATISTICS_TWO = "2";
+	// 自定义标识字段-统计标识
+	public static final String STATISTICS_THREE = "3";
+	// 自定义标识字段-统计标识
+	public static final String STATISTICS_FOUR = "4";
+	// 自定义标识字段-统计标识
+	public static final String STATISTICS_FIVE = "5";
 }

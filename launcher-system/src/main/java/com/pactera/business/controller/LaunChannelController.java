@@ -45,4 +45,17 @@ public class LaunChannelController {
 		List<LaunChannel> findAll = launChannelService.findAll(name);
 		return ResponseEntity.ok(new ResultData(findAll));
 	}
+
+	/**
+	 * 根据渠道id获取渠道信息
+	 * @param id 主键
+	 * @return
+	 */
+	@GetMapping("findOneById")
+	@ApiOperation("根据id获取渠道详情")
+	@ApiImplicitParam(name = "id", value = "渠道主键")
+	public ResponseEntity<ResultData> findOneById(String id) {
+		LaunChannel channel = launChannelService.findById(id);
+		return ResponseEntity.ok(new ResultData(channel));
+	}
 }

@@ -1,6 +1,7 @@
 package com.pactera.business.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,32 +68,37 @@ public class LaunClientThemeServiceImpl implements LaunClientThemeService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<LaunThemeShopVo> getThemeList(String channle, String version, Long screenHeight, Long screenWidth,
-			String userId, String city) {
+			String userId, String city, Integer type) {
 
 		// 定义返回对象
 		List<LaunThemeShopVo> returnList = new ArrayList<LaunThemeShopVo>();
 
 		List<LaunThemeAdministration> themeList = new ArrayList<>();
 
-		boolean flag = false;
-		try {
-			// 从redis中根据渠道查询
-			List<LaunThemeAdministration> list = (List<LaunThemeAdministration>) redisTemplate.opsForHash()
-					.get(ConstantUtlis.THEME_REDIS_FLAG, channle);
-
-			for (LaunThemeAdministration theme : list) {
-				// 匹配分辨率
-				if (screenWidth.equals(theme.getWideResolution()) && screenHeight.equals(theme.getLongResolution())) {
-					// 匹配版本
-					if (version.compareTo(theme.getVersion()) >= 0) {
-						themeList.add(theme);
+		Date now = new Date();
+		boolean flag = true;
+		if (type != null && type == 2) {
+			flag = false;
+			try {
+				// 从redis中根据渠道查询
+				List<LaunThemeAdministration> list = (List<LaunThemeAdministration>) redisTemplate.opsForHash()
+						.get(ConstantUtlis.THEME_REDIS_FLAG, channle);
+				for (LaunThemeAdministration theme : list) {
+					// 匹配分辨率
+					if (screenWidth.equals(theme.getWideResolution())
+							&& screenHeight.equals(theme.getLongResolution())) {
+						// 匹配版本和过期时间
+						if (version.compareTo(theme.getVersion()) >= 0
+								&& TimeUtils.compareDate(theme.getEndTime(), now) == 0) {
+							themeList.add(theme);
+						}
 					}
-				}
 
+				}
+			} catch (Exception e) {
+				flag = true;
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			flag = true;
-			e.printStackTrace();
 		}
 
 		if (flag) {
@@ -101,7 +107,15 @@ public class LaunClientThemeServiceImpl implements LaunClientThemeService {
 			if (findByName == null) {
 				return returnList;
 			}
-			themeList = launClientThemeMapper.getThemeList(findByName.getId(), version, screenHeight, screenWidth);
+			if (type != null) {
+				if (type == 1) {
+					type = null;
+				} else if (type == 3) {
+					type = 1;
+				}
+			}
+			themeList = launClientThemeMapper.getThemeList(findByName.getId(), version, screenHeight, screenWidth, type,
+					now);
 		}
 
 		if (themeList.size() == 0) {
@@ -157,7 +171,7 @@ public class LaunClientThemeServiceImpl implements LaunClientThemeService {
 	}
 
 	@Override
-	public Map<String, Object> getPosters(String channelName, String version, Long screenHeight,  Long screenWidth,
+	public Map<String, Object> getPosters(String channelName, String version, Long screenHeight, Long screenWidth,
 			String userId, String city, String posterIds) {
 
 		Map<String, Object> map = null;
@@ -229,7 +243,7 @@ public class LaunClientThemeServiceImpl implements LaunClientThemeService {
 	 */
 	public LaunChannel findByName(String channleName) {
 		Example example = new Example(LaunChannel.class);
-		example.createCriteria().andEqualTo("name", channleName);
+		example.createCriteria().andEqualTo("name", channleName).andEqualTo("channelStatus", 0);
 		List<LaunChannel> list = launChannelMapper.selectByExample(example);
 		return list.size() > 0 ? list.get(0) : null;
 	}

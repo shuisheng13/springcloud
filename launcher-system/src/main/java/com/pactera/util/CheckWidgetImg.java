@@ -21,9 +21,19 @@ public class CheckWidgetImg {
 	 */
 	public static boolean isIncludeimg(List<String> jsonList,List<String> imgList) {
 		boolean check = false;
-		if(imgList.containsAll(jsonList)) {
-			check = true;
+		if(jsonList != null && imgList != null) {
+			for(String img : jsonList) {
+				if(imgList.contains(img)) {
+					check = true;
+				}else {
+					check = false;
+					break;
+				}
+				
+				
+			}
 		}
+
 		return check;
 	}
 	

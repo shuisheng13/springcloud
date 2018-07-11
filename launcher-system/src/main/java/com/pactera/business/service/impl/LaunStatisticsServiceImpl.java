@@ -3,10 +3,12 @@ package com.pactera.business.service.impl;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import com.pactera.business.dao.LaunCarStatisticsMapper;
 import com.pactera.business.dao.LaunChannelMapper;
 import com.pactera.business.dao.LaunWidgetStatisticsMapper;
 import com.pactera.business.service.LaunStatisticsService;
+import com.pactera.constant.ConstantUtlis;
 import com.pactera.domain.LaunApplicationStatistics;
 import com.pactera.domain.LaunCarStatistics;
 import com.pactera.domain.LaunChannel;
@@ -151,7 +154,7 @@ public class LaunStatisticsServiceImpl implements LaunStatisticsService {
 	// }
 
 	@Override
-	public Map<String, Object> selectCarStatistics(Long startTime, Long endTime, Long channel, Long version,
+	public Map<String, Object> selectCarStatistics(Long startTime, Long endTime, Long channel, String version,
 			Long type) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		// 类型(0:新增车辆1:活跃车辆2:启动次数3:平均单次使用时长)
@@ -182,16 +185,16 @@ public class LaunStatisticsServiceImpl implements LaunStatisticsService {
 			cart.add(TimeUtils.date2String(launCarStatistics.getCarTime(), "yyyy-MM-dd"));
 			if (type != null) {
 				// type判断的是表格的数量
-				if (0 == type) {
+				if (1 == type) {
 					// carNum
 					carn.add(launCarStatistics.getCarNum());
-				} else if (1 == type) {
+				} else if (2 == type) {
 					// 活跃车辆
 					carn.add(launCarStatistics.getCarActive());
-				} else if (2 == type) {
+				} else if (3 == type) {
 					// 启动次数
 					carn.add(launCarStatistics.getCarStart());
-				} else if (3 == type) {
+				} else if (4 == type) {
 					// 平均时长
 					carn.add(launCarStatistics.getCarAvgTime());
 				}
@@ -231,8 +234,8 @@ public class LaunStatisticsServiceImpl implements LaunStatisticsService {
 			// ("启动次数占比") String carStartProp;
 
 			BigDecimal carStatistics = new BigDecimal(Double.toString(launCarStatistics.getCarStart()));
-			BigDecimal startUpNum = new BigDecimal(Double.toString(launCarStatistics.getStartUpNum()));
-			String carStartProp = carStatistics.divide(startUpNum, 2, BigDecimal.ROUND_HALF_UP)
+			BigDecimal carStart = new BigDecimal(Double.toString(launCarStatistics.getCarStart()));
+			String carStartProp = carStatistics.divide(carStart, 2, BigDecimal.ROUND_HALF_UP)
 					.multiply(new BigDecimal(100)).toString();
 			launCarStatistics.setCarStartProp(carStartProp + "%");
 
@@ -257,14 +260,241 @@ public class LaunStatisticsServiceImpl implements LaunStatisticsService {
 	@Override
 	public Map<String, Object> selectThemeStatistics(Long startTime, Long endTime, Long channel, Long version,
 			Long type) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/**
+	 * 获取所有的版本
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月6日 下午3:14:29
+	 * @param
+	 */
 	@Override
-	public Map<String, Object> versionStatistics(Long startTime, Long endTime, int pageNum, int pageSize, Long type,
+	public List<String> getVersion() {
+		List<String> version = carStatisticsMapper.selectVersion();
+		return version;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> versionStatistics(Long startTime, Long endTime, Long type, Long channel,
 			String versions) {
-		return null;
+		// 类型(1:新增车辆2:活跃车辆3:启动次数4:升级车辆5:累计车辆)
+		Date stime = null;
+		Date etime = null;
+		// 时间转换
+		if (null != startTime) {
+			stime = TimeUtils.string2Date(TimeUtils.millis2String(startTime, "yyyy-MM-dd") + " 00:00:00");
+
+		}
+		if (null != endTime) {
+			etime = TimeUtils.string2Date(TimeUtils.millis2String(endTime, "yyyy-MM-dd") + " 23:59:59");
+		}
+		List<String> asList = new ArrayList<>();
+		if (null != versions) {
+			String[] split = versions.split(",");
+			asList = Arrays.asList(split);
+		}
+
+		List<LaunCarStatistics> list = carStatisticsMapper.versionStatistics(stime, etime, asList, channel);
+		Map<String, Object> map = new HashMap<>();
+		// 时间
+		map.put("data", (list.stream().map(LaunCarStatistics::getCarTime).collect(Collectors.toList())).stream()
+				.distinct().collect(Collectors.toList()));
+
+		// 判断参数，返回封装结果
+		if (null != type && ConstantUtlis.STATISTICS_ONE.equals(type)) {
+			// 新增车辆
+			// 版本 arrayList Object = map< k ,v >
+			ArrayList<Map<String, Object>> arrayList = new ArrayList<>();
+			ArrayList<Object> arrayList1 = new ArrayList<>();// 这个是版本对应的集合数据
+			for (LaunCarStatistics launCarStatistics : list) {
+				Map<String, Object> map1 = new HashMap<>();
+				if (arrayList.size() == 0) {
+					map1.put(launCarStatistics.getVersion(), arrayList1.add(launCarStatistics.getCarNum()));
+				} else {
+					for (Map.Entry<String, Object> entry : map1.entrySet()) {
+						// 包含
+						if (entry.getKey().contains(launCarStatistics.getVersion())) {
+							ArrayList<Object> object = (ArrayList<Object>) map1.get(entry.getKey());
+							object.add(launCarStatistics.getCarNum());
+						} else {
+							map1.put(launCarStatistics.getVersion(), arrayList1.add(launCarStatistics.getCarNum()));
+						}
+					}
+				}
+				arrayList.add(map1);
+			}
+
+			map.put("attr", arrayList);
+
+		}
+
+		// 活跃车辆
+		if (null != type && ConstantUtlis.STATISTICS_TWO.equals(type)) {
+			// 版本 arrayList Object = map< k ,v >
+			ArrayList<Map<String, Object>> arrayList = new ArrayList<>();
+			ArrayList<Object> arrayList1 = new ArrayList<>();// 这个是版本对应的集合数据
+			for (LaunCarStatistics launCarStatistics : list) {
+				Map<String, Object> map1 = new HashMap<>();
+				if (arrayList.size() == 0) {
+					map1.put(launCarStatistics.getVersion(), arrayList1.add(launCarStatistics.getCarActive()));
+				} else {
+					for (Map.Entry<String, Object> entry : map1.entrySet()) {
+						// 包含
+						if (entry.getKey().contains(launCarStatistics.getVersion())) {
+							ArrayList<Object> object = (ArrayList<Object>) map1.get(entry.getKey());
+							object.add(launCarStatistics.getCarNum());
+						} else {
+							map1.put(launCarStatistics.getVersion(), arrayList1.add(launCarStatistics.getCarActive()));
+						}
+					}
+				}
+				arrayList.add(map1);
+			}
+
+			map.put("attr", arrayList);
+
+		}
+
+		// 启动次数
+		if (null != type && ConstantUtlis.STATISTICS_THREE.equals(type)) {
+			// 版本 arrayList Object = map< k ,v >
+			ArrayList<Map<String, Object>> arrayList = new ArrayList<>();
+			ArrayList<Object> arrayList1 = new ArrayList<>();// 这个是版本对应的集合数据
+			for (LaunCarStatistics launCarStatistics : list) {
+				Map<String, Object> map1 = new HashMap<>();
+				if (arrayList.size() == 0) {
+					map1.put(launCarStatistics.getVersion(), arrayList1.add(launCarStatistics.getCarStart()));
+				} else {
+					for (Map.Entry<String, Object> entry : map1.entrySet()) {
+						// 包含
+						if (entry.getKey().contains(launCarStatistics.getVersion())) {
+							ArrayList<Object> object = (ArrayList<Object>) map1.get(entry.getKey());
+							object.add(launCarStatistics.getCarNum());
+						} else {
+							map1.put(launCarStatistics.getVersion(), arrayList1.add(launCarStatistics.getCarStart()));
+						}
+					}
+				}
+				arrayList.add(map1);
+			}
+
+			map.put("attr", arrayList);
+
+		}
+		// 升级车辆
+		if (null != type && ConstantUtlis.STATISTICS_FOUR.equals(type)) {
+			// 版本 arrayList Object = map< k ,v >
+			ArrayList<Map<String, Object>> arrayList = new ArrayList<>();
+			ArrayList<Object> arrayList1 = new ArrayList<>();// 这个是版本对应的集合数据
+			for (LaunCarStatistics launCarStatistics : list) {
+				Map<String, Object> map1 = new HashMap<>();
+				if (arrayList.size() == 0) {
+					map1.put(launCarStatistics.getVersion(), arrayList1.add(launCarStatistics.getUpGradeNum()));
+				} else {
+					for (Map.Entry<String, Object> entry : map1.entrySet()) {
+						// 包含
+						if (entry.getKey().contains(launCarStatistics.getVersion())) {
+							ArrayList<Object> object = (ArrayList<Object>) map1.get(entry.getKey());
+							object.add(launCarStatistics.getCarNum());
+						} else {
+							map1.put(launCarStatistics.getVersion(), arrayList1.add(launCarStatistics.getUpGradeNum()));
+						}
+					}
+				}
+				arrayList.add(map1);
+			}
+
+			map.put("attr", arrayList);
+
+		}
+
+		// 累计车辆
+		if (null != type && ConstantUtlis.STATISTICS_FIVE.equals(type)) {
+			// 版本 arrayList Object = map< k ,v >
+			ArrayList<Map<String, Object>> arrayList = new ArrayList<>();
+			ArrayList<Object> arrayList1 = new ArrayList<>();// 这个是版本对应的集合数据
+			for (LaunCarStatistics launCarStatistics : list) {
+				Map<String, Object> map1 = new HashMap<>();
+				if (arrayList.size() == 0) {
+					map1.put(launCarStatistics.getVersion(), arrayList1.add(launCarStatistics.getAddUpNum()));
+				} else {
+					for (Map.Entry<String, Object> entry : map1.entrySet()) {
+						// 包含
+						if (entry.getKey().contains(launCarStatistics.getVersion())) {
+							ArrayList<Object> object = (ArrayList<Object>) map1.get(entry.getKey());
+							object.add(launCarStatistics.getCarNum());
+						} else {
+							map1.put(launCarStatistics.getVersion(), arrayList1.add(launCarStatistics.getAddUpNum()));
+						}
+					}
+				}
+				arrayList.add(map1);
+			}
+
+			map.put("attr", arrayList);
+
+		}
+
+		return map;
+
+	}
+
+	/**
+	 * 版本详情统计
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月9日 下午3:51:45
+	 * @param
+	 */
+	@Override
+	public PageInfo<LaunCarStatistics> versionXiang(Long startTime, int pageNum, int pageSize) {
+		PageHelper.startPage(pageNum, pageSize);
+		Example example = new Example(LaunCarStatistics.class);
+		Date stime = null;
+		if (null != startTime) {
+			stime = TimeUtils.string2Date(TimeUtils.millis2String(startTime, "yyyy-MM-dd") + " 00:00:00");
+			example.createCriteria().andGreaterThanOrEqualTo("carTime", stime);
+		}
+		List<LaunCarStatistics> list = carStatisticsMapper.selectByExample(example);
+		return new PageInfo<>(list);
+	}
+
+	/**
+	 * 版本趋势统计
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月9日 下午4:29:01
+	 * @param
+	 */
+	@Override
+	public List<LaunCarStatistics> versionTrend(Long startTime, Long endTime, String versions, Long channel) {
+		Date stime = null;
+		Date etime = null;
+		// 时间转换
+		if (null != startTime) {
+			stime = TimeUtils.string2Date(TimeUtils.millis2String(startTime, "yyyy-MM-dd") + " 00:00:00");
+
+		}
+		if (null != endTime) {
+			etime = TimeUtils.string2Date(TimeUtils.millis2String(endTime, "yyyy-MM-dd") + " 23:59:59");
+		}
+		List<String> asList = new ArrayList<>();
+		if (null != versions) {
+			String[] split = versions.split(",");
+			asList = Arrays.asList(split);
+		}
+		String string = TimeUtils.getNextDay(new Date());
+		Date sdate = TimeUtils.string2Date(string + " 00:00:00");
+		Date edate = TimeUtils.string2Date(string + " 23:59:59");
+		List<LaunCarStatistics> list = carStatisticsMapper.selectVersionTrend(stime, etime, asList, sdate, edate,
+				channel);
+		return list;
 	}
 
 }

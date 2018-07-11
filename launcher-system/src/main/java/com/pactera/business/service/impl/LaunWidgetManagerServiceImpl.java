@@ -238,10 +238,12 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 			LaunWidgetChannel widgetchannel = null;
 			LaunWidgetFile widgetfile = null;
 			for (LaunWidget widget : widgetlist) {
+				Long widgetOldId = widget.getId();
+				LaunWidget oldWidget = launWidgetManagerMapper.selectByPrimaryKey(widgetOldId);
 				// 基础变体
 				widget.setType(1);
 				widget.setId(IdUtlis.Id());
-				widget.setCodeId(IdUtlis.Id() + "");
+				widget.setCodeId(oldWidget.getCodeId());
 				widget.setParentId(0L);
 				widget.setCreateDate(new Date());
 				widget.setCreator(user.getId());
