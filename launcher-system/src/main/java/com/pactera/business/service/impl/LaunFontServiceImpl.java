@@ -35,4 +35,10 @@ public class LaunFontServiceImpl implements LaunFontService {
 		launFontMapper.insertSelective(record);
 	}
 
+	@Override
+	public LaunFont selectFont() {
+		List<LaunFont> selectAll = launFontMapper.selectAll();
+		return selectAll.size() > 0 ? selectAll.get(0) : null;
+	}
+
 }

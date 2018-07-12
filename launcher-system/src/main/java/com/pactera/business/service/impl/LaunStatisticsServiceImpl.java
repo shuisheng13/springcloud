@@ -19,12 +19,14 @@ import com.github.pagehelper.PageInfo;
 import com.pactera.business.dao.LaunApplicationStatisticsMapper;
 import com.pactera.business.dao.LaunCarStatisticsMapper;
 import com.pactera.business.dao.LaunChannelMapper;
+import com.pactera.business.dao.LaunCustomStatisticsMapper;
 import com.pactera.business.dao.LaunWidgetStatisticsMapper;
 import com.pactera.business.service.LaunStatisticsService;
 import com.pactera.constant.ConstantUtlis;
 import com.pactera.domain.LaunApplicationStatistics;
 import com.pactera.domain.LaunCarStatistics;
 import com.pactera.domain.LaunChannel;
+import com.pactera.domain.LaunCustomStatistics;
 import com.pactera.domain.LaunWidgetStatistics;
 import com.pactera.utlis.TimeUtils;
 
@@ -46,6 +48,9 @@ public class LaunStatisticsServiceImpl implements LaunStatisticsService {
 
 	@Autowired
 	private LaunApplicationStatisticsMapper launApplicationStatisticsMapper;
+
+	@Autowired
+	private LaunCustomStatisticsMapper customStatisticsMapper;
 
 	/**
 	 * 查询渠道列表
@@ -495,6 +500,110 @@ public class LaunStatisticsServiceImpl implements LaunStatisticsService {
 		List<LaunCarStatistics> list = carStatisticsMapper.selectVersionTrend(stime, etime, asList, sdate, edate,
 				channel);
 		return list;
+	}
+
+	/**
+	 * 自定义事件 的 统计
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月10日 上午9:53:21
+	 * @param
+	 */
+	@Override
+	public PageInfo<LaunCustomStatistics> customStatic(Long startTime, Long endTime, Long channel, String version,
+			String custom, int pageSize, int pageNum) {
+		PageHelper.startPage(pageNum, pageSize);
+		Example example = new Example(LaunCustomStatistics.class);
+		Criteria createCriteria = example.createCriteria();
+		if (null != startTime) {
+			Date stime = TimeUtils.string2Date(TimeUtils.millis2String(startTime, "yyyy-MM-dd") + " 00:00:00");
+			createCriteria.andGreaterThanOrEqualTo("time", stime);
+		}
+		if (null != endTime) {
+			Date etime = TimeUtils.string2Date(TimeUtils.millis2String(endTime, "yyyy-MM-dd") + " 23:59:59");
+			createCriteria.andLessThanOrEqualTo("time", etime);
+		}
+		if (null != channel) {
+			createCriteria.andEqualTo("channelId", channel);
+		}
+		if (null != version) {
+			createCriteria.andEqualTo("version", version);
+		}
+		if (null != custom) {
+			createCriteria.andEqualTo("customName", custom);
+		}
+		List<LaunCustomStatistics> list = customStatisticsMapper.selectByExample(example);
+		return new PageInfo<>(list);
+	}
+
+	/**
+	 * 根据事件的参数去查询详情
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月10日 下午2:33:57
+	 * @param
+	 */
+	@Override
+	public List<LaunCustomStatistics> customStaticById(String paramName) {
+		Example example = new Example(LaunCustomStatistics.class);
+		if (null != paramName) {
+			example.createCriteria().andEqualTo("customParamName", paramName);
+		}
+		List<LaunCustomStatistics> list = customStatisticsMapper.selectByExample(example);
+		return list;
+	}
+
+	/**
+	 * 根据参数去查看详情
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月11日 上午10:38:14
+	 * @param
+	 */
+	@Override
+	public Map<String, Object> customXiangqing(Long startTime, Long endTime, Long channel, String version,
+			String custom, Long type) {
+		Map<String, Object> map = new HashMap<>();
+		Example example = new Example(LaunCustomStatistics.class);
+		Criteria createCriteria = example.createCriteria();
+		if (null != startTime) {
+			Date stime = TimeUtils.string2Date(TimeUtils.millis2String(startTime, "yyyy-MM-dd") + " 00:00:00");
+			createCriteria.andGreaterThanOrEqualTo("time", stime);
+		}
+		if (null != endTime) {
+			Date etime = TimeUtils.string2Date(TimeUtils.millis2String(endTime, "yyyy-MM-dd") + " 23:59:59");
+			createCriteria.andLessThanOrEqualTo("time", etime);
+		}
+		if (null != channel) {
+			createCriteria.andEqualTo("channelId", channel);
+		}
+		if (null != version) {
+			createCriteria.andEqualTo("version", version);
+		}
+		if (null != custom) {
+			createCriteria.andEqualTo("customName", custom);
+		}
+		List<LaunCustomStatistics> list = customStatisticsMapper.selectByExample(example);
+		List<String> x = new ArrayList<>();
+		List<Object> y = new ArrayList<>();
+		if (list.size() > 0) {
+
+			for (LaunCustomStatistics launCustomStatistics : list) {
+				x.add(TimeUtils.date2String(launCustomStatistics.getTime(), "yyyy-MM-dd"));
+				if (null != type && ConstantUtlis.STATISTICS_ONE.equals(type)) {
+					y.add(launCustomStatistics.getCustomNum());
+				}
+				if (null != type && ConstantUtlis.STATISTICS_TWO.equals(type)) {
+					y.add(launCustomStatistics.getCustomTime());
+				}
+			}
+		}
+		map.put("x", x);
+		map.put("y", y);
+		return map;
 	}
 
 }

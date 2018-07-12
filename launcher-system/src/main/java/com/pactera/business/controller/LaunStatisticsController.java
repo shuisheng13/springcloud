@@ -15,6 +15,7 @@ import com.github.pagehelper.PageInfo;
 import com.pactera.business.service.LaunStatisticsService;
 import com.pactera.domain.LaunApplicationStatistics;
 import com.pactera.domain.LaunCarStatistics;
+import com.pactera.domain.LaunCustomStatistics;
 import com.pactera.domain.LaunWidgetStatistics;
 import com.pactera.result.ResultData;
 
@@ -207,6 +208,50 @@ public class LaunStatisticsController {
 	public ResponseEntity<ResultData> versionTrend(Long startTime, Long endTime, String versions, Long channel) {
 		List<LaunCarStatistics> list = launStatisticsService.versionTrend(startTime, endTime, versions, channel);
 		return ResponseEntity.ok(new ResultData(list));
+	}
+
+	@PostMapping("/customStatic")
+	@ApiOperation("自定义事件")
+	@ApiImplicitParams({ @ApiImplicitParam(name = "startTime", value = "开始时间"),
+			@ApiImplicitParam(name = "endTime", value = "结束时间"), @ApiImplicitParam(name = "channel", value = "渠道ID"),
+			@ApiImplicitParam(name = "version", value = "版本"), @ApiImplicitParam(name = "custom", value = "事件"),
+			@ApiImplicitParam(name = "pageNum", value = "第几页"), @ApiImplicitParam(name = "pageSize", value = "每页条数") })
+	public ResponseEntity<ResultData> customStatic(Long startTime, Long endTime, Long channel, String version,
+			String custom, @RequestParam(defaultValue = "1") int pageNum,
+			@RequestParam(defaultValue = "10") int pageSize) {
+		PageInfo<LaunCustomStatistics> pageInfo = launStatisticsService.customStatic(startTime, endTime, channel,
+				version, custom, pageSize, pageNum);
+		return ResponseEntity.ok(new ResultData(pageInfo));
+	}
+
+	/**
+	 * 根据时间的参数去查询详情
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月10日 下午2:32:56
+	 * @param
+	 * @return ResponseEntity<ResultData>
+	 */
+	@PostMapping("/customStaticById")
+	@ApiOperation("根据id去查看事件")
+	@ApiImplicitParam(name = "paramName", value = "事件的id")
+	public ResponseEntity<ResultData> customStaticById(String paramName) {
+		List<LaunCustomStatistics> customStatistics = launStatisticsService.customStaticById(paramName);
+		return ResponseEntity.ok(new ResultData(customStatistics));
+	}
+
+	@PostMapping("/customXiangqing")
+	@ApiOperation("根据参数去查询详情")
+	@ApiImplicitParams({ @ApiImplicitParam(name = "startTime", value = "开始时间"),
+			@ApiImplicitParam(name = "endTime", value = "结束时间"), @ApiImplicitParam(name = "channel", value = "渠道ID"),
+			@ApiImplicitParam(name = "version", value = "版本"), @ApiImplicitParam(name = "custom", value = "事件"),
+			@ApiImplicitParam(name = "type", value = "1:时间消息数量 2:消息平均时长") })
+	public ResponseEntity<ResultData> customXiangqing(Long startTime, Long endTime, Long channel, String version,
+			String custom, Long type) {
+		Map<String, Object> map = launStatisticsService.customXiangqing(startTime, endTime, channel, version, custom,
+				type);
+		return ResponseEntity.ok(new ResultData(map));
 	}
 
 }

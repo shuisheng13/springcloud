@@ -29,6 +29,7 @@ import com.github.pagehelper.PageInfo;
 import com.pactera.business.dao.LaunThemeMapper;
 import com.pactera.business.service.LaunApplicationPostersService;
 import com.pactera.business.service.LaunFileCrudService;
+import com.pactera.business.service.LaunFontService;
 import com.pactera.business.service.LaunRedisService;
 import com.pactera.business.service.LaunThemeConfigService;
 import com.pactera.business.service.LaunThemeFileService;
@@ -38,6 +39,7 @@ import com.pactera.config.exception.status.ErrorStatus;
 import com.pactera.config.security.UserUtlis;
 import com.pactera.constant.ConstantUtlis;
 import com.pactera.domain.LaunApplicationPoster;
+import com.pactera.domain.LaunFont;
 import com.pactera.domain.LaunThemeAdministration;
 import com.pactera.domain.LaunThemeConfig;
 import com.pactera.domain.LaunThemeFile;
@@ -89,6 +91,9 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 
 	@Autowired
 	private LaunRedisService launRedisService;
+
+	@Autowired
+	private LaunFontService launFontService;
 
 	/**
 	 * @description 根据条件去插叙年主题的实现类
@@ -391,14 +396,14 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 		 * 保存主题父级config
 		 */
 		Map<String, Object> widgetBottom2Json = ThemeWidgetDetail.themeBottom2Json(baseJson);
-		// 封装保存对象
-		LaunThemeConfig themeConfigObj = ThemeWidgetDetail.getThemeConfigObj(widgetBottom2Json, 0L, themeId);
-		// 持久化数据
-		Long parentConfigId = configService.save(themeConfigObj);
 		Object fileMapObj = widgetBottom2Json.get("fileMap");
 		if (fileMapObj != null) {
 			fileMaps.putAll((Map<String, String>) fileMapObj);
 		}
+		// 封装保存对象
+		LaunThemeConfig themeConfigObj = ThemeWidgetDetail.getThemeConfigObj(widgetBottom2Json, 0L, themeId);
+		// 持久化数据
+		Long parentConfigId = configService.save(themeConfigObj);
 		List<Map> jsonToList = JsonUtils.jsonToList(widgetJson, Map.class);
 		for (Map<String, Object> map : jsonToList) {
 
@@ -523,7 +528,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 			themeFile.setFileName(map2.getKey());
 			themeFile.setFilePath(map2.getValue());
 			themeFile.setThemeId(themeId);
-			themeFile.setIndex(index++);
+			themeFile.setFileIndex(index++);
 			themeFile.setId(id);
 
 			if (i == 0) {
@@ -610,12 +615,22 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 			String themeJson = theme.getThemeJson();
 			Map<?, ?> jsonToMap = JsonUtils.JsonToMap(themeJson);
 			Object fonts = jsonToMap.get("fonts");
-			if (fonts != null) {
+
+			if (fonts != null) { // 页面操作选择了字体
 				String fontsUrl = fonts.toString();
 				String fontName = FileTool.getFileName(fontsUrl);
 				goalPath = configFontUrl + fontName;
 				strPath = fastDfsPath + fontsUrl;
 				getFileToLocal(strPath, goalPath);
+			} else {// 页面操作没有选择字体，默认拿库中第一条
+				LaunFont selectFont = launFontService.selectFont();
+				if (selectFont != null) {
+					String fontsUrl = selectFont.getFilePath();
+					String fontName = FileTool.getFileName(fontsUrl);
+					goalPath = configFontUrl + fontName;
+					strPath = fastDfsPath + fontsUrl;
+					getFileToLocal(strPath, goalPath);
+				}
 			}
 
 			// 下载图片,组件信息
@@ -675,7 +690,6 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 			if (layoutFile.exists()) {
 				layoutFile.delete();
 			} else {
-
 				layoutFile.createNewFile();
 
 			}
@@ -773,7 +787,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 		String weatherAppImgName = weatherAppImgUrl.substring(weatherAppImgUrl.lastIndexOf("/") + 1,
 				weatherAppImgUrl.length());
 		weatherMap.put("background", weatherAppImgName);
-		returnMap.put("weatherApp", weatherMap);
+		returnMap.put("themeStore", weatherMap);
 		// 下载文件
 		getFileToLocal(fastDfsPath + weatherAppImgUrl, goalPath + weatherAppImgName);
 

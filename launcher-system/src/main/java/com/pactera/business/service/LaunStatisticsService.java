@@ -7,6 +7,7 @@ import com.github.pagehelper.PageInfo;
 import com.pactera.domain.LaunApplicationStatistics;
 import com.pactera.domain.LaunCarStatistics;
 import com.pactera.domain.LaunChannel;
+import com.pactera.domain.LaunCustomStatistics;
 import com.pactera.domain.LaunWidgetStatistics;
 
 public interface LaunStatisticsService {
@@ -132,5 +133,40 @@ public interface LaunStatisticsService {
 	 * @return List<LaunCarStatistics>
 	 */
 	List<LaunCarStatistics> versionTrend(Long startTime, Long endTime, String versions, Long channel);
+
+	/**
+	 * 自定义事件
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月10日 上午9:52:30
+	 * @param
+	 * @return PageInfo<LaunCustomStatistics>
+	 */
+	PageInfo<LaunCustomStatistics> customStatic(Long startTime, Long endTime, Long channel, String version,
+			String custom, int pageSize, int pageNum);
+
+	/**
+	 * 根据时间的参数去查询详情
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月10日 下午2:33:15
+	 * @param
+	 * @return List<LaunCustomStatistics>
+	 */
+	List<LaunCustomStatistics> customStaticById(String paramName);
+
+	/**
+	 * 根据参数去查看详情
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月11日 上午10:37:42
+	 * @param
+	 * @return Map<String,Object>
+	 */
+	Map<String, Object> customXiangqing(Long startTime, Long endTime, Long channel, String version, String custom,
+			Long type);
 
 }

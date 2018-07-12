@@ -408,7 +408,7 @@ public class ThemeWidgetDetail {
 		returnMap.put("marginTop", seerelativeY);
 
 		// 高
-		BigDecimal heightY = new BigDecimal(map.get("seerelativeY").toString());
+		BigDecimal heightY = new BigDecimal(map.get("seerelativeH").toString());
 		BigDecimal height = heightY.setScale(2, BigDecimal.ROUND_DOWN);
 		returnMap.put("height", height);
 

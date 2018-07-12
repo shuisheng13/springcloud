@@ -29,7 +29,7 @@ public class LaunThemeFileServiceImpl implements LaunThemeFileService {
 		Example example = new Example(LaunThemeFile.class);
 
 		example.createCriteria().andEqualTo("themeId", themeId);
-		example.setOrderByClause("index");
+		example.setOrderByClause("file_index");
 		return launThemeFileMapper.selectByExample(example);
 	}
 
@@ -51,7 +51,7 @@ public class LaunThemeFileServiceImpl implements LaunThemeFileService {
 
 	@Override
 	public void deleteById(Long id) {
-		if(id == null){
+		if (id == null) {
 			return;
 		}
 		Example example = new Example(LaunThemeFile.class);

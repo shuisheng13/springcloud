@@ -75,14 +75,12 @@
 		laun_theme_administration lta
 		LEFT JOIN
 		laun_channel lc ON
-		lta.creator_channel_id = lc.id AND
-		lc.channel_status
-		= 0
+		lta.creator_channel_id = lc.id 
 		LEFT JOIN
 		laun_theme_classification ltc ON
 		lta.type_id = ltc.id
 		WHERE
-		(1=1
+		(	(lc.channel_status = 0 OR lc.channel_status is null)
 		<if test="status != null">
 			AND lta.`status` = #{status}
 		</if>
@@ -96,21 +94,15 @@
 			AND lta.version = #{version}
 		</if>
 		<if test="channel != null and channel != ''">
-			<if test="isChannleManager != null and isChannleManager == 1">
 				AND lta.creator_channel_id = #{channel}
-			</if>
-			<if test="isChannleManager != null and isChannleManager != 1">
-				AND lta.creator_channel_id IN (#{channel}, 0)
-			</if>
 		</if>
 		<if test="title != null and title != ''">
 			And lta.title LIKE #{title}
 		</if>
 		)
-
 		<if test="isChannleManager != null and isChannleManager == 1">
 			OR
-			(
+			((lc.channel_status = 0 OR lc.channel_status is null) AND
 			lta.creator_channel_id = 0
 			<if test="status != null">
 				AND lta.`status` = #{status}

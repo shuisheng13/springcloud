@@ -19,7 +19,7 @@ public class LaunThemeFile extends LaunBase {
 	private @ApiModelProperty("主题主键") Long themeId;
 	private @ApiModelProperty("文件名称") String fileName;
 	private @ApiModelProperty("文件路径") String filePath;
-	private @ApiModelProperty("文件下标") Integer index;
+	private @ApiModelProperty("文件下标") Integer fileIndex;
 	private @ApiModelProperty("文件类型1:预览主图2:预览配图") Integer type;
 
 }

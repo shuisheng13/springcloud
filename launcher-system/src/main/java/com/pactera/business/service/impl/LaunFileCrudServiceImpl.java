@@ -17,6 +17,8 @@ import com.github.tobato.fastdfs.domain.StorePath;
 import com.github.tobato.fastdfs.proto.storage.DownloadByteArray;
 import com.github.tobato.fastdfs.service.FastFileStorageClient;
 import com.pactera.business.service.LaunFileCrudService;
+import com.pactera.config.exception.DataStoreException;
+import com.pactera.config.exception.status.ErrorStatus;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,6 +38,7 @@ public class LaunFileCrudServiceImpl implements LaunFileCrudService {
 			returnPath = upload(file.getInputStream(), file.getSize(), fileName, null);
 		} catch (IOException e) {
 			log.error("文件上传异常{}", e);
+			throw new DataStoreException(ErrorStatus.FASTDFS_ERROR);
 		}
 		return returnPath;
 	}
@@ -55,6 +58,7 @@ public class LaunFileCrudServiceImpl implements LaunFileCrudService {
 			stream.write(bytes);
 		} catch (Exception e) {
 			log.error("文件下载异常{}", e);
+			throw new DataStoreException(ErrorStatus.FASTDFS_ERROR);
 		}
 		return goalFilePath;
 	}

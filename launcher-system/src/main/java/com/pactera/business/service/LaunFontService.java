@@ -31,4 +31,14 @@ public interface LaunFontService {
 	 * @return void
 	 */
 	void addFont(String fontName, String filePath);
+
+	/**
+	 * 查询默认字体
+	 * 
+	 * @author LL
+	 * @date 2018年7月12日 上午11:32:33
+	 * @param
+	 * @return void
+	 */
+	LaunFont selectFont();
 }
