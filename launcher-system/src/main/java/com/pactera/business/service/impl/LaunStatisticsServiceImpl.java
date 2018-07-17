@@ -606,4 +606,13 @@ public class LaunStatisticsServiceImpl implements LaunStatisticsService {
 		return map;
 	}
 
+	@Override
+	public LaunCarStatistics yesCar(Long channelId) {
+		String nextDay = TimeUtils.getNextDay(new Date());
+		Date stime = TimeUtils.string2Date(nextDay + " 00:00:00");
+		Date etime = TimeUtils.string2Date(nextDay + " 23:59:59");
+		LaunCarStatistics carStatistics = carStatisticsMapper.selectYesCar(channelId, stime, etime);
+		return carStatistics;
+	}
+
 }

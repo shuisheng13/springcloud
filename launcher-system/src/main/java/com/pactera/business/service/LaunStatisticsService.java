@@ -169,4 +169,15 @@ public interface LaunStatisticsService {
 	Map<String, Object> customXiangqing(Long startTime, Long endTime, Long channel, String version, String custom,
 			Long type);
 
+	/**
+	 * 今日概况
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月13日 下午3:25:13
+	 * @param
+	 * @return LaunCarStatistics
+	 */
+	LaunCarStatistics yesCar(Long channelId);
+
 }

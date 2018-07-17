@@ -20,6 +20,30 @@
 		<result column="carActiveYes" jdbcType="BIGINT" property="carActiveYes" />
 	</resultMap>
 
+	<select id="selectYesCar" resultMap="BaseResultMap">
+		SELECT
+		sum(lcs.car_num),
+		sum(lcs.car_active),
+		sum(lcs.car_start),
+		sum(lcs.add_up_num)
+		FROM
+		laun_car_statistics lcs
+		<where>
+			<if test="stime != null and stime != ''">
+				and lcs.car_time <![CDATA[>=]]>
+				#{stime}
+			</if>
+			<if test="etime != null and etime != ''">
+				and lcs.car_time <![CDATA[>=]]>
+				#{etime}
+			</if>
+			<if test="channelId != null and channelId != ''">
+				and lcs.channel_id = #{channelId}
+			</if>
+		</where>
+	</select>
+
+
 
 	<select id="selectVersion" resultMap="BaseResultMap">
 		SELECT

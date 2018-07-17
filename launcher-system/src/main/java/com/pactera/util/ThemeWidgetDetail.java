@@ -138,11 +138,11 @@ public class ThemeWidgetDetail {
 				// 插入新属性
 				widgetMap.put("codeId", codeId);
 
-				if (ConstantUtlis.LATTICE_LAYOUT == isRelative) {
+				if (flag && ConstantUtlis.LATTICE_LAYOUT != isRelative) {
+					widgetMap.putAll(relativeMeg);
+				} else {
 					// 计算该widget在此次编辑中的位置
 					widgetMap.put("lattice", lattice);
-				} else {
-					widgetMap.putAll(relativeMeg);
 				}
 				widgetMap.put("name", name);
 				widgetMap.put("id", id);

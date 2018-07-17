@@ -254,4 +254,12 @@ public class LaunStatisticsController {
 		return ResponseEntity.ok(new ResultData(map));
 	}
 
+	@PostMapping("/yesCar")
+	@ApiOperation("整体概况的今日概况")
+	@ApiImplicitParam(name = "channelId", value = "渠道id")
+	public ResponseEntity<ResultData> yesCar(Long channelId) {
+		LaunCarStatistics carStatistics = launStatisticsService.yesCar(channelId);
+		return ResponseEntity.ok(new ResultData(carStatistics));
+	}
+
 }

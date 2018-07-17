@@ -45,4 +45,16 @@ public interface LaunCarStatisticsMapper extends BaseMapper<LaunCarStatistics> {
 	List<LaunCarStatistics> selectVersionTrend(@Param("stime") Date stime, @Param("etime") Date etime,
 			@Param("asList") List<String> asList, @Param("sdate") Date sdate, @Param("edate") Date edate,
 			@Param("channel") Long channel);
+
+	/**
+	 * 今日概况
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月13日 下午3:44:21
+	 * @param
+	 * @return LaunCarStatistics
+	 */
+	LaunCarStatistics selectYesCar(@Param("channelId") Long channelId, @Param("stime") Date stime,
+			@Param("etime") Date etime);
 }
