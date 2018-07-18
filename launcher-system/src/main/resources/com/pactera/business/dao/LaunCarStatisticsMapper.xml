@@ -20,6 +20,63 @@
 		<result column="carActiveYes" jdbcType="BIGINT" property="carActiveYes" />
 	</resultMap>
 
+
+	<select id="selectTopVersion" resultMap="BaseResultMap">
+		SELECT
+		lcs.car_num ,
+		lcs.car_active ,
+		lcs.car_start ,
+		lcs.add_up_num
+		lcs.version
+		FROM
+		laun_car_statistics lcs
+
+		<where>
+			<if test="sdate != null and sdate != ''">
+				and lcs.car_time <![CDATA[>=]]>
+				#{sdate}
+			</if>
+			<if test="edate != null and edate != ''">
+				and lcs.car_time <![CDATA[>=]]>
+				#{edate}
+			</if>
+			<if test="channelId != null and channelId != ''">
+				and lcs.channel_id = #{channelId}
+			</if>
+		</where>
+		GROUP BY
+		lcs.version
+
+	</select>
+	<select id="selectByType" resultMap="BaseResultMap">
+		SELECT
+		lcs.car_num,
+		lcs.car_active,
+		lcs.car_start,
+		lcs.car_avg_time,
+		lcs.car_time
+		FROM
+		laun_car_statistics lcs
+		<where>
+			<if test="channelId != null and channelId != ''">
+				and lcs.channel_id = #{channelId}
+			</if>
+		</where>
+		GROUP BY
+		<if test="type != null and type ==1">
+			lcs.car_num
+		</if>
+		<if test="type != null and type ==2">
+			lcs.car_active
+		</if>
+		<if test="type != null and type ==3">
+			lcs.car_start
+		</if>
+		<if test="type != null and type ==4">
+			lcs.car_avg_time
+		</if>
+	</select>
+
 	<select id="selectYesCar" resultMap="BaseResultMap">
 		SELECT
 		sum(lcs.car_num),

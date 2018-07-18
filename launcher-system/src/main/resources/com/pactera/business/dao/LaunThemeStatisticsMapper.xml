@@ -16,9 +16,24 @@
 		<result column="theme_prop" jdbcType="VARCHAR" property="themeProp" />
 	</resultMap>
 
-	<select id="selectThemeStatistics" resultMap="BaseResultMap">
+	<select id="selectByType" resultMap="BaseResultMap">
+		SELECT
+		lts.count,
+		lts.effe_theme,
+		lts.num_start_time
+		FROM
+		laun_theme_statistics lts
+		<where>
+			lts.channel_id = #{channelId}
+		</where>
 
-
+		GROUP BY
+		<if test="type != null and type ==5">
+			lts.count
+		</if>
+		<if test="type != null and type ==6">
+			lts.effe_theme
+		</if>
 	</select>
 
 </mapper>

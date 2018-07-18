@@ -393,34 +393,164 @@ public class ThemeWidgetDetail {
 	 * @param
 	 * @return Map<String,Object>
 	 */
+	@SuppressWarnings("unchecked")
 	public static Map<String, Object> getRelativeMeg(Map<String, Object> map) {
 
 		Map<String, Object> returnMap = new HashMap<String, Object>();
-
-		// 横向距离
-		BigDecimal x = new BigDecimal(map.get("seerelativeX").toString());
-		BigDecimal seerelativeX = x.setScale(2, BigDecimal.ROUND_DOWN);
-		returnMap.put("marginLeft", seerelativeX);
-
-		// 纵向距离
-		BigDecimal y = new BigDecimal(map.get("seerelativeY").toString());
-		BigDecimal seerelativeY = y.setScale(2, BigDecimal.ROUND_DOWN);
-		returnMap.put("marginTop", seerelativeY);
-
 		// 高
-		BigDecimal heightY = new BigDecimal(map.get("seerelativeH").toString());
-		BigDecimal height = heightY.setScale(2, BigDecimal.ROUND_DOWN);
+		BigDecimal height = getBigDecimalVal(map.get("seerelativeH"));
 		returnMap.put("height", height);
-
 		// 宽
-		BigDecimal widthW = new BigDecimal(map.get("seerelativeW").toString());
-		BigDecimal width = widthW.setScale(2, BigDecimal.ROUND_DOWN);
+		BigDecimal width = getBigDecimalVal(map.get("seerelativeW"));
 		returnMap.put("width", width);
+		// 横向权重
+		if (map.get("weightX") != null && !"".equals(map.get("weightX"))) {
+			returnMap.put("horizontalWeight", Integer.parseInt(map.get("weightX").toString()));
+		}
+		// 纵向权重
+		if (map.get("weightY") != null && !"".equals(map.get("weightY"))) {
+			returnMap.put("verticalWeight", Integer.parseInt(map.get("weightY").toString()));
+		}
+		// 是否有锁定宽高比
+		Map<String, Object> lockMap = (Map<String, Object>) map.get("lock");
+		if (lockMap.get("lockRatioValue") != null && !"".equals(lockMap.get("lockRatioValue"))) {
+			returnMap.put("dimensionRatio", lockMap.get("lockRatioValue").toString());
+		}
 
-		returnMap.put("leftToLeft", 0);
-		returnMap.put("topToTop", 0);
+		BigDecimal seerelativeX = getBigDecimalVal(map.get("seerelativeX"));
+		BigDecimal seerelativeY = getBigDecimalVal(map.get("seerelativeY"));
+
+		// 是否用到相对于某个控件
+		if (map.get("isRelPosition") != null) {
+			Integer isRelPosition = Integer.parseInt(map.get("isRelPosition").toString());
+			if (isRelPosition == 1) {
+				Map<String, Object> relPositionMap = (Map<String, Object>) map.get("relPosition");
+
+				Map<String, Object> crosswiseLeftMap = (Map<String, Object>) relPositionMap.get("crosswiseLeft");
+				Map<String, Object> leftMap = getRelPositionMap(crosswiseLeftMap, "marginLeft");
+				if (leftMap != null) {
+					returnMap.putAll(leftMap);
+				}
+
+				Map<String, Object> crosswiseRightMap = (Map<String, Object>) relPositionMap.get("crosswiseRight");
+				Map<String, Object> rightMap = getRelPositionMap(crosswiseRightMap, "marginRight");
+				if (rightMap != null) {
+					returnMap.putAll(rightMap);
+				}
+
+				// 如果关联了控件位置，当左右都没关联时，默认已顶点为坐标
+				if (rightMap == null && leftMap == null) {
+					returnMap.put("marginLeft", seerelativeX);
+					returnMap.put("leftToLeft", 0);
+				}
+
+				Map<String, Object> endwiseTopMap = (Map<String, Object>) relPositionMap.get("endwiseTop");
+				Map<String, Object> topMap = getRelPositionMap(endwiseTopMap, "marginTop");
+				if (topMap != null) {
+					returnMap.putAll(topMap);
+				}
+
+				Map<String, Object> endwiseBottomMap = (Map<String, Object>) relPositionMap.get("endwiseBottom");
+				Map<String, Object> bottomMap = getRelPositionMap(endwiseBottomMap, "marginBottom");
+				if (bottomMap != null) {
+					returnMap.putAll(bottomMap);
+				}
+
+				// 如果关联了控件位置，当上下都没关联时，默认已顶点为坐标
+				if (bottomMap == null && topMap == null) {
+					returnMap.put("marginTop", seerelativeY);
+					returnMap.put("topToTop", 0);
+				}
+			} else {
+				// 横向距离
+				returnMap.put("marginLeft", seerelativeX);
+				// 纵向距离
+				returnMap.put("marginTop", seerelativeY);
+				returnMap.put("leftToLeft", 0);
+				returnMap.put("topToTop", 0);
+			}
+		}
 
 		return returnMap;
+	}
+
+	/**
+	 * 相对布局中，组件位置
+	 * 
+	 * @author LL
+	 * @date 2018年7月18日 上午11:17:54
+	 * @param
+	 * @return String
+	 */
+	public static Map<String, Object> getRelPositionMap(Map<String, Object> map, String type) {
+
+		Map<String, Object> returnMap = null;
+
+		if (map.get("direct") != null && !"".equals(map.get("direct"))) {
+			if (map.get("directWho") != null && !"".equals(map.get("directWho"))) {
+				returnMap = new HashMap<String, Object>();
+				String crosswiseKey = getCrosswiseKey(map.get("direct"));
+				returnMap.put(crosswiseKey, Long.parseLong((String) map.get("directWho")));
+				if (map.get("directdp") != null && !"".equals(map.get("directdp"))) {
+					int parseInt = Integer.parseInt(map.get("directdp").toString());
+					returnMap.put(type, parseInt);
+				}
+			}
+		}
+
+		return returnMap;
+	}
+
+	/**
+	 * 获取相对于布局中，相对于组件的key
+	 * 
+	 * @author LL
+	 * @date 2018年7月18日 上午11:12:28
+	 * @param direct对齐方式
+	 * @return String
+	 */
+	public static String getCrosswiseKey(Object direct) {
+		String returnStr = "";
+		if (direct != null && !"".equals(direct)) {
+			int parseInt = Integer.parseInt(direct.toString());
+			if (parseInt == 0) {
+				returnStr = "leftToRight";
+			} else if (parseInt == 1) {
+				returnStr = "leftToLeft";
+			} else if (parseInt == 2) {
+				returnStr = "rightToLeft";
+			} else if (parseInt == 3) {
+				returnStr = "rightToRight";
+			} else if (parseInt == 4) {
+				returnStr = "topTotop";
+			} else if (parseInt == 5) {
+				returnStr = "topToBottom";
+			} else if (parseInt == 6) {
+				returnStr = "bottomToTop";
+			} else if (parseInt == 7) {
+				returnStr = "bottomToBottom";
+			}
+		}
+		return returnStr;
+	}
+
+	/**
+	 * 获取小数值
+	 * 
+	 * @author LL
+	 * @date 2018年7月18日 上午10:46:50
+	 * @param
+	 * @return BigDecimal
+	 */
+	public static BigDecimal getBigDecimalVal(Object value) {
+
+		if (value != null) {
+			BigDecimal x = new BigDecimal(value.toString());
+			BigDecimal seerelativeX = x.setScale(2, BigDecimal.ROUND_DOWN);
+			return seerelativeX;
+		} else {
+			return new BigDecimal(0);
+		}
 	}
 
 	public static void main(String[] args) {

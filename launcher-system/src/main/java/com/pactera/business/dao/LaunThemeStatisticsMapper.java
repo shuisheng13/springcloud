@@ -18,4 +18,15 @@ public interface LaunThemeStatisticsMapper extends BaseMapper<LaunThemeStatistic
 	 */
 	List<LaunThemeStatistics> selectThemeStatistics(@Param("startTime") Long startTime, @Param("endTime") Long endTime,
 			@Param("channel") Long channel, @Param("version") Long version, @Param("type") Long type);
+
+	/**
+	 * 近30天主题统计
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月18日 上午11:15:16
+	 * @param
+	 * @return List<LaunThemeStatistics>
+	 */
+	List<LaunThemeStatistics> selectByType(@Param("channelId") Long channelId, @Param("type") Long type);
 }

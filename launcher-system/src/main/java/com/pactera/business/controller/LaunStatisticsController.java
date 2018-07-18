@@ -262,4 +262,22 @@ public class LaunStatisticsController {
 		return ResponseEntity.ok(new ResultData(carStatistics));
 	}
 
+	@PostMapping("/trendCar")
+	@ApiOperation("近30日趋势")
+	@ApiImplicitParams({ @ApiImplicitParam(name = "channelId", value = "渠道id"),
+			@ApiImplicitParam(name = "type", value = "1:新增车辆2:活跃车辆3:启动次数4:平均单次时长5:主题使用次数6:有效主题7:广告点击次数8:广告展示次数") })
+	public ResponseEntity<ResultData> trendCar(Long channelId, Long type) {
+		Map<String, Object> map = launStatisticsService.trendCar(channelId, type);
+		return ResponseEntity.ok(new ResultData(map));
+	}
+
+	@PostMapping("/topVersion")
+	@ApiOperation("top版本")
+	@ApiImplicitParams({ @ApiImplicitParam(name = "channelId", value = "渠道id"),
+			@ApiImplicitParam(name = "type", value = "1:新增车辆2:活跃车辆3:启动次数4:累计车辆") })
+	public ResponseEntity<ResultData> topVersion(Long channelId, Long type) {
+		Map<String, Object> map = launStatisticsService.topVersion(channelId, type);
+		return ResponseEntity.ok(new ResultData(map));
+	}
+
 }

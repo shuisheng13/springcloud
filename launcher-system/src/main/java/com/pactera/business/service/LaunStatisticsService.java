@@ -180,4 +180,26 @@ public interface LaunStatisticsService {
 	 */
 	LaunCarStatistics yesCar(Long channelId);
 
+	/**
+	 * 近30天的趋势
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月13日 下午4:10:35
+	 * @param
+	 * @return Map<String,Object>
+	 */
+	Map<String, Object> trendCar(Long channelId, Long type);
+
+	/**
+	 * top版本
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月18日 上午11:45:19
+	 * @param
+	 * @return Map<String,Object>
+	 */
+	Map<String, Object> topVersion(Long channelId, Long type);
+
 }

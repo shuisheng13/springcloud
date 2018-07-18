@@ -20,6 +20,7 @@ import com.pactera.business.dao.LaunApplicationStatisticsMapper;
 import com.pactera.business.dao.LaunCarStatisticsMapper;
 import com.pactera.business.dao.LaunChannelMapper;
 import com.pactera.business.dao.LaunCustomStatisticsMapper;
+import com.pactera.business.dao.LaunThemeStatisticsMapper;
 import com.pactera.business.dao.LaunWidgetStatisticsMapper;
 import com.pactera.business.service.LaunStatisticsService;
 import com.pactera.constant.ConstantUtlis;
@@ -27,6 +28,7 @@ import com.pactera.domain.LaunApplicationStatistics;
 import com.pactera.domain.LaunCarStatistics;
 import com.pactera.domain.LaunChannel;
 import com.pactera.domain.LaunCustomStatistics;
+import com.pactera.domain.LaunThemeStatistics;
 import com.pactera.domain.LaunWidgetStatistics;
 import com.pactera.utlis.TimeUtils;
 
@@ -51,6 +53,9 @@ public class LaunStatisticsServiceImpl implements LaunStatisticsService {
 
 	@Autowired
 	private LaunCustomStatisticsMapper customStatisticsMapper;
+
+	@Autowired
+	private LaunThemeStatisticsMapper launThemeStatisticsMapper;
 
 	/**
 	 * 查询渠道列表
@@ -606,6 +611,14 @@ public class LaunStatisticsServiceImpl implements LaunStatisticsService {
 		return map;
 	}
 
+	/**
+	 * 今日概况
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月13日 下午4:11:08
+	 * @param
+	 */
 	@Override
 	public LaunCarStatistics yesCar(Long channelId) {
 		String nextDay = TimeUtils.getNextDay(new Date());
@@ -613,6 +626,119 @@ public class LaunStatisticsServiceImpl implements LaunStatisticsService {
 		Date etime = TimeUtils.string2Date(nextDay + " 23:59:59");
 		LaunCarStatistics carStatistics = carStatisticsMapper.selectYesCar(channelId, stime, etime);
 		return carStatistics;
+	}
+
+	/**
+	 * 近30天趋势
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月13日 下午4:11:17
+	 * @param
+	 */
+	@Override
+	public Map<String, Object> trendCar(Long channelId, Long type) {
+		Map<String, Object> map = new HashMap<>();
+		if (null != type && (type == 1 || type == 2 || type == 3 || type == 4)) {
+			map = returnCarStatis(channelId, type);
+		}
+		if (null != type && (type == 5 || type == 6)) {
+			map = returnCarTheme(channelId, type);
+		}
+
+		return map;
+	}
+
+	public Map<String, Object> returnCarStatis(Long channelId, Long type) {
+		Map<String, Object> map = new HashMap<>();
+		List<LaunCarStatistics> list = carStatisticsMapper.selectByType(channelId, type);
+		List<String> x = new ArrayList<>();
+		List<Object> y = new ArrayList<>();
+		for (LaunCarStatistics launCarStatistics : list) {
+			x.add(TimeUtils.date2String(launCarStatistics.getCarTime(), "yyyy-MM-dd"));
+			// 1:新增车辆
+			if (null != type && type == 1) {
+				y.add(launCarStatistics.getCarNum());
+			}
+			// 2:活跃车辆
+			if (null != type && type == 2) {
+				y.add(launCarStatistics.getCarActive());
+			}
+			// 3:启动次数
+			if (null != type && type == 3) {
+				y.add(launCarStatistics.getCarStart());
+			}
+			// 4:平均单次时长
+			if (null != type && type == 4) {
+				y.add(launCarStatistics.getCarAvgTime());
+			}
+		}
+		map.put("x", x);
+		map.put("y", y);
+		return map;
+	}
+
+	public Map<String, Object> returnCarTheme(Long channelId, Long type) {
+		Map<String, Object> map = new HashMap<>();
+		List<LaunThemeStatistics> list = launThemeStatisticsMapper.selectByType(channelId, type);
+		List<String> x = new ArrayList<>();
+		List<Object> y = new ArrayList<>();
+		for (LaunThemeStatistics launThemeStatistics : list) {
+			x.add(TimeUtils.date2String(launThemeStatistics.getNumStartTime(), "yyyy-MM-dd"));
+			// 5:主题使用次数
+			if (null != type && type == 5) {
+				y.add(launThemeStatistics.getCount());
+			}
+			// 6:有效主题
+			if (null != type && type == 6) {
+				y.add(launThemeStatistics.getEffeTheme());
+
+			}
+
+		}
+		map.put("x", x);
+		map.put("y", y);
+		return map;
+	}
+
+	/**
+	 * top版本
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月18日 上午11:45:46
+	 * @param
+	 */
+	@Override
+	public Map<String, Object> topVersion(Long channelId, Long type) {
+		Map<String, Object> map = new HashMap<>();
+		String day = TimeUtils.getNextDay(new Date());
+		Date sdate = TimeUtils.string2Date(day + " 00:00:00");
+		Date edate = TimeUtils.string2Date(day + " 23:59:59");
+		List<LaunCarStatistics> list = carStatisticsMapper.selectTopVersion(channelId, sdate, edate);
+		List<String> x = new ArrayList<>();
+		List<Object> y = new ArrayList<>();
+		for (LaunCarStatistics launCarStatistics : list) {
+			x.add(launCarStatistics.getVersion());
+			if (null != type && type == 1) {
+				y.add(launCarStatistics.getCarNum());
+			}
+			if (null != type && type == 2) {
+				y.add(launCarStatistics.getCarActive());
+
+			}
+			if (null != type && type == 3) {
+				y.add(launCarStatistics.getCarStart());
+
+			}
+			if (null != type && type == 4) {
+				y.add(launCarStatistics.getAddUpNum());
+
+			}
+		}
+		map.put("x", x);
+		map.put("y", y);
+		return map;
 	}
 
 }

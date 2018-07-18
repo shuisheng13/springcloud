@@ -57,4 +57,27 @@ public interface LaunCarStatisticsMapper extends BaseMapper<LaunCarStatistics> {
 	 */
 	LaunCarStatistics selectYesCar(@Param("channelId") Long channelId, @Param("stime") Date stime,
 			@Param("etime") Date etime);
+
+	/**
+	 * 近30日详情车辆统计
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月18日 上午10:54:56
+	 * @param
+	 * @return List<LaunCarStatistics>
+	 */
+	List<LaunCarStatistics> selectByType(@Param("channelId") Long channelId, @Param("type") Long type);
+
+	/**
+	 * top版本
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月18日 上午11:54:23
+	 * @param
+	 * @return List<LaunCarStatistics>
+	 */
+	List<LaunCarStatistics> selectTopVersion(@Param("channelId") Long channelId, @Param("sdate") Date sdate,
+			@Param("edate") Date edate);
 }
