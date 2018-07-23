@@ -580,9 +580,12 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 		Long themeId = theme.getId();
 		log.info("主题管理----------打包主题zip----------id:{}----------", theme.getId());
 
-		String configImageUrl = themeConfigUrl + "image/";
-		String configLibUrl = themeConfigUrl + "lib/";
-		String configFontUrl = themeConfigUrl + "font/";
+		long currentTimeMillis = System.currentTimeMillis();
+		String themeConfigUrlReal = themeConfigUrl + currentTimeMillis + File.separator;
+
+		String configImageUrl = themeConfigUrlReal + "image" + File.separator;
+		String configLibUrl = themeConfigUrlReal + "lib" + File.separator;
+		String configFontUrl = themeConfigUrlReal + "font" + File.separator;
 		Map<String, Object> returnMap = new HashMap<String, Object>();
 
 		String filePath = "";
@@ -591,10 +594,6 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 		String strPath = "";
 		String goalPath = "";
 		try {
-			// 删除垃圾文件
-			FileTool.deleteDir(configImageUrl);
-			FileTool.deleteDir(configLibUrl);
-			FileTool.deleteDir(configFontUrl);
 
 			File configImgFile = new File(configImageUrl);
 			if (!configImgFile.exists()) {
@@ -652,10 +651,10 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 			}
 
 			// 封装config.json文件
-			Map<String, Object> configJson = getStaticConfigJson(theme, themeId);
+			Map<String, Object> configJson = getStaticConfigJson(theme, themeId, currentTimeMillis);
 			String objectToJson = JsonUtils.ObjectToJson(configJson);
 			// 写入静态资源文件
-			String configUrl = themeConfigUrl + "config.json";
+			String configUrl = themeConfigUrlReal + "config.json";
 			File configFile = new File(configUrl);
 			if (configFile.exists()) {
 				configFile.delete();
@@ -685,7 +684,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 			List<Map<String, Object>> packageMap = packageMap("0", map);
 
 			String layoutJson = JsonUtils.ObjectToJson(packageMap.get(0));
-			String layoutJsonUrl = themeConfigUrl + "layout.json";
+			String layoutJsonUrl = themeConfigUrlReal + "layout.json";
 			File layoutFile = new File(layoutJsonUrl);
 			if (layoutFile.exists()) {
 				layoutFile.delete();
@@ -697,8 +696,8 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 
 			// 将主题打包
 			String zipFileName = System.currentTimeMillis() + ".zip";
-			String zipFilePath = themeConfigUrl + zipFileName;
-			FileTool.zipFile(themeConfigUrl, zipFilePath);
+			String zipFilePath = themeConfigUrlReal + zipFileName;
+			FileTool.zipFile(themeConfigUrlReal, zipFilePath);
 
 			File zip = new File(zipFilePath);
 			Long length = zip.length();
@@ -709,7 +708,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
-			zip.delete();
+			FileTool.deleteDir(themeConfigUrlReal);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new DataStoreException(ErrorStatus.PACK_THEME_ZIP);
@@ -750,15 +749,17 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	 * 封装主题静态资源文件
 	 * 
 	 * @author LL
+	 * @param currentTimeMillis
 	 * @date 2018年5月10日 下午3:56:47
 	 * @param theme主题对象
 	 * @param posterList海报列表
 	 * @return void
 	 */
-	public Map<String, Object> getStaticConfigJson(LaunThemeAdministration theme, Long themeId) {
+	public Map<String, Object> getStaticConfigJson(LaunThemeAdministration theme, Long themeId,
+			long currentTimeMillis) {
 		//
 		String font = "d616244961d242a799807ff680a29f2d.ttf";
-		String goalPath = themeConfigUrl + "/image/";
+		String goalPath = themeConfigUrl + currentTimeMillis + File.separator + "image/";
 
 		Map<String, Object> returnMap = new HashMap<String, Object>();
 		returnMap.put("id", theme.getId());

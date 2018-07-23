@@ -75,12 +75,13 @@
 		laun_theme_administration lta
 		LEFT JOIN
 		laun_channel lc ON
-		lta.creator_channel_id = lc.id 
+		lta.creator_channel_id = lc.id
 		LEFT JOIN
 		laun_theme_classification ltc ON
 		lta.type_id = ltc.id
 		WHERE
-		(	(lc.channel_status = 0 OR lc.channel_status is null)
+		(
+		(lc.channel_status = 0 OR lc.channel_status is null)
 		<if test="status != null">
 			AND lta.`status` = #{status}
 		</if>
@@ -94,7 +95,7 @@
 			AND lta.version = #{version}
 		</if>
 		<if test="channel != null and channel != ''">
-				AND lta.creator_channel_id = #{channel}
+			AND lta.creator_channel_id = #{channel}
 		</if>
 		<if test="title != null and title != ''">
 			And lta.title LIKE #{title}
@@ -152,7 +153,8 @@
 		SELECT
 		lta.id,lta.create_date,lta.end_time,lta.file_size,lta.fm_app_img_url,lta.folat_point,lta.creator_channel_id,lta.create_id,
 		lta.`level`,lta.long_palace,lta.long_resolution,lta.music_app_img_url,lta.phone_app_img_url,
-		lta.title,lta.start_time,lta.version,lta.type_id,lta.weather_app_img_url,lta.wide_palace,
+		lta.title,lta.start_time,lta.version
+		versionName,lta.type_id,lta.weather_app_img_url,lta.wide_palace,
 		lta.wide_resolution,lta.widget_json,lta.basic_json,lta.config_json,lta.theme_json,lta.zip_url,
 		lta.isPush,lta.`status`,IF (lta.creator_channel_id =
 		0,'所有渠道',lc.`name`) channelName,
@@ -160,14 +162,16 @@
 		FROM
 		laun_theme_administration
 		lta
-		LEFT JOIN laun_channel lc ON
+		LEFT
+		JOIN laun_channel lc ON
 		lta.creator_channel_id
 		= lc.id
 		LEFT JOIN
 		laun_theme_classification ltc on
 		lta.type_id = ltc.id
 		where lta.id
-		= #{id}
+		=
+		#{id}
 	</select>
 
 
