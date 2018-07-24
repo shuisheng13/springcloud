@@ -55,8 +55,8 @@ public interface LaunCarStatisticsMapper extends BaseMapper<LaunCarStatistics> {
 	 * @param
 	 * @return LaunCarStatistics
 	 */
-	LaunCarStatistics selectYesCar(@Param("channelId") Long channelId, @Param("stime") Date stime,
-			@Param("etime") Date etime);
+	LaunCarStatistics selectYesCar(@Param("channelId") Long channelId, @Param("stime") String stime,
+			@Param("etime") String etime);
 
 	/**
 	 * 近30日详情车辆统计

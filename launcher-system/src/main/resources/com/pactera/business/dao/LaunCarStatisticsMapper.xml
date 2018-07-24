@@ -32,11 +32,11 @@
 		laun_car_statistics lcs
 
 		<where>
-			<if test="sdate != null and sdate != ''">
+			<if test="sdate != null ">
 				and lcs.car_time <![CDATA[>=]]>
 				#{sdate}
 			</if>
-			<if test="edate != null and edate != ''">
+			<if test="edate != null">
 				and lcs.car_time <![CDATA[>=]]>
 				#{edate}
 			</if>
@@ -79,20 +79,18 @@
 
 	<select id="selectYesCar" resultMap="BaseResultMap">
 		SELECT
-		sum(lcs.car_num),
-		sum(lcs.car_active),
-		sum(lcs.car_start),
-		sum(lcs.add_up_num)
+		sum(lcs.car_num) carNum,
+		sum(lcs.car_active) carActive,
+		sum(lcs.car_start) carStart,
+		sum(lcs.add_up_num) addUpNum
 		FROM
 		laun_car_statistics lcs
 		<where>
 			<if test="stime != null and stime != ''">
-				and lcs.car_time <![CDATA[>=]]>
-				#{stime}
+				and lcs.car_time &gt;= #{stime}   
 			</if>
 			<if test="etime != null and etime != ''">
-				and lcs.car_time <![CDATA[>=]]>
-				#{etime}
+				and lcs.car_time &lt;= #{etime}
 			</if>
 			<if test="channelId != null and channelId != ''">
 				and lcs.channel_id = #{channelId}
@@ -123,11 +121,11 @@
 		FROM
 		laun_car_statistics lcs
 		<where>
-			<if test="stime != null and stime != ''">
+			<if test="stime != null">
 				and lcs.car_time <![CDATA[>=]]>
 				#{stime}
 			</if>
-			<if test="etime != null and etime != ''">
+			<if test="etime != null">
 				and lcs.car_time <![CDATA[>=]]>
 				#{etime}
 			</if>
@@ -160,11 +158,11 @@
 		laun_car_statistics ls ON lcs.version
 		= ls.version
 		<where>
-			<if test="stime != null and stime != ''">
+			<if test="stime != null ">
 				and lcs.car_time <![CDATA[>=]]>
 				#{stime}
 			</if>
-			<if test="etime != null and etime != ''">
+			<if test="etime != null ">
 				and lcs.car_time <![CDATA[>=]]>
 				#{etime}
 			</if>
@@ -176,11 +174,11 @@
 				<foreach item="item" index="index" collection="asList" open="("
 					separator="," close=")"> #{item} </foreach>
 			</if>
-			<if test="sdate != null and sdate != ''">
+			<if test="sdate != null ">
 				and ls.car_time <![CDATA[>=]]>
 				#{sdate}
 			</if>
-			<if test="edate != null and edate != ''">
+			<if test="edate != null">
 				and ls.car_time <![CDATA[>=]]>
 				#{edate}
 			</if>

@@ -202,4 +202,15 @@ public interface LaunStatisticsService {
 	 */
 	Map<String, Object> topVersion(Long channelId, Long type);
 
+	/**
+	 * top主题
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月18日 下午2:04:28
+	 * @param
+	 * @return Map<String,Object>
+	 */
+	Map<String, Object> topTheme(Long channelId, Long type);
+
 }

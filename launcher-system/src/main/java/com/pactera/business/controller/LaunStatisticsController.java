@@ -280,4 +280,13 @@ public class LaunStatisticsController {
 		return ResponseEntity.ok(new ResultData(map));
 	}
 
+	@PostMapping("topTheme")
+	@ApiOperation("top主题统计")
+	@ApiImplicitParams({ @ApiImplicitParam(name = "channelId", value = "渠道id"),
+			@ApiImplicitParam(name = "type", value = "1:使用次数2:使用车辆3:平均单次使用时长") })
+	public ResponseEntity<ResultData> topTheme(Long channelId, Long type) {
+		Map<String, Object> map = launStatisticsService.topTheme(channelId, type);
+		return ResponseEntity.ok(new ResultData(map));
+	}
+
 }

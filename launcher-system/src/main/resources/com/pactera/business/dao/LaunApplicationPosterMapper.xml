@@ -37,7 +37,8 @@
 	FROM
 		laun_application_poster lap
 	LEFT JOIN laun_application la ON la.id = lap.application_id
-	WHERE poster_path IS NOT NULL
+	LEFT JOIN laun_channel lc ON la.channel_id = lc.id
+	WHERE poster_path IS NOT NULL AND lc.channel_status = 0
 	<if test="id != null">
 		AND la.id = #{id}
 	</if>

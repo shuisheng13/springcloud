@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.pactera.business.dao.LaunFontMapper;
 import com.pactera.business.service.LaunFontService;
 import com.pactera.domain.LaunFont;
+import com.pactera.utlis.IdUtlis;
 
 /**
  * @description:字体相关接口实现
@@ -30,6 +31,7 @@ public class LaunFontServiceImpl implements LaunFontService {
 	public void addFont(String fontName, String filePath) {
 
 		LaunFont record = new LaunFont();
+		record.setId(IdUtlis.Id());
 		record.setFilePath(filePath);
 		record.setFontName(fontName);
 		launFontMapper.insertSelective(record);

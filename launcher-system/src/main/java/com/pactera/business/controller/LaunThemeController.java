@@ -89,7 +89,7 @@ public class LaunThemeController {
 	 * @return ResponseEntity<ResultData>
 	 */
 	@PostMapping("addFont")
-	@ApiOperation("添加分类")
+	@ApiOperation("添加字体")
 	@ApiImplicitParams({ @ApiImplicitParam(name = "fontName", value = "字体名称"),
 			@ApiImplicitParam(name = "filePath", value = "文件地址") })
 	public ResponseEntity<ResultData> addaFont(String fontName, String filePath) {
