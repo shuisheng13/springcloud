@@ -22,7 +22,7 @@ public class ThemeServiceT extends Tester {
 	@Test
 	public void test() {
 
-		String channle = "测试A";
+		String channle = "13754Z";
 		String version = "1";
 		Long screenHeight = 720L;
 		Long screenWidth = 1080L;

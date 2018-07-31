@@ -28,5 +28,30 @@ public interface LaunThemeStatisticsMapper extends BaseMapper<LaunThemeStatistic
 	 * @param
 	 * @return List<LaunThemeStatistics>
 	 */
-	List<LaunThemeStatistics> selectByType(@Param("channelId") Long channelId, @Param("type") Long type);
+	List<LaunThemeStatistics> selectByType(@Param("channelId") String channelId, @Param("type") Long type,
+			@Param("stime") String stime, @Param("etime") String etime);
+
+	/**
+	 * 渠道为空的
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月26日 上午10:42:27
+	 * @param
+	 * @return List<LaunThemeStatistics>
+	 */
+	List<LaunThemeStatistics> selectByChannelIdNull(@Param("stime") String stime, @Param("etime") String etime);
+
+	/**
+	 * 查询某日的主题top榜
+	 * 
+	 * @author LL
+	 * @param isLimit是否分页
+	 * @date 2018年7月27日 下午2:30:25
+	 * @param timeString时间
+	 * @param channelId渠道主键id
+	 * @return List<LaunThemeStatistics>
+	 */
+	List<LaunThemeStatistics> selectTopTheme(@Param("timeString") String timeString,
+			@Param("channelId") String channelId, @Param("isLimit") int isLimit);
 }

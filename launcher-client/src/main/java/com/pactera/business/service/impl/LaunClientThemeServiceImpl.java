@@ -243,7 +243,7 @@ public class LaunClientThemeServiceImpl implements LaunClientThemeService {
 	 */
 	public LaunChannel findByName(String channleName) {
 		Example example = new Example(LaunChannel.class);
-		example.createCriteria().andEqualTo("name", channleName).andEqualTo("channelStatus", 0);
+		example.createCriteria().andEqualTo("channelId", channleName).andEqualTo("channelStatus", 0);
 		List<LaunChannel> list = launChannelMapper.selectByExample(example);
 		return list.size() > 0 ? list.get(0) : null;
 	}

@@ -257,7 +257,7 @@ public class LaunStatisticsController {
 	@PostMapping("/yesCar")
 	@ApiOperation("整体概况的今日概况")
 	@ApiImplicitParam(name = "channelId", value = "渠道id")
-	public ResponseEntity<ResultData> yesCar(Long channelId) {
+	public ResponseEntity<ResultData> yesCar(String channelId) {
 		LaunCarStatistics carStatistics = launStatisticsService.yesCar(channelId);
 		return ResponseEntity.ok(new ResultData(carStatistics));
 	}
@@ -266,7 +266,7 @@ public class LaunStatisticsController {
 	@ApiOperation("近30日趋势")
 	@ApiImplicitParams({ @ApiImplicitParam(name = "channelId", value = "渠道id"),
 			@ApiImplicitParam(name = "type", value = "1:新增车辆2:活跃车辆3:启动次数4:平均单次时长5:主题使用次数6:有效主题7:广告点击次数8:广告展示次数") })
-	public ResponseEntity<ResultData> trendCar(Long channelId, Long type) {
+	public ResponseEntity<ResultData> trendCar(String channelId, Long type) {
 		Map<String, Object> map = launStatisticsService.trendCar(channelId, type);
 		return ResponseEntity.ok(new ResultData(map));
 	}
@@ -275,8 +275,8 @@ public class LaunStatisticsController {
 	@ApiOperation("top版本")
 	@ApiImplicitParams({ @ApiImplicitParam(name = "channelId", value = "渠道id"),
 			@ApiImplicitParam(name = "type", value = "1:新增车辆2:活跃车辆3:启动次数4:累计车辆") })
-	public ResponseEntity<ResultData> topVersion(Long channelId, Long type) {
-		Map<String, Object> map = launStatisticsService.topVersion(channelId, type);
+	public ResponseEntity<ResultData> topVersion(String channelId, Long type) {
+		List<Object> map = launStatisticsService.topVersion(channelId, type);
 		return ResponseEntity.ok(new ResultData(map));
 	}
 
@@ -284,8 +284,41 @@ public class LaunStatisticsController {
 	@ApiOperation("top主题统计")
 	@ApiImplicitParams({ @ApiImplicitParam(name = "channelId", value = "渠道id"),
 			@ApiImplicitParam(name = "type", value = "1:使用次数2:使用车辆3:平均单次使用时长") })
-	public ResponseEntity<ResultData> topTheme(Long channelId, Long type) {
+	public ResponseEntity<ResultData> topTheme(String channelId, Long type) {
 		Map<String, Object> map = launStatisticsService.topTheme(channelId, type);
+		return ResponseEntity.ok(new ResultData(map));
+	}
+
+	/**
+	 * top应用
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月26日 上午11:15:19
+	 * @param
+	 * @return ResponseEntity<ResultData>
+	 */
+	@PostMapping("topApplication")
+	@ApiOperation("top应用")
+	@ApiImplicitParam(name = "channelId", value = "渠道id")
+	public ResponseEntity<ResultData> topApplication(String channelId) {
+		Map<String, Object> map = launStatisticsService.topApplication(channelId);
+		return ResponseEntity.ok(new ResultData(map));
+	}
+
+	@PostMapping("/topChannelId")
+	@ApiOperation("top渠道")
+	@ApiImplicitParam(name = "type", value = "1:新增车辆2:活跃车辆3:启动次数4:累计车辆")
+	public ResponseEntity<ResultData> topChannel(Long type) {
+		Map<String, Object> map = launStatisticsService.topChannel(type);
+		return ResponseEntity.ok(new ResultData(map));
+	}
+
+	@PostMapping("topTenAppli")
+	@ApiOperation("应用模块的应用统计")
+	@ApiImplicitParam(name = "channelId", value = "渠道id")
+	public ResponseEntity<ResultData> topTenAppli(String channelId) {
+		Map<String, Object> map = launStatisticsService.topTenAppli(channelId);
 		return ResponseEntity.ok(new ResultData(map));
 	}
 

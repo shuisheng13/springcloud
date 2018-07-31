@@ -458,9 +458,11 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 					/**
 					 * 插入滚动屏内每一个屏幕信息
 					 */
+					index += 1;
 					Map<String, Object> bottomMap = new HashMap<String, Object>();
 					bottomMap.put("id", (Long) scrollWidgetMap.get("Uid"));
-					bottomMap.put("name", "page_" + index++);
+					bottomMap.put("name", "page_" + index);
+					bottomMap.put("index", index);
 					bottomMap.put("columnCount", columnCount);
 					bottomMap.put("rowCount", rowCount);
 					bottomMap.put("Uid", System.currentTimeMillis());
@@ -683,7 +685,9 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 
 			List<Map<String, Object>> packageMap = packageMap("0", map);
 
-			String layoutJson = JsonUtils.ObjectToJson(packageMap.get(0));
+			Map<String, Object> orderViewPager = ThemeWidgetDetail.orderViewPager(packageMap.get(0));
+
+			String layoutJson = JsonUtils.ObjectToJson(orderViewPager);
 			String layoutJsonUrl = themeConfigUrlReal + "layout.json";
 			File layoutFile = new File(layoutJsonUrl);
 			if (layoutFile.exists()) {

@@ -178,7 +178,7 @@ public interface LaunStatisticsService {
 	 * @param
 	 * @return LaunCarStatistics
 	 */
-	LaunCarStatistics yesCar(Long channelId);
+	LaunCarStatistics yesCar(String channelId);
 
 	/**
 	 * 近30天的趋势
@@ -189,7 +189,7 @@ public interface LaunStatisticsService {
 	 * @param
 	 * @return Map<String,Object>
 	 */
-	Map<String, Object> trendCar(Long channelId, Long type);
+	Map<String, Object> trendCar(String channelId, Long type);
 
 	/**
 	 * top版本
@@ -200,7 +200,7 @@ public interface LaunStatisticsService {
 	 * @param
 	 * @return Map<String,Object>
 	 */
-	Map<String, Object> topVersion(Long channelId, Long type);
+	List<Object> topVersion(String channelId, Long type);
 
 	/**
 	 * top主题
@@ -211,6 +211,39 @@ public interface LaunStatisticsService {
 	 * @param
 	 * @return Map<String,Object>
 	 */
-	Map<String, Object> topTheme(Long channelId, Long type);
+	Map<String, Object> topTheme(String channelId, Long type);
+
+	/**
+	 * top应用
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月26日 上午11:20:16
+	 * @param
+	 * @return Map<String,Object>
+	 */
+	Map<String, Object> topApplication(String channelId);
+
+	/**
+	 * top渠道
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月26日 下午3:25:58
+	 * @param
+	 * @return Map<String,Object>
+	 */
+	Map<String, Object> topChannel(Long type);
+
+	/**
+	 * 应用管理的统计
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月27日 上午11:11:57
+	 * @param
+	 * @return List<LaunApplicationStatistics>
+	 */
+	Map<String, Object> topTenAppli(String channelId);
 
 }

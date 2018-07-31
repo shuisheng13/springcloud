@@ -55,7 +55,7 @@ public interface LaunCarStatisticsMapper extends BaseMapper<LaunCarStatistics> {
 	 * @param
 	 * @return LaunCarStatistics
 	 */
-	LaunCarStatistics selectYesCar(@Param("channelId") Long channelId, @Param("stime") String stime,
+	LaunCarStatistics selectYesCar(@Param("channelId") String channelId, @Param("stime") String stime,
 			@Param("etime") String etime);
 
 	/**
@@ -67,7 +67,8 @@ public interface LaunCarStatisticsMapper extends BaseMapper<LaunCarStatistics> {
 	 * @param
 	 * @return List<LaunCarStatistics>
 	 */
-	List<LaunCarStatistics> selectByType(@Param("channelId") Long channelId, @Param("type") Long type);
+	List<LaunCarStatistics> selectByType(@Param("channelId") String channelId, @Param("type") Long type,
+			@Param("stime") String stime, @Param("etime") String etime);
 
 	/**
 	 * top版本
@@ -78,6 +79,58 @@ public interface LaunCarStatisticsMapper extends BaseMapper<LaunCarStatistics> {
 	 * @param
 	 * @return List<LaunCarStatistics>
 	 */
-	List<LaunCarStatistics> selectTopVersion(@Param("channelId") Long channelId, @Param("sdate") Date sdate,
+	/**
+	 * @description
+	 * @author dw
+	 * @since 2018年7月26日 上午11:17:00
+	 * @param
+	 * @return List<LaunCarStatistics>
+	 */
+	List<LaunCarStatistics> selectTopVersion(@Param("channelId") String channelId, @Param("sdate") Date sdate,
 			@Param("edate") Date edate);
+
+	/**
+	 * 渠道为空的时候的今日概况
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月26日 上午10:03:54
+	 * @param
+	 * @return LaunCarStatistics
+	 */
+	LaunCarStatistics selectYesCarByChannelId(@Param("stime") String stime, @Param("etime") String etime);
+
+	/**
+	 * 渠道为空的30天
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月26日 上午10:11:49
+	 * @param
+	 * @return List<LaunCarStatistics>
+	 */
+	List<LaunCarStatistics> selectByChannelId(@Param("type") Long type, @Param("stime") String stime,
+			@Param("etime") String etime);
+
+	/**
+	 * 昨天渠道
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月26日 下午3:31:54
+	 * @param
+	 * @return List<LaunCarStatistics>
+	 */
+	List<LaunCarStatistics> selectByTopCar(@Param("start") Date start, @Param("end") Date end,
+			@Param("type") Long type);
+
+	/**
+	 * @description
+	 * @author dw
+	 * @since 2018年7月26日 下午3:52:48
+	 * @param
+	 * @return Long
+	 */
+	LaunCarStatistics selectSumCar(@Param("start") Date start, @Param("end") Date end);
+
 }

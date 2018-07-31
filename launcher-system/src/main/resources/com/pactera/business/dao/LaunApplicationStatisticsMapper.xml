@@ -4,6 +4,142 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.pactera.business.dao.LaunApplicationStatisticsMapper">
 
+
+<select id="selectByChannelApp" resultType="com.pactera.domain.LaunApplicationStatistics">
+	SELECT DISTINCT
+	lapps.start_up_num startUpNum,
+	lapp.`name` applicationName
+FROM
+	laun_application_statistics lapps,
+	laun_application lapp
+<where>
+ lapps.application_id = lapp.package_name
+ <if test="channelId != null and channelId != ''">
+ 	lapps.channel_id = #{channelId}
+ </if>
+AND lapps.application_time &gt; #{stime}
+AND lapps.application_time &lt; #{etime}
+</where>
+LIMIT 0,
+ 10
+
+
+</select>
+
+ 
+<select id="selectBySum" resultType="com.pactera.domain.LaunApplicationStatistics">
+SELECT
+	SUM(lap.start_up_num) startUpNum
+FROM
+	laun_application_statistics lap
+<where>
+<if test="channelId != null and channelId != ''">
+	and lap.channel_id = #{channelId}
+</if>
+<if test="start != null">
+   and lap.application_time &gt;  #{start}
+
+</if>
+<if test="end != null">
+	AND lap.application_time &lt; #{end}
+</if>
+</where>
+</select>
+
+
+<select id="topyApplicationByChannel" resultType="com.pactera.domain.LaunApplicationStatistics">
+SELECT
+	SUM(a.start_up_num) startUpNum ,
+	a.`name` applicationName
+FROM
+	(
+		SELECT
+			lap.start_up_num,
+			laa.`name`,
+			lap.application_time
+		FROM
+			laun_application_statistics lap
+		LEFT JOIN laun_application laa ON lap.application_id = laa.package_name
+		WHERE
+		lap.application_time &gt;
+		#{sytime}
+		AND
+		lap.application_time &lt; #{eytime}
+		GROUP BY
+			laa.`name`,
+			lap.application_time
+	) a
+GROUP BY
+	a.`name`
+ORDER BY a.start_up_num	 desc
+	
+</select>
+<select id="topApplicationByChannel" resultType="com.pactera.domain.LaunApplicationStatistics">
+SELECT
+	SUM(a.start_up_num) startUpNum ,
+	a.`name` applicationName
+FROM
+	(
+		SELECT
+			lap.start_up_num,
+			laa.`name`,
+			lap.application_time
+		FROM
+			laun_application_statistics lap
+		LEFT JOIN laun_application laa ON lap.application_id = laa.package_name
+		WHERE
+		lap.application_time &gt;
+		#{stime}
+		AND
+		lap.application_time &lt; #{etime}
+		GROUP BY
+			laa.`name`,
+			lap.application_time
+	) a
+GROUP BY
+	a.`name`
+	ORDER BY a.start_up_num  desc
+</select>
+ 
+	<select id="topyApplication" resultType="com.pactera.domain.LaunApplicationStatistics">
+		SELECT DISTINCT
+		lap.start_up_num  startUpNum,
+		laa.`name`  applicationName,
+		lap.application_time applicationTime
+	FROM
+		laun_application_statistics lap
+	LEFT JOIN laun_application laa ON lap.application_id = laa.package_name
+	WHERE
+		lap.channel_id = #{channelId}
+		AND
+		lap.application_time &gt;
+		#{sytime}
+		AND
+		lap.application_time &lt; #{eytime}
+		
+		ORDER BY lap.start_up_num desc
+	</select>
+	<select id="topApplication" resultType="com.pactera.domain.LaunApplicationStatistics">
+		SELECT DISTINCT
+		lap.start_up_num  startUpNum,
+		laa.`name`  applicationName,
+		lap.application_time applicationTime
+	FROM
+		laun_application_statistics lap
+	LEFT JOIN laun_application laa ON lap.application_id = laa.package_name
+	WHERE
+		lap.channel_id = #{channelId}
+		AND
+		lap.application_time &gt;
+		#{stime}
+		AND
+		lap.application_time &lt; #{etime}
+		ORDER BY lap.start_up_num desc
+	</select>
+
+
+
+
 	<select id="findAppDetailStatic" resultType="com.pactera.domain.LaunApplicationStatistics">
 		SELECT
 		laun_application_statistics.application_id applicationId,

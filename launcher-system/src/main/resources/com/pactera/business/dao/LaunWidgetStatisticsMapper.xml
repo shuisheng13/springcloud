@@ -2,10 +2,89 @@
 <!DOCTYPE mapper
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.pactera.business.dao.LaunWidgetStatisticsMapper">
+<mapper
+	namespace="com.pactera.business.dao.LaunWidgetStatisticsMapper">
+	<select id="queryBywidget"
+		resultType="com.pactera.domain.LaunWidgetStatistics">
+		select DATE_FORMAT(widget_time, '%Y-%m-%d') widgetTime,
+		sum(start_up_num)
+		startUpNum,
+		sum(car_num) carNum
+		from
+		laun_widget_statistics
+		where 1=1 and application_id = #{codeId}
+		<if test="channelId != '' and channelId != null">
+			and channel_id = #{channelId}
+		</if>
+		<if test="version != '' and version != null">
+			and version = #{version}
+		</if>
+		<if test="beginDate !='' and beginDate != null">
+			and widget_time &gt;= #{beginDate}
+		</if>
+		<if test="endDate !='' and endDate != null">
+			and widget_time &lt;= #{endDate}
+		</if>
+		GROUP BY
+		application_id
+		ORDER BY widget_time
+	</select>
+
+
+	<!-- 分组统计 -->
+	<select id="queryWidgetGroup"
+		resultType="com.pactera.domain.LaunWidgetStatistics">
+		select DATE_FORMAT(widget_time, '%Y-%m-%d') widgetTime,
+		sum(start_up_num)
+		startUpNum,
+		sum(car_num) carNum
+		from
+		laun_widget_statistics
+		where 1=1
+		<if test="channelId != '' and channelId != null">
+			and channel_id = #{channelId}
+		</if>
+		<if test="version != '' and version != null">
+			and version = #{version}
+		</if>
+		<if test="beginDate !='' and beginDate != null">
+			and widget_time &gt;= #{beginDate}
+		</if>
+		<if test="endDate !='' and endDate != null">
+			and widget_time &lt;= #{endDate}
+		</if>
+		GROUP BY
+		widget_time
+		ORDER BY widget_time
+	</select>
+
+	<select id="queryWidgetstartupnum"
+		resultType="com.pactera.domain.LaunWidgetStatistics">
+		select application_id applicationId,application_name
+		applicationName,sum(start_up_num) startUpNum,
+		sum(car_num) carNum from
+		laun_widget_statistics
+		where 1=1
+		<if test="channelId != '' and channelId != null">
+			and channel_id = #{channelId}
+		</if>
+		<if test="version != '' and version != null">
+			and version = #{version}
+		</if>
+		<if test="beginDate !='' and beginDate != null">
+			and widget_time &gt;= #{beginDate}
+		</if>
+		<if test="endDate !='' and endDate != null">
+			and widget_time &lt;= #{endDate}
+		</if>
+		GROUP BY application_id
+		ORDER BY widget_time
+	</select>
+
 
 	<!-- widgets使用情况概览 -->
-	<select id="findWisdgetStatic" resultType="com.pactera.domain.LaunWidgetStatistics">
+	<select id="findWisdgetStatic"
+		resultType="com.pactera.domain.LaunWidgetStatistics">
 		SELECT
 		DATE_FORMAT(widget_time, '%Y-%m-%d') widgetTime,
 		sum(start_up_num)
@@ -14,7 +93,8 @@
 		FROM
 		laun_widget_statistics
 		WHERE
-		laun_widget_statistics.widget_time &gt; #{sTime}
+		laun_widget_statistics.widget_time &gt;
+		#{sTime}
 		AND
 		laun_widget_statistics.widget_time &lt; #{eTime}
 		AND
@@ -27,7 +107,8 @@
 
 
 	<!-- widgets使用情况概览列表 -->
-	<select id="findOverViewStatic" resultType="com.pactera.domain.LaunWidgetStatistics">
+	<select id="findOverViewStatic"
+		resultType="com.pactera.domain.LaunWidgetStatistics">
 		SELECT
 		laun_widget_statistics.application_id applicationId,
 		laun_application.`name` applicationName,
@@ -58,17 +139,20 @@
 	</select>
 
 	<!-- widgets使用情况,点击进入详情暂时没用 -->
-	<select id="findWisdgetDetailStatic" resultType="com.pactera.domain.LaunWidgetStatistics">
-		
+	<select id="findWisdgetDetailStatic"
+		resultType="com.pactera.domain.LaunWidgetStatistics">
+
 	</select>
 
 	<!-- 应用使用情况概览 -->
-	<select id="findApplicationStatic" resultType="com.pactera.domain.LaunApplicationStatistics">
+	<select id="findApplicationStatic"
+		resultType="com.pactera.domain.LaunApplicationStatistics">
 		SELECT
 		a.s1
 		timeNum,
 		a.id applicationId,
-		a.`name` applicationName,
+		a.`name`
+		applicationName,
 		concat(
 		FORMAT(
 		(a.s1 * 100) / (

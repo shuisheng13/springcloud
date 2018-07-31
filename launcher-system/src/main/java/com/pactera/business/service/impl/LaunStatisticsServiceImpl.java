@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.pactera.business.dao.LaunAdverStatisticsMapper;
 import com.pactera.business.dao.LaunApplicationStatisticsMapper;
 import com.pactera.business.dao.LaunCarStatisticsMapper;
 import com.pactera.business.dao.LaunChannelMapper;
@@ -24,6 +26,7 @@ import com.pactera.business.dao.LaunThemeStatisticsMapper;
 import com.pactera.business.dao.LaunWidgetStatisticsMapper;
 import com.pactera.business.service.LaunStatisticsService;
 import com.pactera.constant.ConstantUtlis;
+import com.pactera.domain.LaunAdverStatistics;
 import com.pactera.domain.LaunApplicationStatistics;
 import com.pactera.domain.LaunCarStatistics;
 import com.pactera.domain.LaunChannel;
@@ -56,6 +59,9 @@ public class LaunStatisticsServiceImpl implements LaunStatisticsService {
 
 	@Autowired
 	private LaunThemeStatisticsMapper launThemeStatisticsMapper;
+
+	@Autowired
+	private LaunAdverStatisticsMapper adverStatisticsMapper;
 
 	/**
 	 * 查询渠道列表
@@ -620,11 +626,16 @@ public class LaunStatisticsServiceImpl implements LaunStatisticsService {
 	 * @param
 	 */
 	@Override
-	public LaunCarStatistics yesCar(Long channelId) {
-		String nextDay = TimeUtils.getNextDay(new Date());
+	public LaunCarStatistics yesCar(String channelId) {
+		String nextDay = TimeUtils.date2String(new Date(), "yyyy-MM-dd");
 		String stime = nextDay + " 00:00:00";
 		String etime = nextDay + " 23:59:59";
-		LaunCarStatistics carStatistics = carStatisticsMapper.selectYesCar(channelId, stime, etime);
+		LaunCarStatistics carStatistics = null;
+		if (null != channelId && !"".equals(channelId)) {
+			carStatistics = carStatisticsMapper.selectYesCar(channelId, stime, etime);
+		} else {
+			carStatistics = carStatisticsMapper.selectYesCarByChannelId(stime, etime);
+		}
 		return carStatistics;
 	}
 
@@ -637,7 +648,7 @@ public class LaunStatisticsServiceImpl implements LaunStatisticsService {
 	 * @param
 	 */
 	@Override
-	public Map<String, Object> trendCar(Long channelId, Long type) {
+	public Map<String, Object> trendCar(String channelId, Long type) {
 		Map<String, Object> map = new HashMap<>();
 		if (null != type && (type == 1 || type == 2 || type == 3 || type == 4)) {
 			map = returnCarStatis(channelId, type);
@@ -646,31 +657,79 @@ public class LaunStatisticsServiceImpl implements LaunStatisticsService {
 			map = returnCarTheme(channelId, type);
 		}
 
+		if (null != type && (type == 7 || type == 8)) {
+			map = returnAdver(channelId, type);
+		}
+
 		return map;
 	}
 
-	public Map<String, Object> returnCarStatis(Long channelId, Long type) {
+	private Map<String, Object> returnAdver(String channelId, Long type) {
 		Map<String, Object> map = new HashMap<>();
-		List<LaunCarStatistics> list = carStatisticsMapper.selectByType(channelId, type);
+		String nextSanDay = TimeUtils.getNextSanDay(new Date());
+		String stime = nextSanDay + " 00:00:00";
+		String etime = TimeUtils.date2String(new Date(), "yyyy-MM-dd") + " 23:59:59";
+		List<LaunAdverStatistics> list = new ArrayList<>();
+		if (null != channelId && !"".equals(channelId)) {
+			list = adverStatisticsMapper.selectByType(channelId, stime, etime);
+		} else {
+			list = adverStatisticsMapper.selectByTypeChannelId(stime, etime);
+		}
 		List<String> x = new ArrayList<>();
 		List<Object> y = new ArrayList<>();
-		for (LaunCarStatistics launCarStatistics : list) {
-			x.add(TimeUtils.date2String(launCarStatistics.getCarTime(), "yyyy-MM-dd"));
-			// 1:新增车辆
-			if (null != type && type == 1) {
-				y.add(launCarStatistics.getCarNum());
+		if (list.size() > 0) {
+			for (LaunAdverStatistics launAdverStatistics : list) {
+				x.add(TimeUtils.date2String(launAdverStatistics.getAdverHour(), "yyyy-MM-dd"));
+				// 7:广告点击次数
+				if (null != type && type == 7) {
+					y.add(launAdverStatistics.getAdverClick());
+				}
+				// 8:广告展示次数
+				if (null != type && type == 8) {
+					y.add(launAdverStatistics.getAdverDisplayNum());
+				}
+
 			}
-			// 2:活跃车辆
-			if (null != type && type == 2) {
-				y.add(launCarStatistics.getCarActive());
-			}
-			// 3:启动次数
-			if (null != type && type == 3) {
-				y.add(launCarStatistics.getCarStart());
-			}
-			// 4:平均单次时长
-			if (null != type && type == 4) {
-				y.add(launCarStatistics.getCarAvgTime());
+		}
+		map.put("x", x);
+		map.put("y", y);
+		return map;
+
+	}
+
+	public Map<String, Object> returnCarStatis(String channelId, Long type) {
+		Map<String, Object> map = new HashMap<>();
+		String nextSanDay = TimeUtils.getNextSanDay(new Date());
+		String stime = nextSanDay + " 00:00:00";
+		String etime = TimeUtils.date2String(new Date(), "yyyy-MM-dd") + " 23:59:59";
+		List<LaunCarStatistics> list = new ArrayList<>();
+		if (null != channelId && !"".equals(channelId)) {
+			list = carStatisticsMapper.selectByType(channelId, type, stime, etime);
+		} else {
+			list = carStatisticsMapper.selectByChannelId(type, stime, etime);
+		}
+		List<String> x = new ArrayList<>();
+		List<Object> y = new ArrayList<>();
+		if (list.size() > 0) {
+
+			for (LaunCarStatistics launCarStatistics : list) {
+				x.add(TimeUtils.date2String(launCarStatistics.getCarTime(), "yyyy-MM-dd"));
+				// 1:新增车辆
+				if (null != type && type == 1) {
+					y.add(launCarStatistics.getCarNum());
+				}
+				// 2:活跃车辆
+				if (null != type && type == 2) {
+					y.add(launCarStatistics.getCarActive());
+				}
+				// 3:启动次数
+				if (null != type && type == 3) {
+					y.add(launCarStatistics.getCarStart());
+				}
+				// 4:平均单次时长
+				if (null != type && type == 4) {
+					y.add(launCarStatistics.getCarAvgTime());
+				}
 			}
 		}
 		map.put("x", x);
@@ -678,23 +737,34 @@ public class LaunStatisticsServiceImpl implements LaunStatisticsService {
 		return map;
 	}
 
-	public Map<String, Object> returnCarTheme(Long channelId, Long type) {
+	public Map<String, Object> returnCarTheme(String channelId, Long type) {
 		Map<String, Object> map = new HashMap<>();
-		List<LaunThemeStatistics> list = launThemeStatisticsMapper.selectByType(channelId, type);
+		String nextSanDay = TimeUtils.getNextSanDay(new Date());
+		String stime = nextSanDay + " 00:00:00";
+		String etime = TimeUtils.date2String(new Date(), "yyyy-MM-dd") + " 23:59:59";
+		List<LaunThemeStatistics> list = new ArrayList<>();
+		if (null != channelId && !"".equals(channelId)) {
+			list = launThemeStatisticsMapper.selectByType(channelId, type, stime, etime);
+		} else {
+			list = launThemeStatisticsMapper.selectByChannelIdNull(stime, etime);
+		}
 		List<String> x = new ArrayList<>();
 		List<Object> y = new ArrayList<>();
-		for (LaunThemeStatistics launThemeStatistics : list) {
-			x.add(TimeUtils.date2String(launThemeStatistics.getNumStartTime(), "yyyy-MM-dd"));
-			// 5:主题使用次数
-			if (null != type && type == 5) {
-				y.add(launThemeStatistics.getCount());
-			}
-			// 6:有效主题
-			if (null != type && type == 6) {
-				y.add(launThemeStatistics.getEffeTheme());
+		if (list.size() > 0) {
+
+			for (LaunThemeStatistics launThemeStatistics : list) {
+				x.add(TimeUtils.date2String(launThemeStatistics.getNumStartTime(), "yyyy-MM-dd"));
+				// 5:主题使用次数
+				if (null != type && type == 5) {
+					y.add(launThemeStatistics.getCount());
+				}
+				// 6:有效主题
+				if (null != type && type == 6) {
+					y.add(launThemeStatistics.getEffeTheme());
+
+				}
 
 			}
-
 		}
 		map.put("x", x);
 		map.put("y", y);
@@ -710,41 +780,470 @@ public class LaunStatisticsServiceImpl implements LaunStatisticsService {
 	 * @param
 	 */
 	@Override
-	public Map<String, Object> topVersion(Long channelId, Long type) {
-		Map<String, Object> map = new HashMap<>();
+	public List<Object> topVersion(String channelId, Long type) {
 		String day = TimeUtils.getNextDay(new Date());
 		Date sdate = TimeUtils.string2Date(day + " 00:00:00");
 		Date edate = TimeUtils.string2Date(day + " 23:59:59");
 		List<LaunCarStatistics> list = carStatisticsMapper.selectTopVersion(channelId, sdate, edate);
-		List<String> x = new ArrayList<>();
 		List<Object> y = new ArrayList<>();
 		for (LaunCarStatistics launCarStatistics : list) {
-			x.add(launCarStatistics.getVersion());
+			Map<String, Object> map = new HashMap<>();
+			map.put("name", launCarStatistics.getVersion());
 			if (null != type && type == 1) {
-				y.add(launCarStatistics.getCarNum());
+				map.put("value", launCarStatistics.getCarNum());
 			}
 			if (null != type && type == 2) {
-				y.add(launCarStatistics.getCarActive());
+				map.put("value", launCarStatistics.getCarActive());
 
 			}
 			if (null != type && type == 3) {
-				y.add(launCarStatistics.getCarStart());
+				map.put("value", launCarStatistics.getCarStart());
 
 			}
 			if (null != type && type == 4) {
-				y.add(launCarStatistics.getAddUpNum());
-
+				map.put("value", launCarStatistics.getAddUpNum());
 			}
+			y.add(map);
+
 		}
-		map.put("x", x);
-		map.put("y", y);
-		return map;
+
+		return y;
 	}
 
 	@Override
-	public Map<String, Object> topTheme(Long channelId, Long type) {
+	public Map<String, Object> topTheme(String channelId, Long type) {
 
-		return null;
+		/**
+		 * { y:[], yesterday:[ {value:123,parent:123} ], today:[ {
+		 * value:123,parent:123 } ] }
+		 */
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+
+		Date date = new Date();
+		String timeString = TimeUtils.date2String(date, "yyyy-MM-dd");
+		Date dateReckon = TimeUtils.dateReckon(date, -1);
+		String yesTimeString = TimeUtils.date2String(dateReckon, "yyyy-MM-dd");
+
+		// 查询今日主题排行
+		List<LaunThemeStatistics> list = launThemeStatisticsMapper.selectTopTheme(timeString, channelId, 1);
+
+		// 查询今日主题排行
+		List<LaunThemeStatistics> yesList = launThemeStatisticsMapper.selectTopTheme(yesTimeString, channelId, 0);
+
+		Map<Long, LaunThemeStatistics> yesMap = new HashMap<Long, LaunThemeStatistics>();
+		// 变形key-value
+		for (LaunThemeStatistics launThemeStatistics : yesList) {
+			Long themeId = launThemeStatistics.getThemeId();
+			if (yesMap.get(themeId) == null) {
+				yesMap.put(themeId, launThemeStatistics);
+			}
+		}
+
+		// returnBigDecimal();
+		// y轴数据
+		List<String> yList = new LinkedList<String>();
+
+		// 总和
+		Long count = 0L;
+
+		Long yesCount = 0L;
+		// 按照昨天数据的排序，将前日的数据排序统一
+		yesList = new LinkedList<LaunThemeStatistics>();
+		for (LaunThemeStatistics theme : list) {
+			yList.add(theme.getTitle());
+
+			if (type == 1) {
+				count += theme.getCount();
+			} else if (type == 2) {
+				count += theme.getCountCar();
+			}
+
+			LaunThemeStatistics launThemeStatistics = yesMap.get(theme.getThemeId());
+			if (launThemeStatistics != null) {
+				yesList.add(launThemeStatistics);
+
+				if (type == 1) {
+					yesCount += launThemeStatistics.getCount();
+				} else if (type == 2) {
+					yesCount += launThemeStatistics.getCountCar();
+				}
+			} else {
+				LaunThemeStatistics launTheme = new LaunThemeStatistics();
+				launTheme.setCount(0L);
+				launTheme.setCountCar(0L);
+				launTheme.setTitle(theme.getTitle());
+				launTheme.setThemeId(theme.getThemeId());
+				yesList.add(launTheme);
+			}
+		}
+
+		List<Map<String, Object>> packPageData = packPageData(count, list, type);
+		List<Map<String, Object>> yesPackPageData = packPageData(yesCount, yesList, type);
+
+		returnMap.put("y", yList.toArray());
+		returnMap.put("today", packPageData);
+		returnMap.put("yesterday", yesPackPageData);
+
+		return returnMap;
+	}
+
+	/**
+	 * 封装页面渲染需要格式
+	 * 
+	 * @author LL
+	 * @date 2018年7月27日 下午5:55:44
+	 * @return Map<String,Object>
+	 */
+	public List<Map<String, Object>> packPageData(Long sumCount, List<LaunThemeStatistics> list, Long type) {
+
+		List<Map<String, Object>> returnMap = new LinkedList<Map<String, Object>>();
+
+		Map<String, Object> oneStatistics = null;
+		Long count = null;
+		for (LaunThemeStatistics launThemeStatistics : list) {
+			oneStatistics = new HashMap<String, Object>();
+			if (type == 1) {
+				count = launThemeStatistics.getCount();
+			} else if (type == 2) {
+				count = launThemeStatistics.getCountCar();
+			}
+			String returnBigDecimal = returnBigDecimal(count, sumCount);
+			oneStatistics.put("parent", returnBigDecimal);
+			oneStatistics.put("value", count);
+			returnMap.add(oneStatistics);
+		}
+		return returnMap;
+	}
+
+	/**
+	 * 应用统计
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月27日 上午11:14:16
+	 * @param
+	 */
+	@Override
+	public Map<String, Object> topApplication(String channelId) {
+		Map<String, Object> map = new HashMap<>();
+		// qian
+		String dayy = TimeUtils.getNextDay(TimeUtils.getNextDayDate(new Date()));
+		Date sytime = TimeUtils.string2Date(dayy + " 00:00:00");
+		Date eytime = TimeUtils.string2Date(dayy + " 23:59:59");
+		// yes
+		String day = TimeUtils.getNextDay(new Date());
+		Date stime = TimeUtils.string2Date(day + " 00:00:00");
+		Date etime = TimeUtils.string2Date(day + " 23:59:59");
+		List<LaunApplicationStatistics> list = new ArrayList<>();
+		List<LaunApplicationStatistics> listy = new ArrayList<>();
+		if (null != channelId && !"".equals(channelId)) {
+			list = launApplicationStatisticsMapper.topApplication(channelId, stime, etime);
+			listy = launApplicationStatisticsMapper.topyApplication(channelId, sytime, eytime);
+		} else {
+			list = launApplicationStatisticsMapper.topApplicationByChannel(stime, etime);
+			listy = launApplicationStatisticsMapper.topyApplicationByChannel(sytime, eytime);
+		}
+		LaunApplicationStatistics selectBySum = launApplicationStatisticsMapper.selectBySum(channelId, stime, etime);
+		LaunApplicationStatistics selectBySumy = launApplicationStatisticsMapper.selectBySum(channelId, sytime, eytime);
+		Long sum = 0L;
+		Long sumy = 0L;
+		if (selectBySum != null) {
+			sum = selectBySum.getStartUpNum();
+		}
+		if (selectBySumy != null) {
+			sumy = selectBySumy.getStartUpNum();
+		}
+
+		List<Object> y = new ArrayList<>();
+		List<Object> ylist = new ArrayList<>();
+		List<Object> xlist = new ArrayList<>();
+
+		// 封装参数
+		if (list.size() > 0) {
+
+			for (LaunApplicationStatistics launApplicationStatistics : list) {
+				Map<String, Object> ymap = new HashMap<>();
+				Map<String, Object> xmap = new HashMap<>();
+				ymap.put("value", launApplicationStatistics.getStartUpNum());
+				y.add(launApplicationStatistics.getApplicationName());
+				if (sum != 0) {
+					String bigDecimal = returnBigDecimal(launApplicationStatistics.getStartUpNum(), sum);
+					ymap.put("parent", bigDecimal);
+				}
+				if (listy.size() > 0) {
+					for (LaunApplicationStatistics lass : listy) {
+						if (launApplicationStatistics.getApplicationName().equals(lass.getApplicationName())) {
+							xmap.put("value", lass.getStartUpNum());
+							if (sumy != null && sumy != 0) {
+								String returnBigDecimal = returnBigDecimal(lass.getStartUpNum(), sumy);
+								xmap.put("parent", returnBigDecimal);
+							}
+						}
+					}
+					xlist.add(xmap);
+				}
+				ylist.add(ymap);
+			}
+		} else {
+			if (listy.size() > 0) {
+				for (LaunApplicationStatistics lass : listy) {
+					y.add(lass.getApplicationName());
+					Map<String, Object> xmap = new HashMap<>();
+					xmap.put("value", lass.getStartUpNum());
+					if (sumy != 0 && sumy != null) {
+						String returnBigDecimal = returnBigDecimal(lass.getStartUpNum(), sumy);
+						xmap.put("parent", returnBigDecimal);
+					}
+					xlist.add(xmap);
+				}
+			}
+		}
+		map.put("y", y);
+		map.put("yesterday", ylist);
+		map.put("qiantian", xlist);
+		return map;
+	}
+
+	/**
+	 * 渠道的top
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月26日 下午3:26:24
+	 * @param
+	 */
+	@Override
+	public Map<String, Object> topChannel(Long type) {
+		Map<String, Object> map = new HashMap<>();
+		// qian
+		String dayy = TimeUtils.getNextDay(TimeUtils.getNextDayDate(new Date()));
+		Date sytime = TimeUtils.string2Date(dayy + " 00:00:00");
+		Date eytime = TimeUtils.string2Date(dayy + " 23:59:59");
+		// yes
+		String day = TimeUtils.getNextDay(new Date());
+		Date stime = TimeUtils.string2Date(day + " 00:00:00");
+		Date etime = TimeUtils.string2Date(day + " 23:59:59");
+		List<Object> qudao = new ArrayList<>();
+		List<Object> zr = new ArrayList<>();
+		List<Object> qr = new ArrayList<>();
+		// 昨天
+		List<LaunCarStatistics> car = carStatisticsMapper.selectByTopCar(stime, etime, type);
+		LaunCarStatistics sum = carStatisticsMapper.selectSumCar(stime, etime);
+		// 前天
+		List<LaunCarStatistics> cary = carStatisticsMapper.selectByTopCar(sytime, eytime, type);
+		LaunCarStatistics sumy = carStatisticsMapper.selectSumCar(sytime, eytime);
+		if (car.size() > 0) {
+			for (LaunCarStatistics launCarStatistics : car) {
+				Map<String, Object> yesMap = new HashMap<>();
+				Map<String, Object> qianMap = new HashMap<>();
+				qudao.add(launCarStatistics.getCarAvgTime());
+				// fengzhuangshuju
+				if (null != type && type == 1) {
+					// 昨日数据
+					yesMap.put("value", launCarStatistics.getCarNum());
+					// 昨日占比
+					if (sum != null && sum.getCarNum() != 0) {
+
+						String returnBigDecimal = returnBigDecimal(launCarStatistics.getCarNum(), sum.getCarNum());
+						yesMap.put("parent", returnBigDecimal);
+					}
+					// 前日
+					if (cary.size() > 0) {
+						for (LaunCarStatistics ly : cary) {
+							if (launCarStatistics.getCarAvgTime().equals(ly.getCarAvgTime())) {
+								qianMap.put("value", ly.getCarNum());
+								if (sumy != null && sumy.getCarNum() != 0) {
+									String returnBigDecimal = returnBigDecimal(ly.getCarNum(), sumy.getCarNum());
+									qianMap.put("parent", returnBigDecimal);
+								}
+							}
+						}
+						qr.add(qianMap);
+					}
+				}
+				if (null != type && type == 2) {
+					// 昨日数据
+					yesMap.put("value", launCarStatistics.getCarActive());
+					// 昨日占比
+					if (sum != null && sum.getCarActive() != 0) {
+						String returnBigDecimal = returnBigDecimal(launCarStatistics.getCarActive(),
+								sum.getCarActive());
+						yesMap.put("parent", returnBigDecimal);
+					}
+					// 前日
+					if (cary.size() > 0) {
+						for (LaunCarStatistics ly : cary) {
+							if (launCarStatistics.getCarAvgTime().equals(ly.getCarAvgTime())) {
+								qianMap.put("value", ly.getCarActive());
+								if (sumy != null && sumy.getCarActive() != 0) {
+
+									String returnBigDecimal = returnBigDecimal(ly.getCarActive(), sumy.getCarActive());
+									qianMap.put("parent", returnBigDecimal);
+								}
+							}
+						}
+						qr.add(qianMap);
+					}
+
+				}
+				if (null != type && type == 3) {
+
+					// 昨日数据
+					yesMap.put("value", launCarStatistics.getCarStart());
+					// 昨日占比
+					if (sum != null && sum.getCarStart() != 0) {
+						String returnBigDecimal = returnBigDecimal(launCarStatistics.getCarStart(), sum.getCarStart());
+						yesMap.put("parent", returnBigDecimal);
+					}
+					// 前日
+					if (cary.size() > 0) {
+						for (LaunCarStatistics ly : cary) {
+							if (launCarStatistics.getCarAvgTime().equals(ly.getCarAvgTime())) {
+								qianMap.put("value", ly.getCarStart());
+								if (sumy != null && sumy.getCarStart() != 0) {
+									String returnBigDecimal = returnBigDecimal(ly.getCarStart(), sumy.getCarStart());
+									qianMap.put("parent", returnBigDecimal);
+								}
+							}
+						}
+						qr.add(qianMap);
+					}
+
+				}
+				if (null != type && type == 4) {
+
+					// 昨日数据
+					yesMap.put("value", launCarStatistics.getAddUpNum());
+					// 昨日占比
+					if (sum != null && sum.getAddUpNum() != 0) {
+						String returnBigDecimal = returnBigDecimal(launCarStatistics.getAddUpNum(), sum.getAddUpNum());
+						yesMap.put("parent", returnBigDecimal);
+					}
+					// 前日
+					if (cary.size() > 0) {
+						for (LaunCarStatistics ly : cary) {
+							if (launCarStatistics.getCarAvgTime().equals(ly.getCarAvgTime())) {
+								qianMap.put("value", ly.getAddUpNum());
+								if (sumy != null && sumy.getAddUpNum() != 0) {
+									String returnBigDecimal = returnBigDecimal(ly.getAddUpNum(), sumy.getAddUpNum());
+									qianMap.put("parent", returnBigDecimal);
+								}
+							}
+						}
+						qr.add(qianMap);
+					}
+				}
+
+				zr.add(yesMap);
+
+			}
+		} else {
+			if (cary.size() > 0) {
+				for (LaunCarStatistics lay : cary) {
+					qudao.add(lay.getCarAvgTime());
+					Map<String, Object> qianMap = new HashMap<>();
+					// ===========================================
+					if (null != type && type == 1) {
+						// 前日
+						for (LaunCarStatistics ly : cary) {
+							qianMap.put("value", ly.getCarNum());
+							if (sumy != null && sumy.getCarNum() != 0) {
+								String returnBigDecimal = returnBigDecimal(ly.getCarNum(), sumy.getCarNum());
+								qianMap.put("parent", returnBigDecimal);
+							}
+						}
+					}
+					if (null != type && type == 2) {
+						for (LaunCarStatistics ly : cary) {
+							qianMap.put("value", ly.getCarActive());
+							if (sumy != null && sumy.getCarActive() != 0) {
+								String returnBigDecimal = returnBigDecimal(ly.getCarActive(), sumy.getCarActive());
+								qianMap.put("parent", returnBigDecimal);
+							}
+						}
+
+					}
+					if (null != type && type == 3) {
+						// 前日
+						for (LaunCarStatistics ly : cary) {
+							qianMap.put("value", ly.getCarStart());
+							if (sumy != null && sumy.getCarStart() != 0) {
+								String returnBigDecimal = returnBigDecimal(ly.getCarStart(), sumy.getCarStart());
+								qianMap.put("parent", returnBigDecimal);
+							}
+						}
+
+					}
+					if (null != type && type == 4) {
+
+						// 前日
+						for (LaunCarStatistics ly : cary) {
+							qianMap.put("value", ly.getAddUpNum());
+							if (sumy != null && sumy.getAddUpNum() != 0) {
+								String returnBigDecimal = returnBigDecimal(ly.getAddUpNum(), sumy.getAddUpNum());
+								qianMap.put("parent", returnBigDecimal);
+							}
+						}
+
+					}
+					qr.add(qianMap);
+				}
+
+				// =============================
+
+			}
+		}
+		map.put("qudao", qudao);
+		map.put("yesterday", zr);
+		map.put("qianri", qr);
+		return map;
+
+	}
+
+	/**
+	 * Y应用管理的top10
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月27日 上午11:16:14
+	 * @param
+	 */
+	@Override
+	public Map<String, Object> topTenAppli(String channelId) {
+		Map<String, Object> map = new HashMap<>();
+		String day = TimeUtils.getNextDay(new Date());
+		Date stime = TimeUtils.string2Date(day + " 00:00:00");
+		Date etime = TimeUtils.string2Date(day + " 23:59:59");
+		List<LaunApplicationStatistics> applicationStatistics = launApplicationStatisticsMapper
+				.selectByChannelApp(channelId, stime, etime);
+		LaunApplicationStatistics selectBySum = launApplicationStatisticsMapper.selectBySum(channelId, stime, etime);
+		Long startUpNum = 0L;
+		if (null != selectBySum) {
+			startUpNum = selectBySum.getStartUpNum();
+		}
+		List<Object> nameList = new ArrayList<>();
+		List<Object> proList = new ArrayList<>();
+		Map<String, Object> proMap = new HashMap<>();
+		if (applicationStatistics.size() > 0) {
+			for (LaunApplicationStatistics launApplicationStatistics : applicationStatistics) {
+				String returnBigDecimal = returnBigDecimal(launApplicationStatistics.getStartUpNum(), startUpNum);
+				nameList.add(launApplicationStatistics.getApplicationName());
+				proMap.put("value", launApplicationStatistics.getStartUpNum());
+				proMap.put("parent", returnBigDecimal);
+				proList.add(proMap);
+			}
+			map.put("x", proList);
+			map.put("y", nameList);
+		}
+		return map;
+	}
+
+	public String returnBigDecimal(Long num, Long sum) {
+		BigDecimal carStatistics = new BigDecimal(Double.toString(num));
+		BigDecimal carStart = new BigDecimal(Double.toString(sum));
+		String carStartProp = carStatistics.divide(carStart, 2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100))
+				.toString();
+		return carStartProp + "%";
 	}
 
 }

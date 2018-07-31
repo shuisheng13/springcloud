@@ -628,6 +628,9 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 			throw new RuntimeException();
 		}
 		String previewImage = jsonObject.getString("previewImage");
+		if("".equals(previewImage)) {
+			throw new DataStoreException(ErrorStatus.WIDGETPRIVEW_ERROR);
+		}
 		String name = jsonObject.getString("name");
 		// 限制name不能大于20
 		int checkSize = 20;
@@ -752,6 +755,9 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 			throw new DataStoreException(ErrorStatus.WIDGETSIZE_ERROR);
 		}
 		String previewImage = jsonObject.getString("previewImage");
+		if("".equals(previewImage)) {
+			throw new DataStoreException(ErrorStatus.WIDGETPRIVEW_ERROR);
+		}
 		String name = jsonObject.getString("name");
 		// 限制name不能大于20
 		int checkSize = 20;

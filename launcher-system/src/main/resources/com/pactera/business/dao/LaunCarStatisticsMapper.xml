@@ -19,14 +19,75 @@
 		<result column="addUpNumYes" jdbcType="BIGINT" property="addUpNumYes" />
 		<result column="carActiveYes" jdbcType="BIGINT" property="carActiveYes" />
 	</resultMap>
+	<select id="selectSumCar" resultMap="BaseResultMap">
+		SELECT
+		SUM(lcs.car_num)
+		carNum,
+		SUM(lcs.car_active) carActive,
+		SUM(lcs.car_start) carStart,
+		SUM(lcs.add_up_num) addUpNum,
+		lca.`name`
+		carAvgTime
+		FROM
+		laun_car_statistics lcs,
+		laun_channel lca
+		WHERE
+		lcs.channel_id =
+		lca.id
+		<if test="start != null ">
+			and lcs.car_time <![CDATA[>=]]>
+			#{start}
+		</if>
+		<if test="end != null">
+			and lcs.car_time <![CDATA[<=]]>
+			#{end}
+		</if>
 
+	</select>
+
+	<select id="selectByTopCar" resultMap="BaseResultMap">
+		SELECT
+		lcs.car_num,
+		lcs.car_active,
+		lcs.car_start,
+		lcs.add_up_num,
+		lca.`name` carAvgTime
+		FROM
+		laun_car_statistics lcs,
+		laun_channel lca
+		<where>
+			lcs.channel_id = lca.id
+			<if test="start != null ">
+				and lcs.car_time <![CDATA[>=]]>
+				#{start}
+			</if>
+			<if test="end != null">
+				and lcs.car_time <![CDATA[<=]]>
+				#{end}
+			</if>
+		</where>
+		ORDER BY
+		<if test="type != null and type == 1">
+			lcs.car_num
+		</if>
+		<if test="type != null and type == 2">
+			lcs.car_active
+		</if>
+		<if test="type != null and type == 3">
+			lcs.car_start
+		</if>
+		<if test="type != null and type == 4">
+			lcs.add_up_num
+		</if>
+
+	</select>
 
 	<select id="selectTopVersion" resultMap="BaseResultMap">
 		SELECT
 		lcs.car_num ,
 		lcs.car_active ,
 		lcs.car_start ,
-		lcs.add_up_num
+		lcs.add_up_num ,
 		lcs.version
 		FROM
 		laun_car_statistics lcs
@@ -37,7 +98,7 @@
 				#{sdate}
 			</if>
 			<if test="edate != null">
-				and lcs.car_time <![CDATA[>=]]>
+				and lcs.car_time <![CDATA[<=]]>
 				#{edate}
 			</if>
 			<if test="channelId != null and channelId != ''">
@@ -48,6 +109,30 @@
 		lcs.version
 
 	</select>
+	<select id="selectByChannelId" resultMap="BaseResultMap">
+		SELECT
+		SUM(lcs.car_num) carNum,
+		SUM(lcs.car_active) carActive,
+		SUM(lcs.car_start) carStart,
+		SUM(lcs.car_avg_time) carAvgTime,
+		lcs.car_time
+		FROM
+		laun_car_statistics lcs
+		<where>
+			<if test="stime != null ">
+				and lcs.car_time <![CDATA[>=]]>
+				#{stime}
+			</if>
+			<if test="etime != null">
+				and lcs.car_time <![CDATA[<=]]>
+				#{etime}
+			</if>
+		</where>
+		GROUP BY
+		lcs.car_time
+
+	</select>
+
 	<select id="selectByType" resultMap="BaseResultMap">
 		SELECT
 		lcs.car_num,
@@ -58,26 +143,22 @@
 		FROM
 		laun_car_statistics lcs
 		<where>
+			<if test="stime != null ">
+				and lcs.car_time <![CDATA[>=]]>
+				#{stime}
+			</if>
+			<if test="etime != null">
+				and lcs.car_time <![CDATA[<=]]>
+				#{etime}
+			</if>
 			<if test="channelId != null and channelId != ''">
 				and lcs.channel_id = #{channelId}
 			</if>
 		</where>
 		GROUP BY
-		<if test="type != null and type ==1">
-			lcs.car_num
-		</if>
-		<if test="type != null and type ==2">
-			lcs.car_active
-		</if>
-		<if test="type != null and type ==3">
-			lcs.car_start
-		</if>
-		<if test="type != null and type ==4">
-			lcs.car_avg_time
-		</if>
+		lcs.car_time
 	</select>
-
-	<select id="selectYesCar" resultMap="BaseResultMap">
+	<select id="selectYesCarByChannelId" resultMap="BaseResultMap">
 		SELECT
 		sum(lcs.car_num) carNum,
 		sum(lcs.car_active) carActive,
@@ -87,7 +168,26 @@
 		laun_car_statistics lcs
 		<where>
 			<if test="stime != null and stime != ''">
-				and lcs.car_time &gt;= #{stime}   
+				and lcs.car_time &gt;  #{stime}
+			</if>
+			<if test="etime != null and etime != ''">
+				and lcs.car_time &lt;  #{etime}
+			</if>
+		</where>
+	</select>
+
+
+	<select id="selectYesCar" resultMap="BaseResultMap">
+		SELECT
+		lcs.car_num ,
+		lcs.car_active ,
+		lcs.car_start ,
+		lcs.add_up_num
+		FROM
+		laun_car_statistics lcs
+		<where>
+			<if test="stime != null and stime != ''">
+				and lcs.car_time &gt;= #{stime}
 			</if>
 			<if test="etime != null and etime != ''">
 				and lcs.car_time &lt;= #{etime}
@@ -126,7 +226,7 @@
 				#{stime}
 			</if>
 			<if test="etime != null">
-				and lcs.car_time <![CDATA[>=]]>
+				and lcs.car_time <![CDATA[<=]]>
 				#{etime}
 			</if>
 			<if test="channel != null and channel != ''">
@@ -163,7 +263,7 @@
 				#{stime}
 			</if>
 			<if test="etime != null ">
-				and lcs.car_time <![CDATA[>=]]>
+				and lcs.car_time <![CDATA[<=]]>
 				#{etime}
 			</if>
 			<if test="channel != null and channel != ''">
@@ -179,7 +279,7 @@
 				#{sdate}
 			</if>
 			<if test="edate != null">
-				and ls.car_time <![CDATA[>=]]>
+				and ls.car_time <![CDATA[<=]]>
 				#{edate}
 			</if>
 

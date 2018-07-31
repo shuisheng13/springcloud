@@ -121,7 +121,7 @@ public class LaunRedisServiceImpl implements LaunRedisService, InitializingBean 
 						value.addAll(list);
 					}
 					LaunChannel findById = launChannelService.findById(key.toString());
-					redisMap.put(findById.getName(), value);
+					redisMap.put(findById.getChannelId(), value);
 				}
 			}
 		}

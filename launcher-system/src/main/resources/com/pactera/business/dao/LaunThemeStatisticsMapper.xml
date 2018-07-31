@@ -7,7 +7,8 @@
 		<result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
 		<result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
 		<result column="avg_time" jdbcType="VARCHAR" property="avgTime" />
-		<result column="channel_id" jdbcType="BIGINT" property="channelId" />
+		<result column="channel_id" jdbcType="VARCHAR" property="channelId" />
+		<result column="title" jdbcType="VARCHAR" property="title" />
 		<result column="count" jdbcType="BIGINT" property="count" />
 		<result column="count_car" jdbcType="BIGINT" property="countCar" />
 		<result column="effe_theme" jdbcType="BIGINT" property="effeTheme" />
@@ -15,6 +16,20 @@
 		<result column="theme_id" jdbcType="BIGINT" property="themeId" />
 		<result column="theme_prop" jdbcType="VARCHAR" property="themeProp" />
 	</resultMap>
+
+
+	<select id="selectByChannelIdNull" resultMap="BaseResultMap">
+		SELECT
+		SUM(lts.count) count,
+		SUM(lts.effe_theme) effeTheme,
+		lts.num_start_time
+		FROM
+		laun_theme_statistics lts
+		GROUP BY
+		lts.num_start_time
+
+
+	</select>
 
 	<select id="selectByType" resultMap="BaseResultMap">
 		SELECT
@@ -24,15 +39,49 @@
 		FROM
 		laun_theme_statistics lts
 		<where>
-			lts.channel_id = #{channelId}
+
+			<if test="stime != null ">
+				and lts.num_start_time <![CDATA[>=]]>
+				#{stime}
+			</if>
+			<if test="etime != null">
+				and lts.num_start_time <![CDATA[>=]]>
+				#{etime}
+			</if>
+			<if test="channelId != null and channelId != ''">
+				and lts.channel_id = #{channelId}
+			</if>
+
 		</where>
 
 		GROUP BY
-		<if test="type != null and type ==5">
-			lts.count
+		lts.num_start_time
+
+	</select>
+
+	<select id="selectTopTheme" resultMap="BaseResultMap">
+		SELECT
+		ts.channel_id,
+		SUM(ts.count) count,
+		SUM(ts.count_car) count_car,
+		SUM(ts.effe_theme) effe_theme,
+		ts.theme_id,
+		ts.num_start_time,
+		lta.title
+		FROM
+		laun_theme_statistics ts
+		LEFT JOIN laun_theme_administration lta ON
+		lta.id = ts.theme_id
+		WHERE
+		ts.num_start_time = #{timeString}
+		<if test="channelId != null">
+			AND ts.channel_id = #{channelId}
 		</if>
-		<if test="type != null and type ==6">
-			lts.effe_theme
+		GROUP BY
+		theme_id
+		ORDER BY count DESC
+		<if test="isLimit == 1">
+			LIMIT 10;
 		</if>
 	</select>
 
