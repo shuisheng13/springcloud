@@ -779,7 +779,7 @@ public class TimeUtils {
 	}
 
 	/**
-	 * 获取当前时间的前一天
+	 * 获取当前时间的前一天 转换成字符串
 	 * 
 	 * @description
 	 * @author dw
@@ -795,4 +795,41 @@ public class TimeUtils {
 		String string = DEFAULT_SIMPLE_SDF.format(date);
 		return string;
 	}
+	/**
+	 * 获取当前时间的前30天
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月9日 下午4:14:32
+	 * @param
+	 * @return Date
+	 */
+	public static String getNextSanDay(Date date) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.DAY_OF_MONTH, -30);
+		date = calendar.getTime();
+		String string = DEFAULT_SIMPLE_SDF.format(date);
+		return string;
+	}
+	
+	
+
+	/**
+	 * 获取当前时间的前一天
+	 * 
+	 * @description
+	 * @author dw
+	 * @since 2018年7月9日 下午4:14:32
+	 * @param
+	 * @return Date
+	 */
+	public static Date getNextDayDate(Date date) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.DAY_OF_MONTH, -1);
+		date = calendar.getTime();
+		return date;
+	}
+	 
 }

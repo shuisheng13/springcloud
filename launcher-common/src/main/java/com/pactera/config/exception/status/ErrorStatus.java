@@ -25,7 +25,8 @@ public enum ErrorStatus {
 	WIDGETPARSE_ERROR(140006,"widget解析异常"),
 	WIDGETSIZE_ERROR(140007,"widget大小格式不正确"),
 	WIDGETNAMEISNULL_ERROR(140008,"widget名称校验失败"),
-	WIDGETIMG_ERROR(140009,"压缩包图片与json中的数量不一致");
+	WIDGETIMG_ERROR(140009,"压缩包图片与json中的数量不一致"),
+	WIDGETPRIVEW_ERROR(140010,"封面不能为空");
 
 	
 	private int status;
