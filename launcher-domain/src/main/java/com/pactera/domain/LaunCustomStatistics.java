@@ -19,7 +19,7 @@ import lombok.EqualsAndHashCode;
 public class LaunCustomStatistics extends LaunBase {
 	private static final long serialVersionUID = -1307460264188003191L;
 	private @ApiModelProperty("版本") String version;
-	private @ApiModelProperty("渠道ID(null为全部渠道)") Long channelId;
+	private @ApiModelProperty("渠道ID(null为全部渠道)") String channelId;
 	private @ApiModelProperty("事件名称") String customName;
 	private @ApiModelProperty("事件消息数量") Long customNum;
 	private @ApiModelProperty("消息平均时长") String customTime;

@@ -17,7 +17,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class LaunAdverStatistics extends LaunBase {
 	private static final long serialVersionUID = -8796126980177632194L;
-	private @ApiModelProperty("渠道ID(null为全部渠道)") Long channelId;
+	private @ApiModelProperty("渠道ID(null为全部渠道)") String channelId;
 	private @ApiModelProperty("广告主") String adverMain;
 	private @ApiModelProperty("广告位") String adverPosition;
 	private @ApiModelProperty("广告标题") String adverTitle;

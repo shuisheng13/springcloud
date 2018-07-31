@@ -19,5 +19,5 @@ public class LaunEventStatistics extends LaunBase {
 	private @ApiModelProperty("事件id") Long eventId;
 	private @ApiModelProperty("事件名称") String eventName;
 	private @ApiModelProperty("版本") String version;
-	private @ApiModelProperty("渠道ID(null为全部渠道)") Long channelId;
+	private @ApiModelProperty("渠道ID(null为全部渠道)") String channelId;
 }

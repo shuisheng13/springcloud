@@ -19,7 +19,7 @@ import lombok.EqualsAndHashCode;
 public class LaunCarStatistics extends LaunBase {
 	private static final long serialVersionUID = 6872465354088919368L;
 	private @ApiModelProperty("版本") String version;
-	private @ApiModelProperty("渠道ID(null为全部渠道)") Long channelId;
+	private @ApiModelProperty("渠道ID(null为全部渠道)") String channelId;
 	private @ApiModelProperty("日期") Date carTime;
 	private @ApiModelProperty("每日新增车辆") Long carNum;
 	private @ApiModelProperty("活跃车辆") Long carActive;
