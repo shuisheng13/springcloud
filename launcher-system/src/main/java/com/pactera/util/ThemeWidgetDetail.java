@@ -574,7 +574,7 @@ public class ThemeWidgetDetail {
 				for (Map<String, Object> map3 : viewPager) {
 					int parseInt = Integer.parseInt(map3.get("index").toString());
 					map3.remove("index");
-					orderList.set(parseInt, map3);
+					orderList.set(parseInt - 1, map3);
 				}
 				orderList.removeAll(Collections.singleton(null));
 
