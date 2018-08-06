@@ -848,6 +848,11 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 			return saveTheme;
 		}
 
+		if (HStringUtlis.isNotBlank(administration.getCreator())) {
+			delectById(administration.getId());
+			saveTheme(baseJson, widgetJson, themeJson, saveType);
+		}
+
 		Long themeId = administration.getId();
 		launThemeFileService.deleteById(themeId);
 		// 删除之前配置文件
@@ -912,5 +917,11 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	public static void main(String[] args) {
 		Integer i = 1;
 		System.out.println(i == null);
+	}
+
+	@Override
+	public List<Map<String, String>> getEffeCount() {
+
+		return launThemeMapper.getEffeCount();
 	}
 }

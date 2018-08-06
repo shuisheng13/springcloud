@@ -54,4 +54,28 @@ public interface LaunThemeStatisticsMapper extends BaseMapper<LaunThemeStatistic
 	 */
 	List<LaunThemeStatistics> selectTopTheme(@Param("timeString") String timeString,
 			@Param("channelId") String channelId, @Param("isLimit") int isLimit);
+
+	/**
+	 * 主题饼图查询
+	 * 
+	 * @author LL
+	 * @date 2018年8月1日 上午10:09:55
+	 * @param channelId渠道id
+	 * @param starTime开始日期
+	 * @param endTime结束日期
+	 * @return List<LaunThemeStatistics>
+	 */
+	List<LaunThemeStatistics> selectThemeStatistics(@Param("channelId") String channelId,
+			@Param("starTime") String starTime, @Param("endTime") String endTime);
+
+	/**
+	 * 查询主题折线统计
+	 * 
+	 * @author LL
+	 * @date 2018年8月2日 下午5:16:44
+	 * @param
+	 * @return List<LaunThemeStatistics>
+	 */
+	List<LaunThemeStatistics> selectHistoryEffe(@Param("channelIds") List<String> channelIds,
+			@Param("starTime") String starTime, @Param("endTime") String endTime);
 }

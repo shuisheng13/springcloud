@@ -47,6 +47,7 @@ public class TokenClientConfig extends ResourceServerConfigurerAdapter {
 			// 设置不拦截的请求
 			.antMatchers(HttpMethod.OPTIONS).permitAll()
 			.antMatchers("/swagger-ui.html","swagger-resources/**").permitAll()
+			.antMatchers("/statistics/**").permitAll()
 			// 设置拦截所有的请求
 			//.anyRequest().authenticated()
 			.anyRequest().permitAll()

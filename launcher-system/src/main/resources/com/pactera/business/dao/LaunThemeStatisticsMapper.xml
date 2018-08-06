@@ -9,10 +9,12 @@
 		<result column="avg_time" jdbcType="VARCHAR" property="avgTime" />
 		<result column="channel_id" jdbcType="VARCHAR" property="channelId" />
 		<result column="title" jdbcType="VARCHAR" property="title" />
+		<result column="strNumStartTime" jdbcType="VARCHAR" property="strNumStartTime" />
+		<result column="channelName" jdbcType="VARCHAR" property="channelName" />
 		<result column="count" jdbcType="BIGINT" property="count" />
 		<result column="count_car" jdbcType="BIGINT" property="countCar" />
 		<result column="effe_theme" jdbcType="BIGINT" property="effeTheme" />
-		<result column="num_start_time" jdbcType="TIMESTAMP" property="numStartTime" />
+		<result column="num_start_time" jdbcType="VARCHAR" property="numStartTime" />
 		<result column="theme_id" jdbcType="BIGINT" property="themeId" />
 		<result column="theme_prop" jdbcType="VARCHAR" property="themeProp" />
 	</resultMap>
@@ -83,6 +85,42 @@
 		<if test="isLimit == 1">
 			LIMIT 10;
 		</if>
+	</select>
+
+	<select id="selectThemeStatistics" resultMap="BaseResultMap">
+		SELECT SUM(count)
+		count,lta.title FROM laun_theme_statistics lts
+		LEFT
+		JOIN laun_theme_administration lta ON lts.theme_id = lta.id
+		WHERE
+		lts.num_start_time >=#{starTime} AND lts.num_start_time
+		<![CDATA[<=#{endTime} ]]>
+		<if test="channelId !=null and channelId !=''">
+			AND lts.channel_id = #{channelId}
+		</if>
+		GROUP BY theme_id ORDER
+		BY count DESC
+	</select>
+
+	<select id="selectHistoryEffe" resultMap="BaseResultMap">
+		SELECT
+		lts.id,lts.create_date,lts.channel_id,lts.effe_theme,lts.num_start_time
+		strNumStartTime,lc.name channelName
+		FROM
+		laun_theme_statistics lts LEFT
+		JOIN laun_channel lc ON lc.channel_id = lts.channel_id
+		WHERE 1=1
+		<if test="channelIds !=null and channelIds.size >0">
+			AND lts.channel_id in
+			<foreach collection="channelIds" close=")" open="("
+				separator="," item="channelId">
+				#{channelId}
+			</foreach>
+		</if>
+		AND lts.num_start_time <![CDATA[>=#{starTime} ]]>
+		AND lts.num_start_time <![CDATA[<=#{endTime} ]]>
+		GROUP BY
+		lts.channel_id,lts.num_start_time ORDER BY num_start_time DESC
 	</select>
 
 </mapper>

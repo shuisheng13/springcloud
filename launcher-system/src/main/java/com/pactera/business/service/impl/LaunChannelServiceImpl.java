@@ -28,11 +28,11 @@ public class LaunChannelServiceImpl implements LaunChannelService {
 	@Override
 	public List<LaunChannel> findAll(String name) {
 		Example example = new Example(LaunChannel.class);
-		example.createCriteria().andIsNotNull("userId").andNotEqualTo("channelStatus", ConstantUtlis.UP_SHELF);
+		Criteria createCriteria2 = example.createCriteria();
+		createCriteria2.andIsNotNull("userId").andNotEqualTo("channelStatus", ConstantUtlis.UP_SHELF);
 		example.setOrderByClause("create_date desc");
-		Criteria createCriteria = example.createCriteria();
 		if (name != null) {
-			createCriteria.andLike("name", "%" + name + "%");
+			createCriteria2.andLike("name", "%" + name + "%");
 		}
 		return launChannelMapper.selectByExample(example);
 	}

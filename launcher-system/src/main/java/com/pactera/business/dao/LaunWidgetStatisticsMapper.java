@@ -21,7 +21,7 @@ public interface LaunWidgetStatisticsMapper extends BaseMapper<LaunWidgetStatist
 	
 	
 	List<LaunWidgetStatistics> queryBywidget(@Param("channelId")String channelId,
-			 @Param("version")String version,@Param("beginDate")String beginDate,@Param("endDate")String endDate,String codeId);
+			 @Param("version")String version,@Param("beginDate")String beginDate,@Param("endDate")String endDate,@Param("codeId")String codeId);
 
 	/**
 	 * 

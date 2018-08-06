@@ -15,28 +15,25 @@ import java.util.Locale;
  */
 public class TimeUtils {
 
-	/**
-	 * 目录： 
-	 * millis2String : 将时间戳转为时间字符串 
-	 * string2Millis : 将时间字符串转为时间戳
-	 *  string2Date : 将时间字符串转为Date类型
-	 *  date2String : 将Date类型转为时间字符串 
-	 *  date2Millis : 将Date类型转为时间戳
-	 * millis2Date : 将时间戳转为Date类型 
-	 * dateReckon : 日期+-天数 
-	 * getNowTimeMills :获取当前毫秒时间戳 
-	 * getNowTimeString : 获取当前时间字符串 
-	 * getNowTimeDate : 获取当前Date getWeek,
-	 * getWeekIndex : 获取星期 
-	 * getWeekOfMonth : 获取月份中的第几周 
-	 * getWeekOfYear : 获取年份中的第几周
-	 * parseMillisecone : 时间差计算 return string 0天0时11分55秒
-	 * getDifference ：时间差计算return int 
-	 * getChineseZodiac : 获取生肖 
-	 * getZodiac : 获取星座
-	 * 
-	 * 注意：SimpleDateFormat不是线程安全的，线程安全需用{@code ThreadLocal<SimpleDateFormat>}
-	 */
+	// 目录
+	// millis2String:将时间戳转为时间字符串
+	// string2Millis:将时间字符串转为时间戳
+	// string2Date:将时间字符串转为Date类型
+	// date2String:将Date类型转为时间字符串
+	// date2Millis:将Date类型转为时间戳
+	// millis2Date:将时间戳转为Date类型
+	// dateReckon:日期+-天数
+	// getNowTimeMills:获取当前毫秒时间戳
+	// getNowTimeString:获取当前时间字符串
+	// getNowTimeDate:获取当前Date getWeek,
+	// getWeekIndex:获取星期
+	// getWeekOfMonth:获取月份中的第几周
+	// getWeekOfYear:获取年份中的第几周
+	// parseMillisecone:时间差计算 return string 0天0时11分55秒
+	// getDifference:时间差计算return int
+	// getChineseZodiac:获取生肖
+	// getZodiac:获取星座
+	// 注意：SimpleDateFormat不是线程安全的，线程安全需用{@code ThreadLocal<SimpleDateFormat>}
 
 	static final SimpleDateFormat DEFAULT_SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
 
@@ -224,6 +221,22 @@ public class TimeUtils {
 	public static Date dateReckon(String time, Integer num) {
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTime(string2Date(time));
+		calendar.add(Calendar.DATE, num);// 把日期往后增加一天.整数往后推,负数往前移动
+		Date date = calendar.getTime(); // 这个时间就是日期往后推一天的结果
+		return date;
+	}
+
+	/**
+	 * 日期+-天数
+	 * 
+	 * @param date
+	 * @param num
+	 *            增加的天数，整数为+，负数-
+	 * @return Date
+	 */
+	public static Date dateReckon(String time, Integer num, String pattern) {
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(string2Date(time, pattern));
 		calendar.add(Calendar.DATE, num);// 把日期往后增加一天.整数往后推,负数往前移动
 		Date date = calendar.getTime(); // 这个时间就是日期往后推一天的结果
 		return date;
@@ -651,6 +664,42 @@ public class TimeUtils {
 	}
 
 	/**
+	 * 计算两个时间的时间差
+	 * 
+	 * @author LL
+	 * @date 2018年8月2日 下午5:49:29
+	 * @param first时间
+	 * @param second时间
+	 * @return int
+	 */
+	public static int longOfTwoDate(Date first, Date second) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(first);
+		int cnt = 0;
+		while (calendar.getTime().compareTo(second) != 0) {
+			calendar.add(Calendar.DATE, 1);
+			cnt++;
+		}
+		return cnt;
+	}
+
+	/**
+	 * 计算两个时间的时间差
+	 * 
+	 * @author LL
+	 * @date 2018年8月2日 下午5:49:29
+	 * @param first时间
+	 * @param second时间
+	 * @return int
+	 */
+	public static int longOfTwoDate(String first, String second, String pattern) {
+
+		Date firstDate = string2Date(first, pattern);
+		Date secondDate = string2Date(second, pattern);
+		return longOfTwoDate(firstDate, secondDate);
+	}
+
+	/**
 	 * 时间差计算
 	 * 
 	 * @param time
@@ -702,6 +751,14 @@ public class TimeUtils {
 		return compareDate(date1.getTime(), date2.getTime());
 	}
 
+	/**
+	 * 比较两个时间的大小
+	 * 
+	 * @author LL
+	 * @date 2018年7月6日 上午10:25:52
+	 * @param
+	 * @return int 1:前大于后;-1:前小于后;0相等
+	 */
 	public static int compareDate(long date1, long date2) {
 		if (date1 > date2) {
 			return 1;
@@ -710,6 +767,21 @@ public class TimeUtils {
 		} else {
 			return 0;
 		}
+	}
+
+	/**
+	 * 比较两个时间的大小
+	 * 
+	 * @author LL
+	 * @date 2018年7月6日 上午10:25:52
+	 * @param
+	 * @return int 1:前大于后;-1:前小于后;0相等
+	 */
+	public static int compareDate(String date1, String date2, String pattern) {
+
+		long longDate1 = string2Millis(date1, pattern);
+		long longDate2 = string2Millis(date2, pattern);
+		return compareDate(longDate1, longDate2);
 	}
 
 	/**
@@ -795,6 +867,7 @@ public class TimeUtils {
 		String string = DEFAULT_SIMPLE_SDF.format(date);
 		return string;
 	}
+
 	/**
 	 * 获取当前时间的前30天
 	 * 
@@ -812,8 +885,6 @@ public class TimeUtils {
 		String string = DEFAULT_SIMPLE_SDF.format(date);
 		return string;
 	}
-	
-	
 
 	/**
 	 * 获取当前时间的前一天
@@ -831,5 +902,5 @@ public class TimeUtils {
 		date = calendar.getTime();
 		return date;
 	}
-	 
+
 }

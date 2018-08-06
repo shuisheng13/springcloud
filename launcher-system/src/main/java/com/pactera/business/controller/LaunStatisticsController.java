@@ -143,19 +143,27 @@ public class LaunStatisticsController {
 
 	@GetMapping("themeStatistics")
 	@ApiOperation("主题相关的统计")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "startTime", value = "开始时间"),
-			@ApiImplicitParam(name = "endTime", value = "结束时间"), @ApiImplicitParam(name = "version", value = "版本Id"),
-			@ApiImplicitParam(name = "channel", value = "渠道ID"),
-			@ApiImplicitParam(name = "type", value = "类型(0:使用次数1:平均单次使用时长2:累计车辆)"),
-			@ApiImplicitParam(name = "pageNum", value = "第几页"), @ApiImplicitParam(name = "pageSize", value = "每页条数") })
+	@ApiImplicitParams({ @ApiImplicitParam(name = "channelId", value = "渠道id"),
+			@ApiImplicitParam(name = "type", value = "查询类型") })
 
-	public ResponseEntity<ResultData> selectThemeStatistics(Long startTime, Long endTime, Long type, Long version,
-			Long channel, @RequestParam(defaultValue = "1") int pageNum,
-			@RequestParam(defaultValue = "10") int pageSize) {
+	public ResponseEntity<ResultData> selectThemeStatistics(String channelId, Integer type) {
 
-		Map<String, Object> map = launStatisticsService.selectThemeStatistics(startTime, endTime, channel, version,
-				type);
+		List<Map<String, Object>> map = launStatisticsService.selectThemeStatistics(channelId, type);
 
+		return ResponseEntity.ok(new ResultData(map));
+	}
+
+	@GetMapping("themeZheStatistics")
+	@ApiOperation("主题相关的统计")
+	@ApiImplicitParams({ @ApiImplicitParam(name = "channelIds", value = "渠道ids"),
+			@ApiImplicitParam(name = "starTime", value = "开始时间"), @ApiImplicitParam(name = "endTime", value = "结束时间") })
+
+	public ResponseEntity<ResultData> themeZheStatistics(String channelIds, String starTime, String endTime) {
+
+		// List<Map<String, Object>> map =
+		// launStatisticsService.selectThemeStatistics(channelId, type);
+
+		Map<String, Object> map = launStatisticsService.themeZheStatistics(channelIds, starTime, endTime);
 		return ResponseEntity.ok(new ResultData(map));
 	}
 

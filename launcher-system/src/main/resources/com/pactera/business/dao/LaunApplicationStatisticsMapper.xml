@@ -15,7 +15,7 @@ FROM
 <where>
  lapps.application_id = lapp.package_name
  <if test="channelId != null and channelId != ''">
- 	lapps.channel_id = #{channelId}
+ AND  lapps.channel_id = #{channelId}
  </if>
 AND lapps.application_time &gt; #{stime}
 AND lapps.application_time &lt; #{etime}

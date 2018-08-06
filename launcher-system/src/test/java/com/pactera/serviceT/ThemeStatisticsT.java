@@ -32,7 +32,9 @@ public class ThemeStatisticsT extends Tester {
 	@Autowired
 	private LaunStatisticsService launStatisticsService;
 
-	@Test
+	@Autowired
+	private LaunThemeService launThemeService;
+
 	public void testTopTheme() {
 
 		String channelId = null;
@@ -40,5 +42,34 @@ public class ThemeStatisticsT extends Tester {
 		Map<String, Object> topTheme = launStatisticsService.topTheme(channelId, type);
 
 		System.out.println(JsonUtils.ObjectToJson(topTheme));
+	}
+
+	public void testThemeStatistics() {
+
+		String channelId = null;
+		Integer type = 2;
+		List<Map<String, Object>> selectThemeStatistics = launStatisticsService.selectThemeStatistics(channelId, type);
+
+		System.out.println(JsonUtils.ObjectToJson(selectThemeStatistics));
+	}
+
+	public void testThemeStatistics1() {
+
+		String channelId = "13754Z,33HV98";
+		String stiem = "2018-07-29";
+		String etime = "2018-07-30";
+		Map<String, Object> themeZheStatistics = launStatisticsService.themeZheStatistics(channelId, stiem, etime);
+
+		System.out.println(JsonUtils.ObjectToJson(themeZheStatistics));
+	}
+
+	@Test
+	public void testThemeStatistics2() {
+
+		List<Map<String, String>> effeCount = launThemeService.getEffeCount();
+		for (Map<String, String> map : effeCount) {
+			System.out.println(map.get("channel_id"));
+			System.out.println(map.get("count"));
+		}
 	}
 }

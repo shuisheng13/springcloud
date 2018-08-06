@@ -49,15 +49,6 @@ public interface LaunStatisticsService {
 	Map<String, Object> selectCarStatistics(Long startTime, Long endTime, Long channel, String version, Long type);
 
 	/**
-	 * @description
-	 * @author liudawei 主题统计
-	 * @since 2018年5月8日 下午2:50:05
-	 * @param
-	 * @return Map<String,Object>
-	 */
-	Map<String, Object> selectThemeStatistics(Long startTime, Long endTime, Long channel, Long version, Long type);
-
-	/**
 	 * @description:widget使用情况-概览列表
 	 * @author:wangyaqun
 	 * @param version
@@ -245,5 +236,28 @@ public interface LaunStatisticsService {
 	 * @return List<LaunApplicationStatistics>
 	 */
 	Map<String, Object> topTenAppli(String channelId);
+
+	/**
+	 * 主题饼图统计
+	 * 
+	 * @author LL
+	 * @date 2018年7月31日 下午3:27:35
+	 * @param channelId渠道唯一标示
+	 * @param type类型；1昨天，2近一周，3近一个月
+	 * @return Map<String,Object>
+	 */
+	List<Map<String, Object>> selectThemeStatistics(String channelId, Integer type);
+
+	/**
+	 * 主题折线图统计
+	 * 
+	 * @author LL
+	 * @date 2018年8月2日 下午2:18:27
+	 * @param channelIds渠道ids
+	 * @param starTime开始时间
+	 * @param endTime结束时间
+	 * @return Map<String,Object>
+	 */
+	Map<String, Object> themeZheStatistics(String channelIds, String starTime, String endTime);
 
 }

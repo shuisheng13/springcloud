@@ -1,6 +1,7 @@
 package com.pactera.business.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -68,5 +69,14 @@ public interface LaunThemeMapper extends BaseMapper<LaunThemeAdministration> {
 	 * @return List<LaunThemeClassification>
 	 */
 	List<LaunThemeClassification> selectTypeList();
+
+	/**
+	 * 根据分组查询有效主题
+	 * 
+	 * @author LL
+	 * @date 2018年8月3日 下午3:59:43
+	 * @return List<Map<String,Object>>
+	 */
+	List<Map<String, String>> getEffeCount();
 
 }

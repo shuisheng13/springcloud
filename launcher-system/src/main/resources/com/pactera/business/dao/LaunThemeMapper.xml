@@ -192,5 +192,14 @@
 		lta.type_id
 	</select>
 
-
+	<select id="getEffeCount" resultType="map">
+		SELECT
+		count(1) count,lc.`name`,lc.channel_id
+		FROM
+		laun_theme_administration lta LEFT JOIN laun_channel lc ON lta.creator_channel_id = lc.id
+		WHERE
+		`status` = 2
+		GROUP BY
+		creator_channel_id
+	</select>
 </mapper>

@@ -58,6 +58,9 @@ public class LogsInterceptor implements HandlerInterceptor {
 
 	public Boolean permissionsValidation(HttpServletRequest request) {
 		String requestURI = request.getRequestURI();
+		if (requestURI.contains("widget/export"))
+			return true;
+		if(requestURI.startsWith("/statistics"))return true;
 		if(requestURI.contains("swagger") || requestURI.equals("/v2/api-docs"))return true;
 		User securityUser = securityUser();
 		if(securityUser==null)return false;

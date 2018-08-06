@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ import com.pactera.domain.LaunChannel;
 import com.pactera.domain.LaunCustomStatistics;
 import com.pactera.domain.LaunThemeStatistics;
 import com.pactera.domain.LaunWidgetStatistics;
+import com.pactera.utlis.HStringUtlis;
 import com.pactera.utlis.TimeUtils;
 
 import tk.mybatis.mapper.entity.Example;
@@ -274,9 +276,56 @@ public class LaunStatisticsServiceImpl implements LaunStatisticsService {
 	}
 
 	@Override
-	public Map<String, Object> selectThemeStatistics(Long startTime, Long endTime, Long channel, Long version,
-			Long type) {
-		return null;
+	public List<Map<String, Object>> selectThemeStatistics(String channelId, Integer type) {
+
+		List<Map<String, Object>> returnList = new LinkedList<Map<String, Object>>();
+
+		String starTime = "";
+		String endTime = "";
+		// 昨天日期
+		Date dateReckon = TimeUtils.dateReckon(new Date(), -1);
+		endTime = TimeUtils.date2String(dateReckon, "yyyy-MM-dd");
+		// 定义时间期间
+		if (type == 0) {
+			// 昨天数据
+			starTime = endTime;
+		} else if (type == 1) {
+			// 近一周数据
+			Date oneWeekBefore = TimeUtils.dateReckon(dateReckon, -7);
+			starTime = TimeUtils.date2String(oneWeekBefore, "yyyy-MM-dd");
+		} else {
+			// 近一个月数据
+			Date oneMonthBefore = TimeUtils.dateReckon(dateReckon, -3);
+			starTime = TimeUtils.date2String(oneMonthBefore, "yyyy-MM-dd");
+		}
+
+		List<LaunThemeStatistics> list = launThemeStatisticsMapper.selectThemeStatistics(channelId, starTime, endTime);
+
+		Map<String, Object> map = null;
+		int count = 0;
+		for (int i = 0; i < list.size(); i++) {
+			map = new HashMap<String, Object>();
+			LaunThemeStatistics themeStatistics = list.get(i);
+			if (i <= 4) {
+				map.put("name", themeStatistics.getTitle());
+				map.put("tiem", endTime);
+				map.put("value", themeStatistics.getCount());
+				returnList.add(map);
+
+			} else {
+				count += themeStatistics.getCount();
+			}
+		}
+
+		if (list.size() > 5) {
+			map = new HashMap<String, Object>();
+			map.put("name", "其他");
+			map.put("tiem", endTime);
+			map.put("value", count);
+			returnList.add(map);
+		}
+		return returnList;
+
 	}
 
 	/**
@@ -753,7 +802,7 @@ public class LaunStatisticsServiceImpl implements LaunStatisticsService {
 		if (list.size() > 0) {
 
 			for (LaunThemeStatistics launThemeStatistics : list) {
-				x.add(TimeUtils.date2String(launThemeStatistics.getNumStartTime(), "yyyy-MM-dd"));
+				x.add(launThemeStatistics.getNumStartTime());
 				// 5:主题使用次数
 				if (null != type && type == 5) {
 					y.add(launThemeStatistics.getCount());
@@ -1226,10 +1275,12 @@ public class LaunStatisticsServiceImpl implements LaunStatisticsService {
 		Map<String, Object> proMap = new HashMap<>();
 		if (applicationStatistics.size() > 0) {
 			for (LaunApplicationStatistics launApplicationStatistics : applicationStatistics) {
-				String returnBigDecimal = returnBigDecimal(launApplicationStatistics.getStartUpNum(), startUpNum);
-				nameList.add(launApplicationStatistics.getApplicationName());
-				proMap.put("value", launApplicationStatistics.getStartUpNum());
-				proMap.put("parent", returnBigDecimal);
+				if (startUpNum > 0) {
+					String returnBigDecimal = returnBigDecimal(launApplicationStatistics.getStartUpNum(), startUpNum);
+					nameList.add(launApplicationStatistics.getApplicationName());
+					proMap.put("value", launApplicationStatistics.getStartUpNum());
+					proMap.put("parent", returnBigDecimal);
+				}
 				proList.add(proMap);
 			}
 			map.put("x", proList);
@@ -1244,6 +1295,87 @@ public class LaunStatisticsServiceImpl implements LaunStatisticsService {
 		String carStartProp = carStatistics.divide(carStart, 2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100))
 				.toString();
 		return carStartProp + "%";
+	}
+
+	@Override
+	public Map<String, Object> themeZheStatistics(String channelIds, String starTime, String endTime) {
+
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+
+		List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
+
+		List<String> channelIdsList = null;
+		if (HStringUtlis.isNotBlank(channelIds)) {
+			channelIdsList = Arrays.asList(channelIds.split(","));
+
+		}
+		// 计算时间数组
+		List<String> timeList = new ArrayList<String>();
+
+		int longOfTwoDate = TimeUtils.longOfTwoDate(starTime, endTime, "yyyy-MM-dd");
+		for (int i = 0; i <= longOfTwoDate; i++) {
+			Date dateReckon = TimeUtils.dateReckon(starTime, i, "yyyy-MM-dd");
+			timeList.add(TimeUtils.date2String(dateReckon, "yyyy-MM-dd"));
+		}
+
+		List<LaunThemeStatistics> list = launThemeStatisticsMapper.selectHistoryEffe(channelIdsList, starTime, endTime);
+		Map<String, Map<String, LaunThemeStatistics>> groupMap = new HashMap<String, Map<String, LaunThemeStatistics>>();
+		// 根据渠道id分组
+		for (LaunThemeStatistics launThemeStatistics : list) {
+			String channelId = launThemeStatistics.getChannelName();
+			Map<String, LaunThemeStatistics> map = groupMap.get(channelId);
+			if (map != null) {
+				map.put(launThemeStatistics.getStrNumStartTime(), launThemeStatistics);
+			} else {
+				Map<String, LaunThemeStatistics> map1 = new HashMap<String, LaunThemeStatistics>();
+				map1.put(launThemeStatistics.getStrNumStartTime(), launThemeStatistics);
+				groupMap.put(channelId, map1);
+			}
+		}
+
+		Map<String, Object> returnMapOne = null;
+		for (Entry<String, Map<String, LaunThemeStatistics>> etr : groupMap.entrySet()) {
+			returnMapOne = new HashMap<>();
+			Map<String, LaunThemeStatistics> value = etr.getValue();
+			returnMapOne.put("name", etr.getKey());
+			List<Long> effeCountList = new ArrayList<Long>();
+			for (String dateStr : timeList) {
+				LaunThemeStatistics launThemeStatistics = value.get(dateStr);
+				if (launThemeStatistics != null) {
+					effeCountList.add(launThemeStatistics.getEffeTheme());
+				} else {
+					effeCountList.add(0L);
+				}
+			}
+			returnMapOne.put("data", effeCountList);
+			returnList.add(returnMapOne);
+		}
+		returnMap.put("time", timeList);
+		returnMap.put("list", returnList);
+
+		// Date nowDate = new Date();
+		// String nowString = TimeUtils.date2String(nowDate, "yyyy-MM-dd");
+		// 判断时间是否大于当天
+		// int term1 = TimeUtils.compareDate(starTime, nowString, "yyyy-MM-dd");
+		// int term2 = TimeUtils.compareDate(endTime, nowString, "yyyy-MM-dd");
+
+		return returnMap;
+	}
+
+	public static void main(String[] args) {
+		String s = "2018-07-11";
+		String e = "2018-07-15";
+		int longOfTwoDate = TimeUtils.longOfTwoDate(s, e, "yyyy-MM-dd");
+		// 计算时间数组
+		List<String> timeList = new LinkedList<String>();
+		for (int i = 0; i <= longOfTwoDate; i++) {
+			Date dateReckon = TimeUtils.dateReckon(s, i, "yyyy-MM-dd");
+			timeList.add(TimeUtils.date2String(dateReckon, "yyyy-MM-dd"));
+		}
+		for (String string : timeList) {
+			System.out.println(string);
+		}
+		System.out.println(longOfTwoDate);
 	}
 
 }

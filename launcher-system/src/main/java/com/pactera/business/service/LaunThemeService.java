@@ -1,5 +1,6 @@
 package com.pactera.business.service;
 
+import java.util.List;
 import java.util.Map;
 
 import com.github.pagehelper.PageInfo;
@@ -93,4 +94,14 @@ public interface LaunThemeService {
 	 * @return int
 	 */
 	Long updateTheme(String baseJson, String widgetJson, String themeJson, Integer saveType);
+
+	/**
+	 * 根据渠道分组查询有效主题
+	 * 
+	 * @author LL
+	 * @date 2018年8月3日 下午3:56:17
+	 * @param
+	 * @return List<Map<String,Object>>
+	 */
+	List<Map<String, String>> getEffeCount();
 }

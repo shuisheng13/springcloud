@@ -24,7 +24,7 @@ public class LaunThemeStatistics extends LaunBase {
 	private @ApiModelProperty("有效主题数") Long effeTheme;
 	private @ApiModelProperty("使用次数占比") String themeProp;
 	private @ApiModelProperty("使用车辆次数") Long countCar;
-	private @ApiModelProperty("数据产生时间") Date numStartTime;
+	private @ApiModelProperty("数据产生时间") String numStartTime;
 
 	@Transient
 	private @ApiModelProperty("日期内使用次数") String numTimeCount;
@@ -32,5 +32,9 @@ public class LaunThemeStatistics extends LaunBase {
 	private @ApiModelProperty("主题名称") String title;
 	@Transient
 	private @ApiModelProperty("累计车辆") String numCarCount;
+	@Transient
+	private @ApiModelProperty("数据产生时间") String strNumStartTime;
+	@Transient
+	private @ApiModelProperty("渠道名称") String channelName;
 
 }

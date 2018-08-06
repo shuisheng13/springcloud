@@ -250,7 +250,9 @@ public class ThemeWidgetDetail {
 			returnMap.put("height", -1);
 			returnMap.put("width", -1);
 			returnMap.put("type", 1);
-			returnMap.put("index", Integer.parseInt(jsonToMap.get("index").toString()));
+			if(jsonToMap.get("index") != null){
+				returnMap.put("index", Integer.parseInt(jsonToMap.get("index").toString()));
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new DataStoreException(ErrorStatus.PARSE_THEME_JSON);
