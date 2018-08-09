@@ -58,6 +58,14 @@ public class LaunChannelController {
 		Integer flag = launChannelService.deleteChannel(id);
 		return ResponseEntity.ok(new ResultData(flag));
 	}
+	
+	@ApiOperation("删除渠道提示")
+	@PostMapping("deleteChannelCue")
+	@ApiImplicitParam(name = "id", value = "渠道id")
+	public ResponseEntity<ResultData> deleteChannelCue(Long id) {
+		Integer flag = launChannelService.deleteChannelCue(id);
+		return ResponseEntity.ok(new ResultData(flag));
+	}
 
 	@ApiOperation("查询渠道列表")
 	@PostMapping("findChannelList")

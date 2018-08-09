@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.pagehelper.PageHelper;
 import com.pactera.business.dao.LaunChannelMapper;
+import com.pactera.business.dao.LaunThemeMapper;
 import com.pactera.business.dao.LaunUserMapper;
 import com.pactera.business.service.LaunChannelService;
 import com.pactera.business.service.LaunPermissionsService;
@@ -20,6 +21,7 @@ import com.pactera.config.security.UserUtlis;
 import com.pactera.constant.ConstantUtlis;
 import com.pactera.domain.LaunChannel;
 import com.pactera.domain.LaunPermissions;
+import com.pactera.domain.LaunThemeAdministration;
 import com.pactera.domain.LaunUser;
 import com.pactera.utlis.HStringUtlis;
 import com.pactera.utlis.IdUtlis;
@@ -40,10 +42,15 @@ public class LaunChannelServiceImpl implements LaunChannelService {
 
 	@Autowired
 	private LaunUserMapper launUserMapper;
+
 	@Autowired
 	private LaunChannelMapper launChannelMapper;
+
 	@Autowired
 	private LaunPermissionsService launPermissionsService;
+
+	@Autowired
+	private LaunThemeMapper launThemeMapper;
 
 	@Override
 	public Integer saveChannel(LaunChannel channel, Long userId, String[] permissionids) {
@@ -235,6 +242,14 @@ public class LaunChannelServiceImpl implements LaunChannelService {
 		Example example = new Example(LaunUser.class);
 		example.createCriteria().andEqualTo("channelId", channelId);
 		return launUserMapper.selectByExample(example);
+	}
+
+	@Override
+	public Integer deleteChannelCue(Long id) {
+		Example example = new Example(LaunThemeAdministration.class);
+		example.createCriteria().andEqualTo("creatorChannelId", id).andEqualTo("status", 2);
+		List<LaunThemeAdministration> selectByExample = launThemeMapper.selectByExample(example);
+		return selectByExample.size();
 	}
 
 }

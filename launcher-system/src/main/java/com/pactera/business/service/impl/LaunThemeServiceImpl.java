@@ -859,11 +859,13 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 		configService.deleteByThemeId(themeId);
 		// 保存主题浏览图
 		Map<String, String> filesJson = administration.getFilesJson();
-		Map<String, String> themeFile = saveThemeFile(filesJson, themeId);
-		String previewPath = themeFile.get("previewPath");
-		String urls = themeFile.get("urls");
-		administration.setPreviewPath(previewPath);
-		administration.setUrls(urls);
+		if (filesJson != null) {
+			Map<String, String> themeFile = saveThemeFile(filesJson, themeId);
+			String previewPath = themeFile.get("previewPath");
+			String urls = themeFile.get("urls");
+			administration.setPreviewPath(previewPath);
+			administration.setUrls(urls);
+		}
 		/**
 		 * 当save为0时，只是保存widget。只保存对应json数据 当save为1是，保存整个主题，执行后续结构化数据及打包过程
 		 */

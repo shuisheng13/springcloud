@@ -286,16 +286,16 @@ public class LaunStatisticsServiceImpl implements LaunStatisticsService {
 		Date dateReckon = TimeUtils.dateReckon(new Date(), -1);
 		endTime = TimeUtils.date2String(dateReckon, "yyyy-MM-dd");
 		// 定义时间期间
-		if (type == 0) {
+		if (type == 1) {
 			// 昨天数据
 			starTime = endTime;
-		} else if (type == 1) {
+		} else if (type == 2) {
 			// 近一周数据
 			Date oneWeekBefore = TimeUtils.dateReckon(dateReckon, -7);
 			starTime = TimeUtils.date2String(oneWeekBefore, "yyyy-MM-dd");
 		} else {
 			// 近一个月数据
-			Date oneMonthBefore = TimeUtils.dateReckon(dateReckon, -3);
+			Date oneMonthBefore = TimeUtils.dateReckon(dateReckon, -30);
 			starTime = TimeUtils.date2String(oneMonthBefore, "yyyy-MM-dd");
 		}
 

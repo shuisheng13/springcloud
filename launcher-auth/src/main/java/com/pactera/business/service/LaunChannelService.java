@@ -129,4 +129,14 @@ public interface LaunChannelService {
 	 */
 	List<LaunUser> findUserByChannelId(Long channelId);
 
+	/**
+	 * 删除渠道提示语
+	 * 
+	 * @author LL
+	 * @date 2018年8月8日 下午3:12:58
+	 * @param id渠道主键id
+	 * @return Integer
+	 */
+	Integer deleteChannelCue(Long id);
+
 }
