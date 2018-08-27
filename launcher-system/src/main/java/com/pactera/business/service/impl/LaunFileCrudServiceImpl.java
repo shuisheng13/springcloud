@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,11 +30,15 @@ public class LaunFileCrudServiceImpl implements LaunFileCrudService {
 	@Autowired
 	public FastFileStorageClient fastFileStorageClient;
 
+	@Value("${system.conf.themeTemp}")
+	private String themeConfigUrl;
+
 	@Override
 	public String fileUpload(MultipartFile file) {
 		String returnPath = null;
 		String originalFilename = file.getOriginalFilename();
 		String fileName = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+
 		try {
 			returnPath = upload(file.getInputStream(), file.getSize(), fileName, null);
 		} catch (IOException e) {
@@ -41,6 +46,25 @@ public class LaunFileCrudServiceImpl implements LaunFileCrudService {
 			throw new DataStoreException(ErrorStatus.FASTDFS_ERROR);
 		}
 		return returnPath;
+	}
+
+	/**
+	 * 将MultipartFile转化为file并保存到服务器上的某地
+	 */
+	public String SaveFileFromInputStream(InputStream stream, String savefile) throws IOException {
+		String filePaht = themeConfigUrl + File.separator + savefile;
+		FileOutputStream fs = new FileOutputStream(filePaht);
+		byte[] buffer = new byte[1024 * 1024];
+		int bytesum = 0;
+		int byteread = 0;
+		while ((byteread = stream.read(buffer)) != -1) {
+			bytesum += byteread;
+			fs.write(buffer, 0, byteread);
+			fs.flush();
+		}
+		fs.close();
+		stream.close();
+		return filePaht;
 	}
 
 	@Override

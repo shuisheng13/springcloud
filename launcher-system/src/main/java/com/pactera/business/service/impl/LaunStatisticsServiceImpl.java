@@ -25,6 +25,7 @@ import com.pactera.business.dao.LaunChannelMapper;
 import com.pactera.business.dao.LaunCustomStatisticsMapper;
 import com.pactera.business.dao.LaunThemeStatisticsMapper;
 import com.pactera.business.dao.LaunWidgetStatisticsMapper;
+import com.pactera.business.service.LaunChannelService;
 import com.pactera.business.service.LaunStatisticsService;
 import com.pactera.constant.ConstantUtlis;
 import com.pactera.domain.LaunAdverStatistics;
@@ -35,6 +36,7 @@ import com.pactera.domain.LaunCustomStatistics;
 import com.pactera.domain.LaunThemeStatistics;
 import com.pactera.domain.LaunWidgetStatistics;
 import com.pactera.utlis.HStringUtlis;
+import com.pactera.utlis.HttpClientUtil;
 import com.pactera.utlis.TimeUtils;
 
 import tk.mybatis.mapper.entity.Example;
@@ -43,6 +45,9 @@ import tk.mybatis.mapper.entity.Example.Criteria;
 @Service
 @Transactional
 public class LaunStatisticsServiceImpl implements LaunStatisticsService {
+
+	@Autowired
+	private LaunChannelService launChannelService;
 
 	@Autowired
 	private LaunChannelMapper launChannelMapper;
@@ -676,6 +681,49 @@ public class LaunStatisticsServiceImpl implements LaunStatisticsService {
 	 */
 	@Override
 	public LaunCarStatistics yesCar(String channelId) {
+
+		//
+		Map<String, Long> returnMap = new HashMap<String, Long>();
+		returnMap.put("carNum", 0L);// 每日新增车辆
+		returnMap.put("carActive", 0L);// 活跃吃凉
+		returnMap.put("carStart", 0L);// 启动次数
+		returnMap.put("addUpNum", 0L);// 累计车辆
+		// 获取渠道信息集合
+		List<LaunChannel> channelList = launChannelService.findAll(null);
+
+		Map<String, String> map = new HashMap<String, String>();
+		// 接口地址
+		String httpUrl = "";
+		String params = "";
+		String res = "";
+
+		for (LaunChannel launChannel : channelList) {
+			map.put("channelId", launChannel.getChannelId());
+			params = HttpClientUtil.convertStringParamter(map);
+			res = HttpClientUtil.sendHttpGet(httpUrl, params);
+
+			List<LaunCarStatistics> list = new ArrayList<>();
+
+			for (LaunCarStatistics launCarStatistics : list) {
+				Long addUpNum = launCarStatistics.getAddUpNum();
+				Long carNum = launCarStatistics.getCarNum();
+				Long carActive = launCarStatistics.getCarActive();
+				Long carStart = launCarStatistics.getCarStart();
+				if (addUpNum != null) {
+					returnMap.put("addUpNum", returnMap.get("addUpNum") + addUpNum);
+				}
+				if (carNum != null) {
+					returnMap.put("carNum", returnMap.get("carNum") + addUpNum);
+				}
+				if (carActive != null) {
+					returnMap.put("carActive", returnMap.get("carActive") + addUpNum);
+				}
+				if (carStart != null) {
+					returnMap.put("carStart", returnMap.get("carStart") + addUpNum);
+				}
+			}
+		}
+
 		String nextDay = TimeUtils.date2String(new Date(), "yyyy-MM-dd");
 		String stime = nextDay + " 00:00:00";
 		String etime = nextDay + " 23:59:59";

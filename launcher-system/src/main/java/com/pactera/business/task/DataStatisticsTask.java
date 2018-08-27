@@ -1,42 +1,37 @@
 package com.pactera.business.task;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pactera.business.dao.LaunThemeMapper;
 import com.pactera.business.dao.LaunThemeStatisticsMapper;
 import com.pactera.business.service.LaunChannelService;
+import com.pactera.business.service.LaunTaskService;
 import com.pactera.business.service.LaunThemeService;
+import com.pactera.business.service.LaunWidgetManagerService;
 import com.pactera.domain.LaunChannel;
 import com.pactera.domain.LaunThemeAdministration;
 import com.pactera.domain.LaunThemeStatistics;
-import com.pactera.utlis.HttpClientUtil;
 import com.pactera.utlis.TimeUtils;
-import com.pactera.vo.MsgResponseVO;
+import com.pactera.vo.LaunAttributeVo;
 
 import tk.mybatis.mapper.entity.Example;
 
 @Component
 public class DataStatisticsTask {
 
-	private static ObjectMapper mapper = new ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-
 	@Autowired
 	private LaunThemeService launThemeService;
 
 	@Autowired
-	private LaunThemeMapper launThemeMapper;
+	private LaunTaskService launTaskService;
 
 	@Autowired
 	private LaunThemeStatisticsMapper launThemeStatisticsMapper;
@@ -44,37 +39,48 @@ public class DataStatisticsTask {
 	@Autowired
 	private LaunChannelService launChannelService;
 
+	@Autowired
+	private LaunWidgetManagerService launWidgetManagerService;
+
 	/**
-	 * 定时获取每日主题使用数据（每天凌晨2点 ）
+	 * 定时获取每日使用数据（每天凌晨0点1分）
 	 * 
 	 * @author LL
 	 * @date 2018年7月31日 下午2:49:33
 	 * @return void
 	 */
 	// @Scheduled(cron = "${task.cron.getThemeStatistics}")
-	public void getThemeStatistics() {
+	public void taskStatistics() {
 
-		// 接口地址
-		String httpUrl = "";
-		// 接口参数
-		String params = "";
-		String res = HttpClientUtil.sendHttpGet(httpUrl, params);
+		// 获取渠道信息集合
+		List<LaunChannel> channelList = launChannelService.findAll(null);
 
-		try {
-			MsgResponseVO<LaunThemeStatistics> readValue = mapper.readValue(res,
-					new TypeReference<MsgResponseVO<LaunThemeStatistics>>() {
-					});
+		// 获取版本信息集合
+		List<LaunAttributeVo> findWidgetVersion = launWidgetManagerService.findWidgetVersion();
+		List<String> versionList = findWidgetVersion.stream().map(LaunAttributeVo::getAttributeValue)
+				.collect(Collectors.toList());
 
-			if (readValue != null && "200".equals(readValue.getCode())) {
-				List<LaunThemeStatistics> list = readValue.getData();
-
-				// 业务逻辑处理
-			}
-
-			// 业务逻辑
-		} catch (IOException e) {
-			e.printStackTrace();
+		// 获取请求数据时间集合
+		List<String> timeList = new ArrayList<String>();
+		List<Date> dateList = new ArrayList<Date>();
+		Date now = new Date();
+		for (int i = 1; i <= 7; i++) {
+			String date2String = TimeUtils.date2String(TimeUtils.dateReckon(now, -i), "yyyy-MM-dd");
+			timeList.add(date2String);
+			dateList.add(TimeUtils.dateReckon(now, -i));
 		}
+
+		// 执行主体统计
+		launTaskService.themeTaskStatistics(channelList, timeList);
+		// 执行车辆统计
+		launTaskService.carTaskStatistics(channelList, versionList, dateList);
+		// 执行应用统计
+		launTaskService.applicationTaskStatistics(channelList, versionList, dateList);
+		// 执行广告统计
+		launTaskService.adverTaskStatistics(dateList);
+		// 执行widget统计
+		launTaskService.widgetTaskStatistics(channelList, versionList, dateList);
+
 	}
 
 	public void test() {
@@ -93,7 +99,7 @@ public class DataStatisticsTask {
 
 		Date now = new Date();
 		for (int i = 0; i < 30; i++) {
-			String dateStr = TimeUtils.date2String(TimeUtils.dateReckon(now, 0), "yyyy-MM-dd");
+			String dateStr = TimeUtils.date2String(TimeUtils.dateReckon(now, i), "yyyy-MM-dd");
 			dateList.add(dateStr);
 		}
 
