@@ -134,7 +134,7 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 			}
 			message = widget.getId() + "";
 		} catch (Exception e) {
-			log.error("【保存widget】异常");
+			log.error("【保存widget】异常:----{}",e);
 			throw new DataStoreException(ErrorStatus.WIDGETPARSE_ERROR);
 		}
 
@@ -150,7 +150,7 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 			json = widgetToJson.widget2json(widget);
 		} catch (Exception e) {
 			json = "系统异常";
-			log.error("【获取widget】异常");
+			log.error("【获取widget】异常----{}",e);
 			throw new DataStoreException(ErrorStatus.SYS_ERROR);
 		}
 		return json;
@@ -219,7 +219,7 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 		} catch (Exception e) {
 			// message = "系统错误！";
 			status = 0;
-			log.error("【修改widget】异常");
+			log.error("【修改widget】异常----{}",e);
 			throw new DataStoreException(ErrorStatus.SYS_ERROR);
 		}
 		return status;
@@ -289,7 +289,7 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 			}
 		} catch (Exception e) {
 			// message = "系统错误！";
-			log.error("【保存widget】异常");
+			log.error("【保存widget】异常----{}",e);
 			status = 0;
 			throw new DataStoreException(ErrorStatus.SYS_ERROR);
 		}
@@ -369,7 +369,7 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 			storePath = fastFileStorageClient.uploadFile(file.getInputStream(), file.getSize(),
 					FilenameUtils.getExtension(file.getOriginalFilename()), null);
 		} catch (Exception e) {
-			log.error("【fastdfs服务】异常");
+			log.error("【fastdfs服务】异常--{}",e);
 			message = ErrorStatus.FASTDFS_ERROR.message();
 			throw new RuntimeException();
 		}
@@ -413,7 +413,7 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 			storePath = fastFileStorageClient.uploadFile(file.getInputStream(), file.getSize(),
 					FilenameUtils.getExtension(file.getOriginalFilename()), null);
 		} catch (Exception e) {
-			log.error("【fastdfs服务】异常");
+			log.error("【fastdfs服务】异常----{}",e);
 			message = ErrorStatus.FASTDFS_ERROR.message();
 			throw new DataStoreException(ErrorStatus.FASTDFS_ERROR);
 		}
@@ -484,7 +484,7 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 			descDir = descDir + File.separator + filename;
 			stream.write(bytes);
 		} catch (Exception e) {
-			log.error("【fastdfs服务】异常");
+			log.error("【fastdfs服务】异常----{}",e);
 			throw new DataStoreException(ErrorStatus.FASTDFS_ERROR);
 		}
 		return descDir;
