@@ -100,8 +100,8 @@ public class TokenClientConfig extends ResourceServerConfigurerAdapter {
 							if (HStringUtlis.isNotBlank(token) && HStringUtlis.isNotBlank(tokenValue)
 									&& tokenValue.equalsIgnoreCase(token)) {
 								redisTemplate.delete(token);
-								System.out.println("用户已在其他地方登陆");
-								oAuth2Exception = new OAuth2Exception("用户已在其他地方登陆");
+								System.out.println("用户已在其他地方登录");
+								oAuth2Exception = new OAuth2Exception("用户已在其他地方登录");
 							}
 						}
 					}

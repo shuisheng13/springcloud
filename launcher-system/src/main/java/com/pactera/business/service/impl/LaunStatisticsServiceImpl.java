@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,9 +24,9 @@ import com.pactera.business.dao.LaunApplicationStatisticsMapper;
 import com.pactera.business.dao.LaunCarStatisticsMapper;
 import com.pactera.business.dao.LaunChannelMapper;
 import com.pactera.business.dao.LaunCustomStatisticsMapper;
+import com.pactera.business.dao.LaunThemeEffeMapper;
 import com.pactera.business.dao.LaunThemeStatisticsMapper;
 import com.pactera.business.dao.LaunWidgetStatisticsMapper;
-import com.pactera.business.service.LaunChannelService;
 import com.pactera.business.service.LaunStatisticsService;
 import com.pactera.constant.ConstantUtlis;
 import com.pactera.domain.LaunAdverStatistics;
@@ -33,10 +34,10 @@ import com.pactera.domain.LaunApplicationStatistics;
 import com.pactera.domain.LaunCarStatistics;
 import com.pactera.domain.LaunChannel;
 import com.pactera.domain.LaunCustomStatistics;
+import com.pactera.domain.LaunThemeEffe;
 import com.pactera.domain.LaunThemeStatistics;
 import com.pactera.domain.LaunWidgetStatistics;
 import com.pactera.utlis.HStringUtlis;
-import com.pactera.utlis.HttpClientUtil;
 import com.pactera.utlis.TimeUtils;
 
 import tk.mybatis.mapper.entity.Example;
@@ -46,8 +47,9 @@ import tk.mybatis.mapper.entity.Example.Criteria;
 @Transactional
 public class LaunStatisticsServiceImpl implements LaunStatisticsService {
 
-	@Autowired
-	private LaunChannelService launChannelService;
+	/*
+	 * @Autowired private LaunChannelService launChannelService;
+	 */
 
 	@Autowired
 	private LaunChannelMapper launChannelMapper;
@@ -69,6 +71,12 @@ public class LaunStatisticsServiceImpl implements LaunStatisticsService {
 
 	@Autowired
 	private LaunAdverStatisticsMapper adverStatisticsMapper;
+
+	@Autowired
+	private LaunThemeEffeMapper launThemeEffeMapper;
+
+	@Autowired
+	private ValueOperations<String, Object> valueOperations;
 
 	/**
 	 * 查询渠道列表
@@ -679,61 +687,27 @@ public class LaunStatisticsServiceImpl implements LaunStatisticsService {
 	 * @since 2018年7月13日 下午4:11:08
 	 * @param
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public LaunCarStatistics yesCar(String channelId) {
+	public Map<String, Long> yesCar(String channelId) {
 
-		//
-		Map<String, Long> returnMap = new HashMap<String, Long>();
-		returnMap.put("carNum", 0L);// 每日新增车辆
-		returnMap.put("carActive", 0L);// 活跃吃凉
-		returnMap.put("carStart", 0L);// 启动次数
-		returnMap.put("addUpNum", 0L);// 累计车辆
-		// 获取渠道信息集合
-		List<LaunChannel> channelList = launChannelService.findAll(null);
+		/*
+		 * String nextDay = TimeUtils.date2String(new Date(), "yyyy-MM-dd");
+		 * String stime = nextDay + " 00:00:00"; String etime = nextDay +
+		 * " 23:59:59"; LaunCarStatistics carStatistics = null; if (null !=
+		 * channelId && !"".equals(channelId)) { carStatistics =
+		 * carStatisticsMapper.selectYesCar(channelId, stime, etime); } else {
+		 * carStatistics = carStatisticsMapper.selectYesCarByChannelId(stime,
+		 * etime); }
+		 */
+		String key = ConstantUtlis.TODAY_STATISTICS;
+		if (HStringUtlis.isNotBlank(channelId)) {
 
-		Map<String, String> map = new HashMap<String, String>();
-		// 接口地址
-		String httpUrl = "";
-		String params = "";
-		String res = "";
-
-		for (LaunChannel launChannel : channelList) {
-			map.put("channelId", launChannel.getChannelId());
-			params = HttpClientUtil.convertStringParamter(map);
-			res = HttpClientUtil.sendHttpGet(httpUrl, params);
-
-			List<LaunCarStatistics> list = new ArrayList<>();
-
-			for (LaunCarStatistics launCarStatistics : list) {
-				Long addUpNum = launCarStatistics.getAddUpNum();
-				Long carNum = launCarStatistics.getCarNum();
-				Long carActive = launCarStatistics.getCarActive();
-				Long carStart = launCarStatistics.getCarStart();
-				if (addUpNum != null) {
-					returnMap.put("addUpNum", returnMap.get("addUpNum") + addUpNum);
-				}
-				if (carNum != null) {
-					returnMap.put("carNum", returnMap.get("carNum") + addUpNum);
-				}
-				if (carActive != null) {
-					returnMap.put("carActive", returnMap.get("carActive") + addUpNum);
-				}
-				if (carStart != null) {
-					returnMap.put("carStart", returnMap.get("carStart") + addUpNum);
-				}
-			}
+			key = ConstantUtlis.TODAY_STATISTICS + channelId;
 		}
 
-		String nextDay = TimeUtils.date2String(new Date(), "yyyy-MM-dd");
-		String stime = nextDay + " 00:00:00";
-		String etime = nextDay + " 23:59:59";
-		LaunCarStatistics carStatistics = null;
-		if (null != channelId && !"".equals(channelId)) {
-			carStatistics = carStatisticsMapper.selectYesCar(channelId, stime, etime);
-		} else {
-			carStatistics = carStatisticsMapper.selectYesCarByChannelId(stime, etime);
-		}
-		return carStatistics;
+		Map<String, Long> object = (Map<String, Long>) valueOperations.get(key);
+		return object;
 	}
 
 	/**
@@ -750,10 +724,12 @@ public class LaunStatisticsServiceImpl implements LaunStatisticsService {
 		if (null != type && (type == 1 || type == 2 || type == 3 || type == 4)) {
 			map = returnCarStatis(channelId, type);
 		}
-		if (null != type && (type == 5 || type == 6)) {
+		if (null != type && type == 6) {// 6:有效主题
+			map = returnEffeTheme(channelId, type);
+		}
+		if (null != type && type == 5) {// 5:主题使用次数
 			map = returnCarTheme(channelId, type);
 		}
-
 		if (null != type && (type == 7 || type == 8)) {
 			map = returnAdver(channelId, type);
 		}
@@ -834,32 +810,43 @@ public class LaunStatisticsServiceImpl implements LaunStatisticsService {
 		return map;
 	}
 
+	public Map<String, Object> returnEffeTheme(String channelId, Long type) {
+		Map<String, Object> map = new HashMap<>();
+		Date now = new Date();
+		String stime = TimeUtils.date2String(TimeUtils.dateReckon(now, -31), "yyyy-MM-dd");
+		String etime = TimeUtils.date2String(TimeUtils.dateReckon(now, -1), "yyyy-MM-dd");
+
+		List<LaunThemeEffe> list = launThemeEffeMapper.selectHistoryEffeOne(channelId, stime, etime);
+		List<String> x = new ArrayList<>();
+		List<Object> y = new ArrayList<>();
+		if (list.size() > 0) {
+
+			for (LaunThemeEffe launThemeEffe : list) {
+				x.add(launThemeEffe.getNumStartTime());
+				// 5:主题使用次数
+				y.add(launThemeEffe.getEffeTheme());
+
+			}
+		}
+		map.put("x", x);
+		map.put("y", y);
+		return map;
+	}
+
 	public Map<String, Object> returnCarTheme(String channelId, Long type) {
 		Map<String, Object> map = new HashMap<>();
-		String nextSanDay = TimeUtils.getNextSanDay(new Date());
-		String stime = nextSanDay + " 00:00:00";
-		String etime = TimeUtils.date2String(new Date(), "yyyy-MM-dd") + " 23:59:59";
-		List<LaunThemeStatistics> list = new ArrayList<>();
-		if (null != channelId && !"".equals(channelId)) {
-			list = launThemeStatisticsMapper.selectByType(channelId, type, stime, etime);
-		} else {
-			list = launThemeStatisticsMapper.selectByChannelIdNull(stime, etime);
-		}
+		Date now = new Date();
+		String stime = TimeUtils.date2String(TimeUtils.dateReckon(now, -31), "yyyy-MM-dd");
+		String etime = TimeUtils.date2String(TimeUtils.dateReckon(now, -1), "yyyy-MM-dd");
+
+		List<LaunThemeStatistics> list = launThemeStatisticsMapper.selectByType(channelId, stime, etime);
 		List<String> x = new ArrayList<>();
 		List<Object> y = new ArrayList<>();
 		if (list.size() > 0) {
 
 			for (LaunThemeStatistics launThemeStatistics : list) {
 				x.add(launThemeStatistics.getNumStartTime());
-				// 5:主题使用次数
-				if (null != type && type == 5) {
-					y.add(launThemeStatistics.getCount());
-				}
-				// 6:有效主题
-				if (null != type && type == 6) {
-					y.add(launThemeStatistics.getEffeTheme());
-
-				}
+				y.add(launThemeStatistics.getCount());
 
 			}
 		}
@@ -917,9 +904,8 @@ public class LaunStatisticsServiceImpl implements LaunStatisticsService {
 		Map<String, Object> returnMap = new HashMap<String, Object>();
 
 		Date date = new Date();
-		String timeString = TimeUtils.date2String(date, "yyyy-MM-dd");
-		Date dateReckon = TimeUtils.dateReckon(date, -1);
-		String yesTimeString = TimeUtils.date2String(dateReckon, "yyyy-MM-dd");
+		String timeString = TimeUtils.date2String(TimeUtils.dateReckon(date, -1), "yyyy-MM-dd");
+		String yesTimeString = TimeUtils.date2String(TimeUtils.dateReckon(date, -2), "yyyy-MM-dd");
 
 		// 查询今日主题排行
 		List<LaunThemeStatistics> list = launThemeStatisticsMapper.selectTopTheme(timeString, channelId, 1);
@@ -1004,9 +990,11 @@ public class LaunStatisticsServiceImpl implements LaunStatisticsService {
 			} else if (type == 2) {
 				count = launThemeStatistics.getCountCar();
 			}
-			String returnBigDecimal = returnBigDecimal(count, sumCount);
-			oneStatistics.put("parent", returnBigDecimal);
-			oneStatistics.put("value", count);
+			if (sumCount.longValue() != 0) {
+				String returnBigDecimal = returnBigDecimal(count, sumCount);
+				oneStatistics.put("parent", returnBigDecimal);
+				oneStatistics.put("value", count);
+			}
 			returnMap.add(oneStatistics);
 		}
 		return returnMap;
@@ -1366,31 +1354,32 @@ public class LaunStatisticsServiceImpl implements LaunStatisticsService {
 			timeList.add(TimeUtils.date2String(dateReckon, "yyyy-MM-dd"));
 		}
 
-		List<LaunThemeStatistics> list = launThemeStatisticsMapper.selectHistoryEffe(channelIdsList, starTime, endTime);
-		Map<String, Map<String, LaunThemeStatistics>> groupMap = new HashMap<String, Map<String, LaunThemeStatistics>>();
+		List<LaunThemeEffe> list = launThemeEffeMapper.selectHistoryEffe(channelIdsList, starTime, endTime);
+
+		Map<String, Map<String, LaunThemeEffe>> groupMap = new HashMap<String, Map<String, LaunThemeEffe>>();
 		// 根据渠道id分组
-		for (LaunThemeStatistics launThemeStatistics : list) {
-			String channelId = launThemeStatistics.getChannelName();
-			Map<String, LaunThemeStatistics> map = groupMap.get(channelId);
+		for (LaunThemeEffe launThemeEffe : list) {
+			String channelId = launThemeEffe.getChannelName();
+			Map<String, LaunThemeEffe> map = groupMap.get(channelId);
 			if (map != null) {
-				map.put(launThemeStatistics.getStrNumStartTime(), launThemeStatistics);
+				map.put(launThemeEffe.getNumStartTime(), launThemeEffe);
 			} else {
-				Map<String, LaunThemeStatistics> map1 = new HashMap<String, LaunThemeStatistics>();
-				map1.put(launThemeStatistics.getStrNumStartTime(), launThemeStatistics);
+				Map<String, LaunThemeEffe> map1 = new HashMap<String, LaunThemeEffe>();
+				map1.put(launThemeEffe.getNumStartTime(), launThemeEffe);
 				groupMap.put(channelId, map1);
 			}
 		}
 
 		Map<String, Object> returnMapOne = null;
-		for (Entry<String, Map<String, LaunThemeStatistics>> etr : groupMap.entrySet()) {
+		for (Entry<String, Map<String, LaunThemeEffe>> etr : groupMap.entrySet()) {
 			returnMapOne = new HashMap<>();
-			Map<String, LaunThemeStatistics> value = etr.getValue();
+			Map<String, LaunThemeEffe> value = etr.getValue();
 			returnMapOne.put("name", etr.getKey());
 			List<Long> effeCountList = new ArrayList<Long>();
 			for (String dateStr : timeList) {
-				LaunThemeStatistics launThemeStatistics = value.get(dateStr);
-				if (launThemeStatistics != null) {
-					effeCountList.add(launThemeStatistics.getEffeTheme());
+				LaunThemeEffe launThemeEffe = value.get(dateStr);
+				if (launThemeEffe != null) {
+					effeCountList.add(launThemeEffe.getEffeTheme());
 				} else {
 					effeCountList.add(0L);
 				}

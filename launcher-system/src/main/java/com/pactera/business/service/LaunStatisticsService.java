@@ -169,7 +169,7 @@ public interface LaunStatisticsService {
 	 * @param
 	 * @return LaunCarStatistics
 	 */
-	LaunCarStatistics yesCar(String channelId);
+	Map<String, Long> yesCar(String channelId);
 
 	/**
 	 * 近30天的趋势

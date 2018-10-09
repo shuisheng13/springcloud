@@ -55,10 +55,10 @@ public class LaunFileCrudServiceImpl implements LaunFileCrudService {
 		String filePaht = themeConfigUrl + File.separator + savefile;
 		FileOutputStream fs = new FileOutputStream(filePaht);
 		byte[] buffer = new byte[1024 * 1024];
-		int bytesum = 0;
+		// int bytesum = 0;
 		int byteread = 0;
 		while ((byteread = stream.read(buffer)) != -1) {
-			bytesum += byteread;
+			// bytesum += byteread;
 			fs.write(buffer, 0, byteread);
 			fs.flush();
 		}
@@ -75,14 +75,21 @@ public class LaunFileCrudServiceImpl implements LaunFileCrudService {
 		StorePath storePath = StorePath.praseFromUrl(path);
 		String group = storePath.getGroup();
 		String pathUrl = storePath.getPath();
+
+		FileOutputStream stream = null;
 		try {
 			byte[] bytes = fastFileStorageClient.downloadFile(group, pathUrl, new DownloadByteArray());
-			@SuppressWarnings("resource")
-			FileOutputStream stream = new FileOutputStream(goalFilePath);
+			stream = new FileOutputStream(goalFilePath);
 			stream.write(bytes);
 		} catch (Exception e) {
 			log.error("文件下载异常{}", e);
 			throw new DataStoreException(ErrorStatus.FASTDFS_ERROR);
+		} finally {
+			try {
+				stream.close();
+			} catch (IOException e) {
+				log.error("【文件下载】流关闭异常{}", e);
+			}
 		}
 		return goalFilePath;
 	}
@@ -119,7 +126,14 @@ public class LaunFileCrudServiceImpl implements LaunFileCrudService {
 	 */
 	@Override
 	public String upload(InputStream inputStream, Long fileSize, String fileName, Set<MateData> metaDataSet) {
-		StorePath storePath = fastFileStorageClient.uploadFile(inputStream, fileSize, fileName, metaDataSet);
+		StorePath storePath = null;
+		try {
+			storePath = fastFileStorageClient.uploadFile(inputStream, fileSize, fileName, metaDataSet);
+			inputStream.close();
+		} catch (IOException e) {
+			log.error("---------upload file close stream ERROR--------------------");
+			throw new DataStoreException(ErrorStatus.FASTDFS_ERROR);
+		}
 		return storePath.getFullPath();
 	}
 }

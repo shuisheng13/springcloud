@@ -266,7 +266,7 @@ public class LaunStatisticsController {
 	@ApiOperation("整体概况的今日概况")
 	@ApiImplicitParam(name = "channelId", value = "渠道id")
 	public ResponseEntity<ResultData> yesCar(String channelId) {
-		LaunCarStatistics carStatistics = launStatisticsService.yesCar(channelId);
+		Map<String, Long> carStatistics = launStatisticsService.yesCar(channelId);
 		return ResponseEntity.ok(new ResultData(carStatistics));
 	}
 

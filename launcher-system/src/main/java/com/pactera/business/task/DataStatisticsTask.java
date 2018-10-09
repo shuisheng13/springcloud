@@ -9,23 +9,31 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.pactera.business.dao.LaunThemeStatisticsMapper;
+import com.pactera.business.dao.LaunThemeEffeMapper;
+import com.pactera.business.dao.LaunThemeMapper;
 import com.pactera.business.service.LaunChannelService;
 import com.pactera.business.service.LaunTaskService;
 import com.pactera.business.service.LaunThemeService;
 import com.pactera.business.service.LaunWidgetManagerService;
 import com.pactera.domain.LaunChannel;
 import com.pactera.domain.LaunThemeAdministration;
+import com.pactera.domain.LaunThemeEffe;
 import com.pactera.domain.LaunThemeStatistics;
 import com.pactera.utlis.TimeUtils;
 import com.pactera.vo.LaunAttributeVo;
 
 import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
 
 @Component
 public class DataStatisticsTask {
+
+	@Autowired
+	private LaunThemeMapper launThemeMapper;
 
 	@Autowired
 	private LaunThemeService launThemeService;
@@ -34,7 +42,7 @@ public class DataStatisticsTask {
 	private LaunTaskService launTaskService;
 
 	@Autowired
-	private LaunThemeStatisticsMapper launThemeStatisticsMapper;
+	private LaunThemeEffeMapper launThemeEffeMapper;
 
 	@Autowired
 	private LaunChannelService launChannelService;
@@ -43,13 +51,14 @@ public class DataStatisticsTask {
 	private LaunWidgetManagerService launWidgetManagerService;
 
 	/**
-	 * 定时获取每日使用数据（每天凌晨0点1分）
+	 * 定时获取每日使用数据（每天凌晨1点）
 	 * 
 	 * @author LL
 	 * @date 2018年7月31日 下午2:49:33
 	 * @return void
 	 */
-	// @Scheduled(cron = "${task.cron.getThemeStatistics}")
+	@Scheduled(cron = "${task.cron.getTodayStatistics}")
+	@Async
 	public void taskStatistics() {
 
 		// 获取渠道信息集合
@@ -65,12 +74,12 @@ public class DataStatisticsTask {
 		List<Date> dateList = new ArrayList<Date>();
 		Date now = new Date();
 		for (int i = 1; i <= 7; i++) {
-			String date2String = TimeUtils.date2String(TimeUtils.dateReckon(now, -i), "yyyy-MM-dd");
+			String date2String = TimeUtils.date2String(TimeUtils.dateReckon(now, -i), "yyyyMMdd");
 			timeList.add(date2String);
 			dateList.add(TimeUtils.dateReckon(now, -i));
 		}
 
-		// 执行主体统计
+		// 执行主题统计
 		launTaskService.themeTaskStatistics(channelList, timeList);
 		// 执行车辆统计
 		launTaskService.carTaskStatistics(channelList, versionList, dateList);
@@ -81,46 +90,89 @@ public class DataStatisticsTask {
 		// 执行widget统计
 		launTaskService.widgetTaskStatistics(channelList, versionList, dateList);
 
+		insertThirtyEffeTheme();
 	}
 
-	public void test() {
-		// 拿到当前有效主题list
-		List<LaunThemeAdministration> list = new ArrayList<LaunThemeAdministration>();
-		for (LaunThemeAdministration theme : list) {
+	/**
+	 * 今日概况数据获取（半个小时）
+	 * 
+	 * @author LL
+	 * @date 2018年7月31日 下午2:49:33
+	 * @return void
+	 */
+	@Scheduled(cron = "${task.cron.getThemeStatistics}")
+	@Async
+	public void taskTodayNum() {
+		// 获取渠道信息集合
+		List<LaunChannel> channelList = launChannelService.findAll(null);
+		// 执行widget统计
+		launTaskService.todayTaskStatistics(channelList);
+	}
 
-		}
-
-		Map<String, Map<String, LaunThemeStatistics>> map = new HashMap<>();
+	public void insertThirtyEffeTheme() {
 		/**
 		 * 初始化30天的数据。
 		 */
 		// 30天日期
-		List<String> dateList = new ArrayList<>();
+		List<Date> dateList = new ArrayList<>();
 
+		// 创建后30天的map集合
 		Date now = new Date();
 		for (int i = 0; i < 30; i++) {
-			String dateStr = TimeUtils.date2String(TimeUtils.dateReckon(now, i), "yyyy-MM-dd");
-			dateList.add(dateStr);
+			Date dateReckon = TimeUtils.dateReckon(now, i);
+			dateList.add(dateReckon);
+		}
+
+		Example example = new Example(LaunThemeAdministration.class);
+		Criteria createCriteria = example.createCriteria();
+		createCriteria.andEqualTo("status", 2);
+
+		Map<Long, List<LaunThemeAdministration>> channelThemeMap = new HashMap<Long, List<LaunThemeAdministration>>();
+		List<LaunThemeAdministration> list = launThemeMapper.selectByExample(example);
+		for (LaunThemeAdministration theme : list) {
+			List<LaunThemeAdministration> list2 = channelThemeMap.get(theme.getCreatorChannelId());
+			if (list2 == null) {
+				list2 = new ArrayList<>();
+				list2.add(theme);
+			} else {
+				list2.add(theme);
+
+			}
+			channelThemeMap.put(theme.getCreatorChannelId(), list2);
 		}
 
 		List<LaunChannel> findAll = launChannelService.findAll(null);
 
-		Map<String, LaunThemeStatistics> date2Theme = new HashMap<>();
-		LaunThemeStatistics oneObj = null;
+		LaunThemeEffe record = null;
 		for (LaunChannel launChannel : findAll) {
-			for (String string : dateList) {
-				oneObj = new LaunThemeStatistics();
-				oneObj.setChannelId(launChannel.getChannelId());
-				oneObj.setEffeTheme(0L);
-				oneObj.setNumStartTime(string);
-				date2Theme.put(string, oneObj);
+			for (Date date : dateList) {
+				Long count = 0L;
+				List<LaunThemeAdministration> themeList = channelThemeMap.get(launChannel.getId());
+				for (LaunThemeAdministration theme : themeList) {
+					boolean betweenDate = TimeUtils.isBetweenDate(theme.getStartTime(), theme.getEndTime(), date);
+					if (betweenDate) {
+						count++;
+					}
+				}
+				record = new LaunThemeEffe();
+				record.setChannelId(launChannel.getChannelId());
+				record.setEffeTheme(count);
+				record.setNumStartTime(TimeUtils.date2String(date, "yyyy-MM-dd"));
+				launThemeEffeMapper.insertSelective(record);
 			}
-			map.put(launChannel.getChannelId(), date2Theme);
 		}
 
 	}
 
-	// 每天晚上11点55执行；计算当天实际有效主题数量
+	/**
+	 * 定时获取今日有效主题数量（每晚11点50分）
+	 * 
+	 * @author LL
+	 * @date 2018年7月31日 下午2:49:33
+	 * @return void
+	 */
+	@Async
+	@Scheduled(cron = "${task.cron.getThemeEffeStatistics}")
 	public void getThemeEffeStatistics() {
 		// 根据渠道查询有效主题数量
 		List<Map<String, String>> list = launThemeService.getEffeCount();
@@ -140,15 +192,15 @@ public class DataStatisticsTask {
 		}
 
 		// 遍历更新统计表数据
-		LaunThemeStatistics launThemeStatistics = null;
+		LaunThemeEffe record = null;
 		String nowTime = TimeUtils.date2String(new Date(), "yyyy-MM-dd");
 		for (Map<String, String> map : channelList) {
-			launThemeStatistics = new LaunThemeStatistics();
-			launThemeStatistics.setEffeTheme(Long.parseLong(map.get("count") + allCount));
+			record = new LaunThemeEffe();
+			record.setEffeTheme(Long.parseLong(map.get("count") + allCount));
 			Example example = new Example(LaunThemeStatistics.class);
 			example.createCriteria().andEqualTo("channelId", map.get("channel_id"));
 			example.createCriteria().andEqualTo("numStartTime", nowTime);
-			launThemeStatisticsMapper.updateByExampleSelective(launThemeStatistics, example);
+			launThemeEffeMapper.updateByExampleSelective(record, example);
 		}
 
 	}

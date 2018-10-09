@@ -28,8 +28,8 @@ public interface LaunThemeStatisticsMapper extends BaseMapper<LaunThemeStatistic
 	 * @param
 	 * @return List<LaunThemeStatistics>
 	 */
-	List<LaunThemeStatistics> selectByType(@Param("channelId") String channelId, @Param("type") Long type,
-			@Param("stime") String stime, @Param("etime") String etime);
+	List<LaunThemeStatistics> selectByType(@Param("channelId") String channelId, @Param("stime") String stime,
+			@Param("etime") String etime);
 
 	/**
 	 * 渠道为空的

@@ -26,23 +26,14 @@
 		SUM(lcs.car_active) carActive,
 		SUM(lcs.car_start) carStart,
 		SUM(lcs.add_up_num) addUpNum,
-		lca.`name`
+		lc.`name`
 		carAvgTime
 		FROM
-		laun_car_statistics lcs,
-		laun_channel lca
+		laun_car_statistics lcs
+		LEFT JOIN laun_channel lc ON lcs.channel_id =
+		lc.channel_id
 		WHERE
-		lcs.channel_id =
-		lca.id
-		<if test="start != null ">
-			and lcs.car_time <![CDATA[>=]]>
-			#{start}
-		</if>
-		<if test="end != null">
-			and lcs.car_time <![CDATA[<=]]>
-			#{end}
-		</if>
-
+		lcs.car_time BETWEEN #{start} AND #{end}
 	</select>
 
 	<select id="selectByTopCar" resultMap="BaseResultMap">
@@ -51,21 +42,14 @@
 		lcs.car_active,
 		lcs.car_start,
 		lcs.add_up_num,
-		lca.`name` carAvgTime
+		lc.`name` carAvgTime
 		FROM
-		laun_car_statistics lcs,
-		laun_channel lca
-		<where>
-			lcs.channel_id = lca.id
-			<if test="start != null ">
-				and lcs.car_time <![CDATA[>=]]>
-				#{start}
-			</if>
-			<if test="end != null">
-				and lcs.car_time <![CDATA[<=]]>
-				#{end}
-			</if>
-		</where>
+		laun_car_statistics lcs
+		LEFT JOIN laun_channel
+		lc ON lcs.channel_id = lc.channel_id
+		WHERE
+		lcs.car_time BETWEEN #{start}
+		AND #{end}
 		ORDER BY
 		<if test="type != null and type == 1">
 			lcs.car_num
@@ -168,10 +152,10 @@
 		laun_car_statistics lcs
 		<where>
 			<if test="stime != null and stime != ''">
-				and lcs.car_time &gt;  #{stime}
+				and lcs.car_time &gt; #{stime}
 			</if>
 			<if test="etime != null and etime != ''">
-				and lcs.car_time &lt;  #{etime}
+				and lcs.car_time &lt; #{etime}
 			</if>
 		</where>
 	</select>

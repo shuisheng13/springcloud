@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pactera.business.dao.LaunThemeEffeMapper">
+	<resultMap id="BaseResultMap" type="com.pactera.domain.LaunThemeEffe">
+		<!-- WARNING - @mbg.generated -->
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="effe_theme" jdbcType="BIGINT" property="effeTheme" />
+		<result column="channel_id" jdbcType="VARCHAR" property="channelId" />
+		<result column="num_start_time" jdbcType="VARCHAR" property="numStartTime" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="channelName" jdbcType="VARCHAR" property="channelName" />
+		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+	</resultMap>
+
+
+	<select id="selectHistoryEffe" resultMap="BaseResultMap">
+		SELECT
+		lts.id,lts.channel_id,lts.effe_theme,lts.num_start_time,lc.name
+		channelName
+		FROM
+		laun_theme_effe lts LEFT
+		JOIN laun_channel lc ON
+		lc.channel_id = lts.channel_id
+		WHERE 1=1
+		<if test="channelIds !=null and channelIds.size >0">
+			AND lts.channel_id in
+			<foreach collection="channelIds" close=")" open="("
+				separator="," item="channelId">
+				#{channelId}
+			</foreach>
+		</if>
+		AND lts.num_start_time <![CDATA[>=#{starTime} ]]>
+		AND lts.num_start_time <![CDATA[<=#{endTime} ]]>
+		GROUP BY
+		lts.channel_id,lts.num_start_time ORDER BY num_start_time DESC
+	</select>
+
+	<select id="selectHistoryEffeOne" resultMap="BaseResultMap">
+		SELECT id,SUM(effe_theme) effe_theme,channel_id,num_start_time FROM
+		laun_theme_effe
+		WHERE 1=1
+		<if test="channelId !=null and channelId != '' ">
+			AND channel_id = #{channelId}
+		</if>
+		AND num_start_time <![CDATA[>=#{starTime} ]]>
+		AND num_start_time <![CDATA[<=#{endTime} ]]>
+		GROUP BY num_start_time ORDER BY num_start_time
+	</select>
+</mapper>

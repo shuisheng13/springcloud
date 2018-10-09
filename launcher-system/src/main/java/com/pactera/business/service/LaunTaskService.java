@@ -33,7 +33,7 @@ public interface LaunTaskService {
 	 * @date 2018年8月22日 上午9:57:37
 	 * @param channelList渠道集合
 	 * @param versionList版本集合
-	 * @param timeList时间集合
+	 * @param dateList时间集合
 	 * @return void
 	 */
 	void carTaskStatistics(List<LaunChannel> channelList, List<String> versionList, List<Date> dateList);
@@ -45,7 +45,7 @@ public interface LaunTaskService {
 	 * @date 2018年8月22日 上午9:57:37
 	 * @param channelList渠道集合
 	 * @param versionList版本集合
-	 * @param timeList时间集合
+	 * @param dateList时间集合
 	 * @return void
 	 */
 	void applicationTaskStatistics(List<LaunChannel> channelList, List<String> versionList, List<Date> dateList);
@@ -67,8 +67,18 @@ public interface LaunTaskService {
 	 * @date 2018年8月22日 上午9:57:37
 	 * @param channelList渠道集合
 	 * @param versionList版本集合
-	 * @param timeList时间集合
+	 * @param dateList时间集合
 	 * @return void
 	 */
 	void widgetTaskStatistics(List<LaunChannel> channelList, List<String> versionList, List<Date> dateList);
+
+	/**
+	 * 今日概况
+	 * 
+	 * @author LL
+	 * @date 2018年9月18日 下午3:48:15
+	 * @param channelList渠道列表
+	 * @return void
+	 */
+	void todayTaskStatistics(List<LaunChannel> channelList);
 }

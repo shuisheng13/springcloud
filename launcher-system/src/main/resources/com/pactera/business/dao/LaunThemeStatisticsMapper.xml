@@ -47,7 +47,7 @@
 				#{stime}
 			</if>
 			<if test="etime != null">
-				and lts.num_start_time <![CDATA[>=]]>
+				and lts.num_start_time <![CDATA[<=]]>
 				#{etime}
 			</if>
 			<if test="channelId != null and channelId != ''">
@@ -76,7 +76,7 @@
 		lta.id = ts.theme_id
 		WHERE
 		ts.num_start_time = #{timeString}
-		<if test="channelId != null">
+		<if test="channelId != null and channelId != '' ">
 			AND ts.channel_id = #{channelId}
 		</if>
 		GROUP BY
@@ -88,13 +88,13 @@
 	</select>
 
 	<select id="selectThemeStatistics" resultMap="BaseResultMap">
-		SELECT SUM(count)
+		SELECT SUM(lts.count)
 		count,lta.title FROM laun_theme_statistics lts
 		LEFT
 		JOIN laun_theme_administration lta ON lts.theme_id = lta.id
 		WHERE
-		lts.num_start_time >=#{starTime} AND lts.num_start_time
-		<![CDATA[<=#{endTime} ]]>
+		lts.num_start_time <![CDATA[>=#{starTime} ]]>
+		 AND lts.num_start_time <![CDATA[<=#{endTime} ]]>
 		<if test="channelId !=null and channelId !=''">
 			AND lts.channel_id = #{channelId}
 		</if>

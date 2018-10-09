@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.ValueOperations;
 
 import com.pactera.base.Tester;
 import com.pactera.business.dao.LaunApplicationStatisticsMapper;
@@ -16,12 +17,14 @@ import com.pactera.business.dao.LaunThemeStatisticsMapper;
 import com.pactera.business.dao.LaunWidgetManagerMapper;
 import com.pactera.business.dao.LaunWidgetMinPropertyMapper;
 import com.pactera.business.dao.LaunWidgetPropertyMapper;
+import com.pactera.business.service.LaunChannelService;
 import com.pactera.business.service.LaunStatisticsService;
 import com.pactera.business.service.LaunThemeConfigService;
 import com.pactera.business.service.LaunThemeService;
 import com.pactera.constant.ConstantUtlis;
 import com.pactera.domain.LaunApplicationStatistics;
 import com.pactera.domain.LaunCarStatistics;
+import com.pactera.domain.LaunChannel;
 import com.pactera.domain.LaunThemeConfig;
 import com.pactera.domain.LaunThemeStatistics;
 import com.pactera.util.ThemeWidgetDetail;
@@ -52,6 +55,12 @@ public class ThemeStatisticsT extends Tester {
 
 	@Autowired
 	private LaunThemeService launThemeService;
+
+	@Autowired
+	private ValueOperations<String, Object> valueOperations;
+
+	@Autowired
+	private LaunChannelService launChannelService;
 
 	/**
 	 * 插入主题统计数据
@@ -135,6 +144,20 @@ public class ThemeStatisticsT extends Tester {
 	}
 
 	@Test
+	public void removeRedis() {
+		Map<String, Long> allMap = new HashMap<String, Long>();
+		allMap.put("catNum", 0L);// 每日新增车辆
+		allMap.put("carActive", 0L);// 活跃吃凉
+		allMap.put("carStart", 0L);// 启动次数
+		allMap.put("addUpNum", 0L);// 累计车辆
+		// 获取渠道信息集合
+		List<LaunChannel> channelList = launChannelService.findAll(null);
+		for (LaunChannel launChannel : channelList) {
+			valueOperations.set(ConstantUtlis.TODAY_STATISTICS + launChannel.getChannelId(), allMap);
+		}
+		valueOperations.set(ConstantUtlis.TODAY_STATISTICS, allMap);
+	}
+
 	public void insertApplicationStatistics() {
 
 		// 9VXG7W BDL945 21795J 586472

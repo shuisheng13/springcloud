@@ -33,6 +33,7 @@ public class TimeUtils {
 	// getDifference:时间差计算return int
 	// getChineseZodiac:获取生肖
 	// getZodiac:获取星座
+	// isBetweenDate 判断时间是否在时间区间内
 	// 注意：SimpleDateFormat不是线程安全的，线程安全需用{@code ThreadLocal<SimpleDateFormat>}
 
 	static final SimpleDateFormat DEFAULT_SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
@@ -903,4 +904,35 @@ public class TimeUtils {
 		return date;
 	}
 
+	/**
+	 * 判断时间是否在区间内
+	 * 
+	 * @author LL
+	 * @date 2018年9月28日 下午9:43:01
+	 * @param
+	 * @return boolean
+	 */
+	public static boolean isBetweenDate(Date startTime, Date endTime, Date time) {
+
+		if (startTime != null && endTime != null && time != null) {
+			return isBetweenDate(startTime.getTime(), endTime.getTime(), time.getTime());
+		}
+		return false;
+	}
+
+	/**
+	 * 判断时间是否在区间内
+	 * 
+	 * @author LL
+	 * @date 2018年9月28日 下午9:43:01
+	 * @param
+	 * @return boolean
+	 */
+	public static boolean isBetweenDate(long startTime, long endTime, long time) {
+
+		if (time > startTime && time < endTime) {
+			return true;
+		}
+		return false;
+	}
 }

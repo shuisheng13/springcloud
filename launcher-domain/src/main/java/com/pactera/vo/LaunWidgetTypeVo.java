@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
 @Setter
 @Getter
 public class LaunWidgetTypeVo  implements Serializable {

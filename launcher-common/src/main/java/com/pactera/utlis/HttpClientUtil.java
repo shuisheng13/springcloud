@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.http.HttpEntity;
@@ -379,10 +381,36 @@ public class HttpClientUtil {
 		return parameterBuffer.toString();
 	}
 
-	public static void main(String[] args) throws Exception {
-		String string = sendHttpGet(
-				"http://dev.i.yjapi.com/ECI/GetDetailsByName?key=aa7d719e57264b3a847f0d692f072583&keyword=小桔科技");
-		System.out.println(string.toString());
+	/**
+	 * 将map集合的键值对转化成restful风格
+	 * 
+	 * @param parameterMap
+	 *            需要转化的键值对集合
+	 * @return 字符串
+	 */
+	public static String convertRestfulParamter(List<String> paramList) {
+		StringBuffer parameterBuffer = new StringBuffer();
 
+		if (paramList != null) {
+			for (String string : paramList) {
+				parameterBuffer.append("/").append(string);
+			}
+		}
+		return parameterBuffer.toString();
+	}
+
+	public static void main(String[] args) throws Exception {
+		/*String string = sendHttpGet(
+				"http://dev.i.yjapi.com/ECI/GetDetailsByName?key=aa7d719e57264b3a847f0d692f072583&keyword=小桔科技");
+		System.out.println(string.toString());*/
+
+		List<String> paramList = new ArrayList<>(); 
+		paramList.add("theme");
+		paramList.add("themeClick");
+		paramList.add("1111111");
+		paramList.add("222222");
+
+		String convertRestfulParamter = convertRestfulParamter(paramList);
+		System.out.println(convertRestfulParamter);
 	}
 }
