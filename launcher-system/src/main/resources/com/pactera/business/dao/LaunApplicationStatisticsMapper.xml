@@ -118,6 +118,7 @@ GROUP BY
 		lap.application_time &lt; #{eytime}
 		
 		ORDER BY lap.start_up_num desc
+		limit (0,10)
 	</select>
 	<select id="topApplication" resultType="com.pactera.domain.LaunApplicationStatistics">
 		SELECT DISTINCT
@@ -135,6 +136,7 @@ GROUP BY
 		AND
 		lap.application_time &lt; #{etime}
 		ORDER BY lap.start_up_num desc
+		limit (0,10)
 	</select>
 
 

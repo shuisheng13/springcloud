@@ -34,6 +34,7 @@
 		lc.channel_id
 		WHERE
 		lcs.car_time BETWEEN #{start} AND #{end}
+		limit 10
 	</select>
 
 	<select id="selectByTopCar" resultMap="BaseResultMap">
@@ -63,7 +64,7 @@
 		<if test="type != null and type == 4">
 			lcs.add_up_num
 		</if>
-
+		limit 10
 	</select>
 
 	<select id="selectTopVersion" resultMap="BaseResultMap">
@@ -91,7 +92,7 @@
 		</where>
 		GROUP BY
 		lcs.version
-
+		limit 10
 	</select>
 	<select id="selectByChannelId" resultMap="BaseResultMap">
 		SELECT

@@ -83,7 +83,7 @@
 		theme_id
 		ORDER BY count DESC
 		<if test="isLimit == 1">
-			LIMIT 10;
+			LIMIT 5;
 		</if>
 	</select>
 
