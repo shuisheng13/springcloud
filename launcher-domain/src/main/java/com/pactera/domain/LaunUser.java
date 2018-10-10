@@ -28,12 +28,13 @@ public class LaunUser extends LaunBase {
 	private @ApiModelProperty("性别:0-女，1-男") int sex;
 	private @ApiModelProperty("电话") String phone;
 	private @ApiModelProperty("渠道ID") Long channelId;
-	private @ApiModelProperty("渠道ID-Str") String channelIdStr;
 	private @ApiModelProperty("用户类型：0-思维超级管理员，1-渠道管理员，2-思维管理员") Integer userType;
 	private @ApiModelProperty("登陆时间") Date loginDate;
 	private @ApiModelProperty("备注") String remarks;
 	@Transient
 	private @ApiModelProperty("权限集合") List<LaunPermissions> listPermissions;
+	@Transient
+	private @ApiModelProperty("渠道ID-Str") String channelIdStr;
 	@Transient
 	private @ApiModelProperty("渠道的名称") String channelName;
 
