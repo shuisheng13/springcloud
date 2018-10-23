@@ -1,5 +1,6 @@
 package com.pactera.business.service;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -199,8 +200,9 @@ public interface LaunWidgetManagerService {
 	 * @param otherpath 其他目录
 	 * @author:wangyaqun
 	 * @return
+	 * @throws IOException 
 	 */
-	LaunWidget unJsonParsing(String json, String imgpath,String otherpath);
+	LaunWidget unJsonParsing(String json, String imgpath,String otherpath) throws IOException;
 	
 	/**
 	 * 根据widget主键查询详细信息

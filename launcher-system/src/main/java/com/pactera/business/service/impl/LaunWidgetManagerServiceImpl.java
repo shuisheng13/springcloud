@@ -134,7 +134,7 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 			}
 			message = widget.getId() + "";
 		} catch (Exception e) {
-			log.error("【保存widget】异常:----{}",e);
+			log.error("【保存widget】异常:----{}", e);
 			throw new DataStoreException(ErrorStatus.WIDGETPARSE_ERROR);
 		}
 
@@ -150,7 +150,7 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 			json = widgetToJson.widget2json(widget);
 		} catch (Exception e) {
 			json = "系统异常";
-			log.error("【获取widget】异常----{}",e);
+			log.error("【获取widget】异常----{}", e);
 			throw new DataStoreException(ErrorStatus.SYS_ERROR);
 		}
 		return json;
@@ -219,7 +219,7 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 		} catch (Exception e) {
 			// message = "系统错误！";
 			status = 0;
-			log.error("【修改widget】异常----{}",e);
+			log.error("【修改widget】异常----{}", e);
 			throw new DataStoreException(ErrorStatus.SYS_ERROR);
 		}
 		return status;
@@ -289,7 +289,7 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 			}
 		} catch (Exception e) {
 			// message = "系统错误！";
-			log.error("【保存widget】异常----{}",e);
+			log.error("【保存widget】异常----{}", e);
 			status = 0;
 			throw new DataStoreException(ErrorStatus.SYS_ERROR);
 		}
@@ -369,7 +369,7 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 			storePath = fastFileStorageClient.uploadFile(file.getInputStream(), file.getSize(),
 					FilenameUtils.getExtension(file.getOriginalFilename()), null);
 		} catch (Exception e) {
-			log.error("【fastdfs服务】异常--{}",e);
+			log.error("【fastdfs服务】异常--{}", e);
 			message = ErrorStatus.FASTDFS_ERROR.message();
 			throw new RuntimeException();
 		}
@@ -392,7 +392,8 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 		FileTool.unZipFile(downloadPath, destDir);
 
 		// 解析widget.json
-		replaceunJsonParsing(destDir + File.separator + "widget.json", destDir + File.separator + "image", destDir + File.separator + "lib", widgetId);
+		replaceunJsonParsing(destDir + File.separator + "widget.json", destDir + File.separator + "image",
+				destDir + File.separator + "lib", widgetId);
 
 		return message;
 	}
@@ -404,46 +405,52 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 	@Transactional
 	public String fileUpload(MultipartFile file) {
 		String message = "";
-		StorePath storePath = null;
-		String originalFilename = file.getOriginalFilename();
 		Long id = IdUtlis.Id();
-		// String fileName =
-		// originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+		log.error("--------------uploda file--------------id:【{}】:{}", id);
 		try {
-			storePath = fastFileStorageClient.uploadFile(file.getInputStream(), file.getSize(),
-					FilenameUtils.getExtension(file.getOriginalFilename()), null);
-		} catch (Exception e) {
-			log.error("【fastdfs服务】异常----{}",e);
-			message = ErrorStatus.FASTDFS_ERROR.message();
-			throw new DataStoreException(ErrorStatus.FASTDFS_ERROR);
-		}
-		// String filePath = env.getProperty("file.path");
-		LaunWidgetFile launWidgetFile = new LaunWidgetFile();
-		launWidgetFile.setId(id);
-		launWidgetFile.setCreateDate(new Date());
-		launWidgetFile.setFileName(originalFilename);
-		launWidgetFile.setPath(storePath.getFullPath());
-		launWidgetFile.setType(2);
-		// launWidgetFile.setUserId(null); 现在没有人
-		// 解析路径
-		// Map<String, Object> mapPath = analyzeUrl(storePath.getPath());
-		// 下载(包括重命名)
-		// String downloadPath = "";
+			StorePath storePath = null;
+			String originalFilename = file.getOriginalFilename();
+			// String fileName =
+			// originalFilename.substring(originalFilename.lastIndexOf(".") +
+			// 1);
+			try {
+				storePath = fastFileStorageClient.uploadFile(file.getInputStream(), file.getSize(),
+						FilenameUtils.getExtension(file.getOriginalFilename()), null);
+			} catch (Exception e) {
+				log.error("【fastdfs服务】异常----{}", e);
+				message = ErrorStatus.FASTDFS_ERROR.message();
+				throw new DataStoreException(ErrorStatus.FASTDFS_ERROR);
+			}
+			// String filePath = env.getProperty("file.path");
+			LaunWidgetFile launWidgetFile = new LaunWidgetFile();
+			launWidgetFile.setId(id);
+			launWidgetFile.setCreateDate(new Date());
+			launWidgetFile.setFileName(originalFilename);
+			launWidgetFile.setPath(storePath.getFullPath());
+			launWidgetFile.setType(2);
+			// launWidgetFile.setUserId(null); 现在没有人
+			// 解析路径
+			// Map<String, Object> mapPath = analyzeUrl(storePath.getPath());
+			// 下载(包括重命名)
+			// String downloadPath = "";
 
-		// 从fastdfs下载的压缩包的路径
-		String downloadPath = downFile(storePath.getGroup(), storePath.getPath());
-		// 解压包
-		String destDir = env.getProperty("system.conf.widgetTempPath") + File.separator + id;
-		FileTool.unZipFile(downloadPath, destDir);
-		// 解析widget.json
-		LaunWidget lanuwidget = unJsonParsing(destDir + File.separator + "widget.json",
-				destDir + File.separator + "image", destDir + File.separator + "lib");
-		launWidgetFile.setWidgetId(lanuwidget.getId());
-		int i = fileMapper.insertSelective(launWidgetFile);
-		if (i == 1) {
-			message = SuccessStatus.WIDGETUPLOAD_SUCCESS.message();
-		} else {
-			message = ErrorStatus.WIDGETUPLOAD_ERROR.message();
+			// 从fastdfs下载的压缩包的路径
+			String downloadPath = downFile(storePath.getGroup(), storePath.getPath());
+			// 解压包
+			String destDir = env.getProperty("system.conf.widgetTempPath") + File.separator + id;
+			FileTool.unZipFile(downloadPath, destDir);
+			// 解析widget.json
+			LaunWidget lanuwidget = unJsonParsing(destDir + File.separator + "widget.json",
+					destDir + File.separator + "image", destDir + File.separator + "lib");
+			launWidgetFile.setWidgetId(lanuwidget.getId());
+			int i = fileMapper.insertSelective(launWidgetFile);
+			if (i == 1) {
+				message = SuccessStatus.WIDGETUPLOAD_SUCCESS.message();
+			} else {
+				message = ErrorStatus.WIDGETUPLOAD_ERROR.message();
+			}
+		} catch (Exception e) {
+			log.error("--------------uploda file--------------id:【{}】:{}", id, e);
 		}
 
 		return message;
@@ -484,7 +491,7 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 			descDir = descDir + File.separator + filename;
 			stream.write(bytes);
 		} catch (Exception e) {
-			log.error("【fastdfs服务】异常----{}",e);
+			log.error("【fastdfs服务】异常----{}", e);
 			throw new DataStoreException(ErrorStatus.FASTDFS_ERROR);
 		}
 		return descDir;
@@ -609,17 +616,18 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 		// String json = jsons;
 		// json的主题
 		JSONObject jsonObject = JSON.parseObject(json);
-		//开始校验图片文件的合法性  start
+		// 开始校验图片文件的合法性 start
 		Map map = JsonUtils.JsonToMap(json);
 		List list = new ArrayList();
-		CheckWidgetImg.viewJsonTree(map,list);
+		CheckWidgetImg.viewJsonTree(map, list);
 		List imglist = FileTool.listFilename(imagepath);
-		//List<String> intersection = (List<String>) list.stream().filter(item -> imglist.contains(item)).collect(toList());
+		// List<String> intersection = (List<String>) list.stream().filter(item
+		// -> imglist.contains(item)).collect(toList());
 		boolean isInclud = CheckWidgetImg.isIncludeimg(list, imglist);
-		if(!isInclud) {
+		if (!isInclud) {
 			throw new DataStoreException(ErrorStatus.WIDGETIMG_ERROR);
 		}
-		//end
+		// end
 		String codeId = jsonObject.getString("codeId");
 		Integer widgetCodeVersion = jsonObject.getInteger("widgetCodeVersion");
 		String defaultSize = jsonObject.getString("defaultSize");
@@ -628,7 +636,7 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 			throw new RuntimeException();
 		}
 		String previewImage = jsonObject.getString("previewImage");
-		if("".equals(previewImage)) {
+		if ("".equals(previewImage)) {
 			throw new DataStoreException(ErrorStatus.WIDGETPRIVEW_ERROR);
 		}
 		String name = jsonObject.getString("name");
@@ -641,7 +649,7 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 		String tags = jsonObject.getJSONArray("tags").toString();
 		String description = jsonObject.getString("description");
 		String properties = jsonObject.getJSONArray("properties").toString();
-		if("".equals(properties)) {
+		if ("".equals(properties)) {
 			throw new DataStoreException(ErrorStatus.WIDGETSIZE_ERROR);
 		}
 		// 更新widget类型信息，操作表（laun_widget_type） ，存在则直接返回主键ID，否则添加该类型并返回主键ID
@@ -663,7 +671,7 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 		LaunAttribute attr = new LaunAttribute();
 		attr.setAttributeKey("version");
 		Example example = new Example(LaunAttribute.class);
-		example.createCriteria().andEqualTo("attributeKey","version");
+		example.createCriteria().andEqualTo("attributeKey", "version");
 		example.setOrderByClause("attribute_key_index desc");
 		List<LaunAttribute> attrversionlist = launAttributeMapper.selectByExample(example);
 		// Integer maxvalue =
@@ -673,10 +681,10 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 		if (attrlist.size() == 0) {
 			attr.setId(IdUtlis.Id());
 			attr.setCreateDate(new Date());
-			if(attrversionlist.size() == 0) {
+			if (attrversionlist.size() == 0) {
 				attr.setAttributeKeyIndex(1);
-			}else {
-				attr.setAttributeKeyIndex(attrversionlist.get(0).getAttributeKeyIndex()+1);
+			} else {
+				attr.setAttributeKeyIndex(attrversionlist.get(0).getAttributeKeyIndex() + 1);
 			}
 			attr.setAttributeStatus(1);
 			launAttributeMapper.insertSelective(attr);
@@ -715,7 +723,7 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 	 * 解压json文件 jsons文件的路径
 	 */
 	@Override
-	public LaunWidget unJsonParsing(String jsons, String imagepath, String otherpath) {
+	public LaunWidget unJsonParsing(String jsons, String imagepath, String otherpath) throws IOException {
 		File file = new File(jsons);
 		StringBuffer sb = null;
 		try {
@@ -733,17 +741,18 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 		}
 		// 得到json字符串，解析
 		String json = sb.toString();
-		//开始校验图片文件的合法性  start
+		// 开始校验图片文件的合法性 start
 		Map map = JsonUtils.JsonToMap(json);
 		List<String> list = new ArrayList<String>();
-		CheckWidgetImg.viewJsonTree(map,list);
+		CheckWidgetImg.viewJsonTree(map, list);
 		List<String> imglist = FileTool.listFilename(imagepath);
-		//List<String> intersection = (List<String>) list.stream().filter(item -> imglist.contains(item)).collect(toList());
+		// List<String> intersection = (List<String>) list.stream().filter(item
+		// -> imglist.contains(item)).collect(toList());
 		boolean isInclud = CheckWidgetImg.isIncludeimg(list, imglist);
-		if(!isInclud) {
+		if (!isInclud) {
 			throw new DataStoreException(ErrorStatus.WIDGETIMG_ERROR);
 		}
-		//end
+		// end
 		// String json = jsons;
 		// json的主题
 		JSONObject jsonObject = JSON.parseObject(json);
@@ -755,7 +764,7 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 			throw new DataStoreException(ErrorStatus.WIDGETSIZE_ERROR);
 		}
 		String previewImage = jsonObject.getString("previewImage");
-		if("".equals(previewImage)) {
+		if ("".equals(previewImage)) {
 			throw new DataStoreException(ErrorStatus.WIDGETPRIVEW_ERROR);
 		}
 		String name = jsonObject.getString("name");
@@ -769,7 +778,7 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 		String tags = jsonObject.getString("tags");
 		String description = jsonObject.getString("description");
 		String properties = jsonObject.getString("properties").toString();
-		if("".equals(properties)) {
+		if ("".equals(properties)) {
 			throw new DataStoreException(ErrorStatus.WIDGETSIZE_ERROR);
 		}
 		// 更新widget类型信息，操作表（laun_widget_type） ，存在则直接返回主键ID，否则添加该类型并返回主键ID
@@ -791,7 +800,7 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 		LaunAttribute attr = new LaunAttribute();
 		attr.setAttributeKey("version");
 		Example example = new Example(LaunAttribute.class);
-		example.createCriteria().andEqualTo("attributeKey","version");
+		example.createCriteria().andEqualTo("attributeKey", "version");
 		example.setOrderByClause("attribute_key_index desc");
 		List<LaunAttribute> attrversionlist = launAttributeMapper.selectByExample(example);
 		// Integer maxvalue = launAttributeMapper.getMaxValueByType(attr) ==
@@ -802,10 +811,10 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 		if (attrlist.size() == 0) {
 			attr.setId(IdUtlis.Id());
 			attr.setCreateDate(new Date());
-			if(attrversionlist.size() == 0) {
+			if (attrversionlist.size() == 0) {
 				attr.setAttributeKeyIndex(1);
-			}else {
-				attr.setAttributeKeyIndex(attrversionlist.get(0).getAttributeKeyIndex()+1);
+			} else {
+				attr.setAttributeKeyIndex(attrversionlist.get(0).getAttributeKeyIndex() + 1);
 			}
 			attr.setAttributeStatus(1);
 			launAttributeMapper.insertSelective(attr);
