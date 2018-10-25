@@ -64,4 +64,14 @@ public interface LaunClientThemeService {
 	Map<String, Object> getPosters(String channle, String version, Long screenHeight, Long screenWidth, String userId,
 			String city, String posterIds);
 
+	/**
+	 * 压测接口
+	 * 
+	 * @author LL
+	 * @date 2018年10月25日 下午2:38:08
+	 * @param
+	 * @return void
+	 */
+	Object test();
+
 }

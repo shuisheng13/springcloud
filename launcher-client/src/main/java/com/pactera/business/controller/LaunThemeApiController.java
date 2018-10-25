@@ -60,7 +60,9 @@ public class LaunThemeApiController {
 	@GetMapping("test")
 	@ApiOperation("获取主题列表")
 	public ResponseEntity<ResultData> test() {
-		return ResponseEntity.ok(new ResultData("压力测试"));
+
+		Object test = launClientThemeService.test();
+		return ResponseEntity.ok(new ResultData(test));
 	}
 
 }

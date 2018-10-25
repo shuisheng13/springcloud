@@ -299,4 +299,13 @@ public class LaunClientThemeServiceImpl implements LaunClientThemeService {
 		}
 		return selectByIds;
 	}
+
+	@Override
+	public Object test() {
+		String channle = "ASDFGG";
+		// 从redis中根据渠道查询
+		Object object = redisTemplate.opsForHash().get(ConstantUtlis.THEME_REDIS_FLAG, channle);
+		return object;
+
+	}
 }
