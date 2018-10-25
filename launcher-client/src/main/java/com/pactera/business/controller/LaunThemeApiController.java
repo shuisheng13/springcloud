@@ -57,4 +57,10 @@ public class LaunThemeApiController {
 		return ResponseEntity.ok(new ResultData(themeList));
 	}
 
+	@GetMapping("test")
+	@ApiOperation("获取主题列表")
+	public ResponseEntity<ResultData> test() {
+		return ResponseEntity.ok(new ResultData("压力测试"));
+	}
+
 }
