@@ -349,7 +349,7 @@ public class LaunTaskServiceImpl implements LaunTaskService {
 							launWidgetStatistics.setCarNum(Long.parseLong(object.get("carNum").toString()));
 							launWidgetStatisticsMapper.insertSelective(launWidgetStatistics);
 						} catch (Exception e) {
-							log.error("【widget统计接口异常】----{}", e);
+							log.error("【widget统计接口异常】-url{}---{}", e, httpUrl);
 						}
 
 					}
@@ -381,7 +381,7 @@ public class LaunTaskServiceImpl implements LaunTaskService {
 			paramList = new ArrayList<>();
 			channelId = launChannel.getChannelId();
 			paramList.add(spaceName);
-			paramList.add(TimeUtils.date2String(new Date(), "yyyyMMdd"));
+			paramList.add("today");
 			paramList.add(channelId);
 			try {
 				params = HttpClientUtil.convertRestfulParamter(paramList);
@@ -392,7 +392,7 @@ public class LaunTaskServiceImpl implements LaunTaskService {
 				list.add(object);
 				valueOperations.set(ConstantUtlis.TODAY_STATISTICS + channelId, object);
 			} catch (Exception e) {
-				log.error("今日概况获取异常----【渠道】{}", channelId);
+				log.error("今日概况获取异常----【渠道】{}---------{}", channelId, httpUrl);
 			}
 		}
 
