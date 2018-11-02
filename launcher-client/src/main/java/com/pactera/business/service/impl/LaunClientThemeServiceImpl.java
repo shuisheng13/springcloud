@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,7 @@ import com.pactera.domain.LaunThemeConfig;
 import com.pactera.domain.LaunThemeFile;
 import com.pactera.utlis.FileTool;
 import com.pactera.utlis.HStringUtlis;
+import com.pactera.utlis.JsonUtils;
 import com.pactera.utlis.TimeUtils;
 import com.pactera.vo.LaunClientShopThemeVo;
 import com.pactera.vo.LaunClientThemeVo;
@@ -65,10 +67,66 @@ public class LaunClientThemeServiceImpl implements LaunClientThemeService {
 	@Autowired
 	private RedisTemplate<String, Object> redisTemplate;
 
+	@Autowired
+	private ValueOperations<String, Object> valueOperations;
+
+	/**
+	 * 根据输入的条件获取key
+	 * 
+	 * @author LL
+	 * @date 2018年11月1日 下午6:10:23
+	 * @return String
+	 */
+	protected String getKeyBySel(String channle, String version, Long screenHeight, Long screenWidth, String userId,
+			String city, Integer type) {
+
+		StringBuffer key = new StringBuffer();
+
+		key.append(channle).append("_").append(version).append("_").append(screenHeight).append("_")
+				.append(screenWidth);
+		return key.toString();
+	}
+
+	/**
+	 * 判断当前key是否需要重新处理
+	 * 
+	 * @author LL
+	 * @param redisRefresh2
+	 * @date 2018年11月1日 下午7:02:28
+	 * @param keyBySel失败
+	 * @return String 为null的时候,需要重新获取;
+	 */
+	@SuppressWarnings("unchecked")
+	protected String isRefresh(String keyBySel, long redisRefresh) {
+		Object redisValue = valueOperations.get(keyBySel);
+		if (redisValue != null) {
+			// List<LaunThemeShopVo> jsonToList =
+			// ;JsonUtils.jsonToList(redisValue, LaunThemeShopVo.class);
+			Map<String, Object> jsonToMap = (Map<String, Object>) JsonUtils
+					.JsonToMap(JsonUtils.ObjectToJson(redisValue));
+			long mapRedis = Long.parseLong(jsonToMap.get(ConstantUtlis.THEME_REDIS_REFRESH).toString());
+			if (redisRefresh == mapRedis) {
+				return (String) jsonToMap.get("value");
+			}
+		}
+		return null;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<LaunThemeShopVo> getThemeList(String channle, String version, Long screenHeight, Long screenWidth,
 			String userId, String city, Integer type) {
+
+		/**
+		 * 获取上次缓存的数据，没的话进行添加操作
+		 */
+		String keyBySel = getKeyBySel(channle, version, screenHeight, screenWidth, userId, city, type);
+
+		long redisRefresh = (long) valueOperations.get(ConstantUtlis.THEME_REDIS_REFRESH);
+		String refresh = isRefresh(keyBySel, redisRefresh);
+		if (refresh != null) {
+			return JsonUtils.jsonToList(refresh, LaunThemeShopVo.class);
+		}
 
 		// 定义返回对象
 		List<LaunThemeShopVo> returnList = new ArrayList<LaunThemeShopVo>();
@@ -90,6 +148,7 @@ public class LaunClientThemeServiceImpl implements LaunClientThemeService {
 						// 匹配版本和过期时间
 						if (version.compareTo(theme.getVersion()) >= 0
 								&& TimeUtils.compareDate(theme.getEndTime(), now) == 0) {
+							//
 							themeList.add(theme);
 						}
 					}
@@ -167,6 +226,12 @@ public class LaunClientThemeServiceImpl implements LaunClientThemeService {
 			launThemeShop.setThemes(returnObj);
 			returnList.add(launThemeShop);
 		}
+
+		Map<String, Object> redisMap = new HashMap<>();
+		redisMap.put(ConstantUtlis.THEME_REDIS_REFRESH, redisRefresh);
+		redisMap.put("value", JsonUtils.ObjectToJson(returnList));
+
+		valueOperations.set(keyBySel, redisMap);
 		return returnList;
 	}
 

@@ -49,4 +49,10 @@ public class LaunChannelServiceImpl implements LaunChannelService {
 		List<LaunChannel> list = launChannelMapper.selectByExample(example);
 		return list.size() > 0 ? list.get(0) : null;
 	}
+
+	@Override
+	public List<LaunChannel> findAllInit() {
+		List<LaunChannel> list = launChannelMapper.findAllInit();
+		return list;
+	}
 }

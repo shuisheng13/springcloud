@@ -56,14 +56,14 @@ public class LaunWidgetManagerController {
 	@ApiImplicitParam(name = "typeName", value = "需要添加的Widget类型名称")
 	public ResponseEntity<ResultData> insertWidgetType(String typeName) {
 		String message = launWidgetManagerService.insertMidgetType(typeName);
-		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(),message));
+		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(), message));
 	}
 
 	@GetMapping("findWidgetTypeList")
 	@ApiOperation("查询widget类型列表")
 	public ResponseEntity<ResultData> findWidgetTypeList() {
 		PageInfo<LaunWidgetTypeVo> pageInfo = launWidgetManagerService.findWidgetTypeList();
-		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(),pageInfo));
+		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(), pageInfo));
 	}
 
 	@PostMapping("deleteWidgetType")
@@ -71,15 +71,24 @@ public class LaunWidgetManagerController {
 	@ApiImplicitParam(name = "id", value = "需要删除的widget的主键id")
 	public ResponseEntity<ResultData> deleteWidgetType(Long id) {
 		launWidgetManagerService.deleteWidgetType(id);
-		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(),SuccessStatus.OPERATION_SUCCESS.message()));
+		return ResponseEntity.ok(
+				new ResultData(SuccessStatus.OPERATION_SUCCESS.status(), SuccessStatus.OPERATION_SUCCESS.message()));
 	}
 
 	@PostMapping("uploadBaseWidget")
 	@ApiOperation("上传基础widget压缩包")
 	@ApiImplicitParam(name = "file", value = "接收的文件")
-	public ResponseEntity<ResultData> uploadBaseWidget(MultipartFile file, HttpServletRequest request) {
-		launWidgetManagerService.fileUpload(file);
-		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(),SuccessStatus.OPERATION_SUCCESS.message()));
+	public ResponseEntity<ResultData> uploadBaseWidget(MultipartFile[] file, HttpServletRequest request) {
+		if (file != null) {
+			for (MultipartFile multipartFile : file) {
+				launWidgetManagerService.fileUpload(multipartFile);
+			}
+			return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(),
+					SuccessStatus.OPERATION_SUCCESS.message()));
+		} else {
+			return ResponseEntity.ok(
+					new ResultData(ErrorStatus.WIDGETUPLOAD_ERROR.status(), ErrorStatus.WIDGETUPLOAD_ERROR.message()));
+		}
 	}
 
 	@PostMapping("replaceBaseWidget")
@@ -88,7 +97,7 @@ public class LaunWidgetManagerController {
 			@ApiImplicitParam(name = "widgetId", value = "要替换widget的主键") })
 	public ResponseEntity<ResultData> replaceBaseWidget(MultipartFile file, Long widgetId) {
 		String message = launWidgetManagerService.fileReplace(file, widgetId);
-		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(),message));
+		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(), message));
 	}
 
 	@GetMapping("findWidgetsList")
@@ -103,9 +112,9 @@ public class LaunWidgetManagerController {
 			String keyWord, Integer type) {
 		PageInfo<LaunWidgetVo> pageInfo = launWidgetManagerService.findWidgetsList(pageNum, pageSize, defaultSize,
 				category, version, keyWord, type);
-		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(),pageInfo));
+		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(), pageInfo));
 	}
-	
+
 	@GetMapping("findWidgetsPullList")
 	@ApiOperation("用于管理员创建主题或widget时的下拉列表")
 	@ApiImplicitParams({ @ApiImplicitParam(name = "pageNum", value = "当前页"),
@@ -115,10 +124,10 @@ public class LaunWidgetManagerController {
 			@ApiImplicitParam(name = "type", value = "人员类别") })
 	public ResponseEntity<ResultData> findWidgetsPullList(@RequestParam(defaultValue = "1") Integer pageNum,
 			@RequestParam(defaultValue = "10") Integer pageSize, String defaultSize, Long category, Integer version,
-			String keyWord, Integer type,String channels,Integer channelnum) {
+			String keyWord, Integer type, String channels, Integer channelnum) {
 		PageInfo<LaunWidgetVo> pageInfo = launWidgetManagerService.findWidgetsPullList(pageNum, pageSize, defaultSize,
-				category, version, keyWord, type,channels,channelnum);
-		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(),pageInfo));
+				category, version, keyWord, type, channels, channelnum);
+		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(), pageInfo));
 	}
 
 	@GetMapping("deleteWidgetById")
@@ -126,27 +135,28 @@ public class LaunWidgetManagerController {
 	@ApiImplicitParam(name = "id", value = "widget主键")
 	public ResponseEntity<ResultData> deleteWidgetById(Long id) {
 		String message = launWidgetManagerService.deleteWidgetById(id);
-		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(),message));
+		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(), message));
 	}
 
 	@GetMapping("findWidgetDefaultSize")
 	@ApiOperation("查询所有widget尺寸列表")
 	public ResponseEntity<ResultData> findWidgetDefaultSize() {
 		PageInfo<String> pageInfo = launWidgetManagerService.findWidgetDefaultSize();
-		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(),pageInfo));
+		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(), pageInfo));
 	}
 
 	@GetMapping("findWidgetCategory")
 	@ApiOperation("查询所有widget类型列表")
 	public ResponseEntity<ResultData> findWidgetCategory() {
 		PageInfo<LaunWidgetType> pageInfo = launWidgetManagerService.findWidgetCategory();
-		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(),pageInfo));
+		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(), pageInfo));
 	}
 
 	@GetMapping("findWidgetVersion")
 	@ApiOperation("查询所有widget版本列表")
 	public ResponseEntity<ResultData> findWidgetVersion() {
-		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(),launWidgetManagerService.findWidgetVersion()));
+		return ResponseEntity.ok(
+				new ResultData(SuccessStatus.OPERATION_SUCCESS.status(), launWidgetManagerService.findWidgetVersion()));
 	}
 
 	@GetMapping("findWidgetById")
@@ -154,7 +164,7 @@ public class LaunWidgetManagerController {
 	@ApiImplicitParam(name = "widgetId", value = "widget的主键id")
 	public ResponseEntity<ResultData> findWidgetById(Long widgetId) throws Exception {
 		String json = launWidgetManagerService.getWidgetDetail(widgetId);
-		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(),(Object)json));
+		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(), (Object) json));
 	}
 
 	@GetMapping("getImgPathBywidthId")
@@ -176,7 +186,7 @@ public class LaunWidgetManagerController {
 	@ApiImplicitParam(name = "widgetId", value = "widget主键")
 	public ResponseEntity<ResultData> widgetpreview(Long widgetId) {
 		String imgpath = launWidgetManagerService.widgetPreview(widgetId);
-		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(),(Object)imgpath));
+		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(), (Object) imgpath));
 	}
 
 	@ApiOperation("文件下载")
@@ -198,10 +208,11 @@ public class LaunWidgetManagerController {
 			@ApiImplicitParam(name = "channels", value = "渠道数组") })
 	public ResponseEntity<ResultData> saveWidget(String widgetjson, String filepath, String channels) {
 		int status = launWidgetManagerService.saveSingleWidget(widgetjson, filepath, channels);
-		if(status == 1) {
-			return ResponseEntity.ok(new ResultData(SuccessStatus.WIDGETSAVE_SUCCESS.status(),SuccessStatus.WIDGETSAVE_SUCCESS.message()));
-		}else {
-			return ResponseEntity.ok(new ResultData(ErrorStatus.SYS_ERROR.status(),ErrorStatus.SYS_ERROR.message()));
+		if (status == 1) {
+			return ResponseEntity.ok(new ResultData(SuccessStatus.WIDGETSAVE_SUCCESS.status(),
+					SuccessStatus.WIDGETSAVE_SUCCESS.message()));
+		} else {
+			return ResponseEntity.ok(new ResultData(ErrorStatus.SYS_ERROR.status(), ErrorStatus.SYS_ERROR.message()));
 		}
 
 	}
@@ -213,12 +224,13 @@ public class LaunWidgetManagerController {
 			@ApiImplicitParam(name = "channels", value = "渠道数组") })
 	public ResponseEntity<ResultData> updateWidget(String widgetjson, String filepath, String channels) {
 		int status = launWidgetManagerService.updateSingleWidget(widgetjson, filepath, channels);
-		if(status == 1) {
-			return ResponseEntity.ok(new ResultData(SuccessStatus.WIDGETUPDATE_SUCCESS.status(),SuccessStatus.WIDGETUPDATE_SUCCESS.message()));
-		}else {
-			return ResponseEntity.ok(new ResultData(ErrorStatus.SYS_ERROR.status(),ErrorStatus.SYS_ERROR.message()));
+		if (status == 1) {
+			return ResponseEntity.ok(new ResultData(SuccessStatus.WIDGETUPDATE_SUCCESS.status(),
+					SuccessStatus.WIDGETUPDATE_SUCCESS.message()));
+		} else {
+			return ResponseEntity.ok(new ResultData(ErrorStatus.SYS_ERROR.status(), ErrorStatus.SYS_ERROR.message()));
 		}
-		
+
 	}
 
 	@GetMapping("getWidgetChannels")
@@ -226,7 +238,7 @@ public class LaunWidgetManagerController {
 	@ApiImplicitParam(name = "widgetId", value = "widget主键")
 	public ResponseEntity<ResultData> getWidgetChannels(Long widgetId) {
 		List<LaunWidgetChannel> list = launWidgetManagerService.findWidgetChannelById(widgetId);
-		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(),list));
+		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(), list));
 	}
 
 	@GetMapping("getGoupWidgetById")
@@ -234,7 +246,7 @@ public class LaunWidgetManagerController {
 	@ApiImplicitParam(name = "widgetId", value = "widget主键")
 	public ResponseEntity<ResultData> getGoupWidgetById(Long widgetId) {
 		String json = launWidgetManagerService.getGoupWidgetById(widgetId);
-		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(),(Object)json));
+		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(), (Object) json));
 	}
 
 	@PostMapping("saveGroupWidget")
@@ -243,7 +255,7 @@ public class LaunWidgetManagerController {
 			@ApiImplicitParam(name = "groupjson", value = "子widget的所有信息") })
 	public ResponseEntity<ResultData> saveGroupWidget(String widgetjon, String groupjson) {
 		String message = launWidgetManagerService.saveGroupWidget(widgetjon, groupjson);
-		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(),message));
+		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(), message));
 	}
 
 	@GetMapping("showGroupWidget")
@@ -253,7 +265,7 @@ public class LaunWidgetManagerController {
 		LaunWidget widget = launWidgetManagerService.findWidgetById(widgetId);
 		LaunWidgetVo widgetvo = new LaunWidgetVo();
 		BeanUtil.copyProperties(widget, widgetvo);
-		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(),widgetvo));
+		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(), widgetvo));
 	}
 
 	@GetMapping("findWidgetUseNum")
@@ -261,7 +273,7 @@ public class LaunWidgetManagerController {
 	@ApiImplicitParam(name = "widgetId", value = "widget主键")
 	public ResponseEntity<ResultData> findWidgetUseNum(Long widgetId) {
 		String useNum = launWidgetManagerService.findWidgetUseNum(widgetId);
-		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(),useNum));
+		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(), useNum));
 	}
 
 }

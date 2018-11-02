@@ -39,4 +39,14 @@ public interface LaunChannelService {
 	 */
 	LaunChannel findByName(String channleName);
 
+	/**
+	 * 项目初始化加载所有渠道
+	 * 
+	 * @author LL
+	 * @date 2018年11月2日 上午10:38:42
+	 * @param
+	 * @return List<LaunChannel>
+	 */
+	List<LaunChannel> findAllInit();
+
 }

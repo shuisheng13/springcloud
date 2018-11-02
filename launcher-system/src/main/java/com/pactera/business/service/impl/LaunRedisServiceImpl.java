@@ -113,20 +113,40 @@ public class LaunRedisServiceImpl implements LaunRedisService, InitializingBean 
 
 		Map<String, List<LaunThemeAdministration>> redisMap = new HashMap<String, List<LaunThemeAdministration>>();
 		if (map.size() > 0) {
-			for (Entry<Long, List<LaunThemeAdministration>> launThemeAdministration : map.entrySet()) {
-				Long key = launThemeAdministration.getKey();
-				List<LaunThemeAdministration> value = launThemeAdministration.getValue();
-				if (!key.equals(0L)) {
-					if (list != null) {
-						value.addAll(list);
+			if (list == null) {
+				for (Entry<Long, List<LaunThemeAdministration>> launThemeAdministration : map.entrySet()) {
+					Long key = launThemeAdministration.getKey();
+					List<LaunThemeAdministration> value = launThemeAdministration.getValue();
+					if (!key.equals(0L)) {
+						LaunChannel findById = launChannelService.findById(key.toString());
+						redisMap.put(findById.getChannelId(), value);
 					}
-					LaunChannel findById = launChannelService.findById(key.toString());
-					redisMap.put(findById.getChannelId(), value);
+
+				}
+			} else {
+				List<LaunChannel> findAll = launChannelService.findAllInit();
+				for (LaunChannel launChannel : findAll) {
+					List<LaunThemeAdministration> channelTheme = map.get(launChannel.getId());
+					if (channelTheme != null) {
+						channelTheme.addAll(list);
+						redisMap.put(launChannel.getChannelId(), channelTheme);
+					} else {
+						redisMap.put(launChannel.getChannelId(), list);
+					}
 				}
 			}
+
 		}
 		redisTemplate.delete(ConstantUtlis.THEME_REDIS_FLAG);
 		opsForHash.putAll(ConstantUtlis.THEME_REDIS_FLAG, redisMap);
+		Object refresh = valueOperations.get(ConstantUtlis.THEME_REDIS_REFRESH);
+
+		if (refresh == null) {
+			valueOperations.set(ConstantUtlis.THEME_REDIS_REFRESH, 1);
+		} else {
+			long mapRedis = Long.parseLong(refresh.toString());
+			valueOperations.set(ConstantUtlis.THEME_REDIS_REFRESH, mapRedis + 1);
+		}
 	}
 
 	public static void main(String[] args) {

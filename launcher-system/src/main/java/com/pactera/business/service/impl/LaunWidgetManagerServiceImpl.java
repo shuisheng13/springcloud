@@ -451,6 +451,7 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 			}
 		} catch (Exception e) {
 			log.error("--------------uploda file--------------id:【{}】:{}", id, e);
+			throw new DataStoreException(ErrorStatus.WIDGETPARSE_ERROR);
 		}
 
 		return message;

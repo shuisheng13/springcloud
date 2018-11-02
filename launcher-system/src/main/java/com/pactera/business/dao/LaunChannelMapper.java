@@ -26,4 +26,14 @@ public interface LaunChannelMapper extends BaseMapper<LaunChannel> {
 	 */
 	LaunChannel selectById(@Param("id") Long channelId);
 
+	/**
+	 * 项目初始化加载所有渠道
+	 * 
+	 * @author LL
+	 * @date 2018年11月2日 上午10:52:50
+	 * @param
+	 * @return List<LaunChannel>
+	 */
+	List<LaunChannel> findAllInit();
+
 }

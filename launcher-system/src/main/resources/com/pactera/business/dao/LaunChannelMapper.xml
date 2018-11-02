@@ -22,6 +22,15 @@
 	</select>
 
 	<!-- 查询渠道列表 -->
+	<select id="findAllInit" resultMap="BaseResultMap">
+		SELECT id,
+		channel_id, name
+		FROM
+		laun_channel WHERE channel_status = 0
+	</select>
+
+
+	<!-- 查询渠道列表 -->
 	<select id="selectById" resultType="com.pactera.domain.LaunChannel">
 		SELECT
 		laun_channel.channel_id channelId,

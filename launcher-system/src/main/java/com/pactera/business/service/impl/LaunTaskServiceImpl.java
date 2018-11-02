@@ -138,7 +138,8 @@ public class LaunTaskServiceImpl implements LaunTaskService {
 	public void carTaskStatistics(List<LaunChannel> channelList, List<String> versionList, List<Date> timeList) {
 
 		Example example = new Example(LaunCarStatistics.class);
-		Date dateReckon = TimeUtils.dateReckon(TimeUtils.date2String(new Date(), "yyyy-MM-dd"), -7, "yyyy-MM-dd");
+		Date now = new Date();
+		Date dateReckon = TimeUtils.dateReckon(TimeUtils.date2String(now, "yyyy-MM-dd"), -7, "yyyy-MM-dd");
 
 		example.createCriteria().andGreaterThanOrEqualTo("carTime", dateReckon);
 		// 删除前一周的数据
@@ -159,10 +160,10 @@ public class LaunTaskServiceImpl implements LaunTaskService {
 					String channelId = channel.getChannelId();
 					paramList = new ArrayList<>();
 					paramList.add("car");
-					paramList.add("20181001");// TimeUtils.date2String(time,
-												// "yyyyMMdd")
-					paramList.add("version3");
-					paramList.add("chanel_id0");
+					// paramList.add("20181001");
+					paramList.add(TimeUtils.date2String(time, "yyyyMMdd"));
+					paramList.add(version);
+					paramList.add(channelId);
 					try {
 						params = HttpClientUtil.convertRestfulParamter(paramList);
 						httpUrl = statisticsUrl + params;
@@ -177,6 +178,7 @@ public class LaunTaskServiceImpl implements LaunTaskService {
 								launCarStatistics.setVersion(version);
 								launCarStatistics.setChannelId(channelId);
 								launCarStatistics.setCarTime(time);
+								launCarStatistics.setCreateDate(now);
 								launCarStatistics.setId(IdUtlis.Id());
 								launCarStatistics.setCarNum(Long.parseLong(object.get("catNum").toString()));
 								launCarStatistics.setCarActive(Long.parseLong(object.get("carActive").toString()));
@@ -222,7 +224,7 @@ public class LaunTaskServiceImpl implements LaunTaskService {
 					paramList = new ArrayList<>();
 					paramList.add("app");
 					paramList.add("appClick");
-					paramList.add(TimeUtils.date2String(time, "yyyy-MM-dd"));
+					paramList.add(TimeUtils.date2String(time, "yyyyMMdd"));
 					paramList.add(channelId);
 					params = HttpClientUtil.convertRestfulParamter(paramList);
 					httpUrl = statisticsUrl + params;
@@ -257,7 +259,8 @@ public class LaunTaskServiceImpl implements LaunTaskService {
 	public void adverTaskStatistics(List<Date> dateList) {
 
 		Example example = new Example(LaunAdverStatistics.class);
-		Date dateReckon = TimeUtils.dateReckon(TimeUtils.date2String(new Date(), "yyyy-MM-dd"), -7, "yyyy-MM-dd");
+		Date now = new Date();
+		Date dateReckon = TimeUtils.dateReckon(TimeUtils.date2String(now, "yyyy-MM-dd"), -7, "yyyy-MM-dd");
 
 		example.createCriteria().andGreaterThanOrEqualTo("adverHour", dateReckon);
 		// 删除前一周的数据
@@ -268,7 +271,7 @@ public class LaunTaskServiceImpl implements LaunTaskService {
 		String res = "";
 
 		for (Date date : dateList) {
-			map.put("time", TimeUtils.date2String(date, "yyyy-MM-dd"));
+			map.put("time", TimeUtils.date2String(date, "yyyyMMdd"));
 			params = HttpClientUtil.convertStringParamter(map);
 			res = HttpClientUtil.sendHttpGet(adverUrl, params);
 
@@ -280,6 +283,7 @@ public class LaunTaskServiceImpl implements LaunTaskService {
 				for (LaunAdverStatistics launAdver : readValue.getData()) {
 					launAdver.setId(IdUtlis.Id());
 					launAdver.setAdverHour(date);
+					launAdver.setCreateDate(now);
 					launAdverStatisticsMapper.insertSelective(launAdver);
 				}
 			} catch (JsonParseException e) {
@@ -330,7 +334,7 @@ public class LaunTaskServiceImpl implements LaunTaskService {
 						paramList.add(spaceName);
 						paramList.add("widgetClick");
 						paramList.add(launWidget.getCodeId());
-						paramList.add(TimeUtils.date2String(time, "yyyy-MM-dd"));
+						paramList.add(TimeUtils.date2String(time, "yyyyMMdd"));
 						paramList.add(version);
 						paramList.add(channelId);
 						try {
