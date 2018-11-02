@@ -117,17 +117,6 @@ public class LaunClientThemeServiceImpl implements LaunClientThemeService {
 	public List<LaunThemeShopVo> getThemeList(String channle, String version, Long screenHeight, Long screenWidth,
 			String userId, String city, Integer type) {
 
-		/**
-		 * 获取上次缓存的数据，没的话进行添加操作
-		 */
-		String keyBySel = getKeyBySel(channle, version, screenHeight, screenWidth, userId, city, type);
-
-		long redisRefresh = (long) valueOperations.get(ConstantUtlis.THEME_REDIS_REFRESH);
-		String refresh = isRefresh(keyBySel, redisRefresh);
-		if (refresh != null) {
-			return JsonUtils.jsonToList(refresh, LaunThemeShopVo.class);
-		}
-
 		// 定义返回对象
 		List<LaunThemeShopVo> returnList = new ArrayList<LaunThemeShopVo>();
 
@@ -135,7 +124,17 @@ public class LaunClientThemeServiceImpl implements LaunClientThemeService {
 
 		Date now = new Date();
 		boolean flag = true;
+		String keyBySel = getKeyBySel(channle, version, screenHeight, screenWidth, userId, city, type);
+
+		long redisRefresh = (long) valueOperations.get(ConstantUtlis.THEME_REDIS_REFRESH);
 		if (type != null && type == 2) {
+			/**
+			 * 获取上次缓存的数据，没的话进行添加操作
+			 */
+			String refresh = isRefresh(keyBySel, redisRefresh);
+			if (refresh != null) {
+				return JsonUtils.jsonToList(refresh, LaunThemeShopVo.class);
+			}
 			flag = false;
 			try {
 				// 从redis中根据渠道查询
