@@ -30,6 +30,8 @@ public interface ConstantUtlis {
 	public static final String NOT_DELETE_CHANNEL = "2";
 	// 自定义标识字段-主题商店redis-key
 	public static final String THEME_REDIS_FLAG = "themeShop";
+	// 自定义标识字段-主题商店redis-key
+	public static final String THEME_REDIS_REFRESH = "themeShop_refresh";
 	// 自定义标识字段-今日概况的key
 	public static final String TODAY_STATISTICS = "todayStatistics";
 	// 自定义标识字段-宫格布局
