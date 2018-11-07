@@ -35,6 +35,7 @@ import com.pactera.vo.LaunClientThemeVo;
 import com.pactera.vo.LaunThemePosterVo;
 import com.pactera.vo.LaunThemeShopVo;
 
+import lombok.extern.slf4j.Slf4j;
 import tk.mybatis.mapper.entity.Example;
 
 /**
@@ -44,6 +45,7 @@ import tk.mybatis.mapper.entity.Example;
  */
 @Service
 @Transactional
+@Slf4j
 public class LaunClientThemeServiceImpl implements LaunClientThemeService {
 
 	@Value("${file.path.yu}")
@@ -128,15 +130,15 @@ public class LaunClientThemeServiceImpl implements LaunClientThemeService {
 
 		long redisRefresh = (long) valueOperations.get(ConstantUtlis.THEME_REDIS_REFRESH);
 		if (type != null && type == 2) {
-			/**
-			 * 获取上次缓存的数据，没的话进行添加操作
-			 */
-			String refresh = isRefresh(keyBySel, redisRefresh);
-			if (refresh != null) {
-				return JsonUtils.jsonToList(refresh, LaunThemeShopVo.class);
-			}
 			flag = false;
 			try {
+				/**
+				 * 获取上次缓存的数据，没的话进行添加操作
+				 */
+				String refresh = isRefresh(keyBySel, redisRefresh);
+				if (refresh != null) {
+					return JsonUtils.jsonToList(refresh, LaunThemeShopVo.class);
+				}
 				// 从redis中根据渠道查询
 				List<LaunThemeAdministration> list = (List<LaunThemeAdministration>) redisTemplate.opsForHash()
 						.get(ConstantUtlis.THEME_REDIS_FLAG, channle);
@@ -156,6 +158,7 @@ public class LaunClientThemeServiceImpl implements LaunClientThemeService {
 			} catch (Exception e) {
 				flag = true;
 				e.printStackTrace();
+				log.error("获取主题商店信息异常------------{}", e);
 			}
 		}
 
