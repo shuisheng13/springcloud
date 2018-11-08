@@ -84,8 +84,8 @@ public class LaunClientThemeServiceImpl implements LaunClientThemeService {
 
 		StringBuffer key = new StringBuffer();
 
-		key.append(channle).append("_").append(version).append("_").append(screenHeight).append("_")
-				.append(screenWidth);
+		key.append(channle).append("_").append(version).append("_").append(screenHeight).append("_").append(screenWidth)
+				.append("_").append(type);
 		return key.toString();
 	}
 
@@ -114,6 +114,11 @@ public class LaunClientThemeServiceImpl implements LaunClientThemeService {
 		return null;
 	}
 
+	public static void main(String[] args) {
+		System.out.println("1".compareTo("1"));
+		System.out.println();
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<LaunThemeShopVo> getThemeList(String channle, String version, Long screenHeight, Long screenWidth,
@@ -128,15 +133,22 @@ public class LaunClientThemeServiceImpl implements LaunClientThemeService {
 		boolean flag = true;
 		String keyBySel = getKeyBySel(channle, version, screenHeight, screenWidth, userId, city, type);
 
-		long redisRefresh = (long) valueOperations.get(ConstantUtlis.THEME_REDIS_REFRESH);
+		Long redisRefresh = null;
+		try {
+			redisRefresh = (long) valueOperations.get(ConstantUtlis.THEME_REDIS_REFRESH);
+		} catch (Exception e) {
+			valueOperations.set(ConstantUtlis.THEME_REDIS_REFRESH, 1l);
+			redisRefresh = 1l;
+		}
 		if (type != null && type == 2) {
 			flag = false;
 			try {
 				/**
 				 * 获取上次缓存的数据，没的话进行添加操作
 				 */
+
 				String refresh = isRefresh(keyBySel, redisRefresh);
-				if (refresh != null) {
+				if (HStringUtlis.isNotBlank(refresh)) {
 					return JsonUtils.jsonToList(refresh, LaunThemeShopVo.class);
 				}
 				// 从redis中根据渠道查询
@@ -148,7 +160,7 @@ public class LaunClientThemeServiceImpl implements LaunClientThemeService {
 							&& screenHeight.equals(theme.getLongResolution())) {
 						// 匹配版本和过期时间
 						if (version.compareTo(theme.getVersion()) >= 0
-								&& TimeUtils.compareDate(theme.getEndTime(), now) == 0) {
+								&& TimeUtils.compareDate(theme.getEndTime(), now) >= 0) {
 							//
 							themeList.add(theme);
 						}
@@ -375,4 +387,5 @@ public class LaunClientThemeServiceImpl implements LaunClientThemeService {
 		return object;
 
 	}
+
 }
