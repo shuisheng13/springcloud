@@ -3,7 +3,7 @@ package com.pactera.config.exception.status;
 public enum SuccessStatus {
 	OPERATION_SUCCESS(200000, "请求成功"),
 	THEMEAPI_NOTHEME(200001, "暂无强推主题"),
-	
+	UPDATE_DESCRIPTION_FAIL(200002, "未能正确更新描述信息"),
 	/**
 	 * widget管理
 	 */
