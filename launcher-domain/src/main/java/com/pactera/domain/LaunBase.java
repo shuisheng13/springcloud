@@ -1,15 +1,15 @@
 package com.pactera.domain;
 
-import java.io.Serializable;
-import java.util.Date;
-
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
+
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 
@@ -21,6 +21,7 @@ import lombok.Setter;
 @Getter
 @MappedSuperclass
 @ApiModel("实体基类")
+@Accessors(chain = true)
 public class LaunBase implements Serializable {
 	private static final long serialVersionUID = 8107925410233983481L;
 	@Id
