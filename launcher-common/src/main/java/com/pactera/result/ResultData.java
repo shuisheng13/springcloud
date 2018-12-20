@@ -1,13 +1,12 @@
 package com.pactera.result;
 
-import java.io.Serializable;
-
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.pactera.config.exception.status.ErrorStatus;
 import com.pactera.config.exception.status.SuccessStatus;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
+import java.io.Serializable;
 
 
 @ApiModel("返回值实体")
@@ -40,6 +39,12 @@ public class ResultData implements Serializable {
 		this.data = data;
 		this.status = successStatus.status();
 		this.message = successStatus.message();
+	}
+
+	public ResultData(String data, ErrorStatus errorStatus) {
+		this.data = data;
+		this.status = errorStatus.status();
+		this.message = errorStatus.message();
 	}
 	
 	public ResultData(Integer status, String message) {
