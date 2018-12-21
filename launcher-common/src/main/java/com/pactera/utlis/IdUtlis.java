@@ -20,4 +20,14 @@ public class IdUtlis {
 		str = str.trim().replaceAll("-", "").replaceAll(":", "").replaceAll(" ", "");
 		return new Long(str);
 	}
+
+	// 生成主题分类id
+	public static String Id(String prefix ,String creator){
+		String substring = creator.substring(0,2);// 前两个字母大写
+		String creatorTwo = substring.toUpperCase();
+		Long id = IdUtlis.Id();
+		String val = id+"";
+		String Id = val.substring(0,7);
+		return  prefix+ creatorTwo + Id;
+	}
 }
