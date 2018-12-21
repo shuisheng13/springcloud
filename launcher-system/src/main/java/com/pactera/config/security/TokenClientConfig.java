@@ -40,19 +40,20 @@ public class TokenClientConfig extends ResourceServerConfigurerAdapter {
 	public void configure(HttpSecurity http) throws Exception {
 
 		http
-			// 自定义认证失败后返回的信息
-			.addFilterBefore(authenticationProcessingFilter(), AbstractPreAuthenticatedProcessingFilter.class)
-			// 设置请求拦截
-			.authorizeRequests()
-			// 设置不拦截的请求
-			.antMatchers(HttpMethod.OPTIONS).permitAll()
-			.antMatchers("/swagger-ui.html","swagger-resources/**").permitAll()
-			.antMatchers("/statistics/**").permitAll()
-			// 设置拦截所有的请求
-			//.anyRequest().authenticated()
-			.anyRequest().permitAll()
-			// 关闭跨站的问题
-			.and().csrf().disable();
+				// 自定义认证失败后返回的信息
+				.addFilterBefore(authenticationProcessingFilter(), AbstractPreAuthenticatedProcessingFilter.class)
+				// 设置请求拦截
+				.authorizeRequests()
+				// 设置不拦截的请求
+				.antMatchers(HttpMethod.OPTIONS).permitAll()
+				.antMatchers("/swagger-ui.html","swagger-resources/**").permitAll()
+				.antMatchers("/themeclass/**").permitAll()
+				.antMatchers("/statistics/**").permitAll()
+				// 设置拦截所有的请求
+				//.anyRequest().authenticated()
+				.anyRequest().permitAll()
+				// 关闭跨站的问题
+				.and().csrf().disable();
 	}
 
 	@Override
