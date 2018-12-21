@@ -19,37 +19,30 @@ public class LauncThemeClassification extends LaunBase {
 
     private static final long serialVersionUID = 7592025457847638111L;
 
-    @ApiModelProperty("主题分类id")
-    private String classificationId;
+    //@ApiModelProperty("主题分类id")
+    //private String classificationId;
 
-    @ApiModelProperty("主题分类名")
-    private String classificationName;
+    private @ApiModelProperty("主键")String id;
 
-    @ApiModelProperty("排序号")
-    private int sort;
+    private @ApiModelProperty("主题分类名")String classificationName;
 
-    @ApiModelProperty("主题总数")
-    private int quantity;
+    private @ApiModelProperty("排序号") int sort;
 
-    @ApiModelProperty("上架主题数")
-    private int shelfCount;
+    private @ApiModelProperty("主题总数")int quantity;
+
+    private @ApiModelProperty("上架主题数")int shelfCount;
 
     @Transient
-    @ApiModelProperty("文件地址")
-    private String coverImage;
+    private @ApiModelProperty("文件地址")String coverImage;
 
-    @ApiModelProperty("创建人")
-    private String creator;
+    private @ApiModelProperty("创建人")String creator;
 
-    @ApiModelProperty("上架状态")
-    private String shelfStatus;
+    private  @ApiModelProperty("上架状态")String shelfStatus;
 
     @Transient
-    @ApiModelProperty("租户id")
-    private String tenantId;
+    private @ApiModelProperty("租户id")String tenantId;
 
     @Transient
-    @ApiModelProperty("是否有效")
-    private int disable;
+    private @ApiModelProperty("是否有效")int disable;
 
 }
