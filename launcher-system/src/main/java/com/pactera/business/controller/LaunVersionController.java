@@ -22,11 +22,12 @@ public class LaunVersionController {
     @Autowired LaunVersionService launVersionService;
 
     /**
-     * 查询所有版本信息
+     * 查询租户（所有）版本信息 tentantid如果不传查询全部
+     * @param tentantid
      * @return
      */
     @GetMapping("/lists")
-    ResultData versions() { return new ResultData(launVersionService.versions()); }
+    ResultData versions(Long tentantid) { return new ResultData(launVersionService.versions(tentantid)); }
 
     /**
      * 添加描述信息

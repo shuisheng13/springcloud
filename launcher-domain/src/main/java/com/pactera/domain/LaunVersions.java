@@ -1,6 +1,5 @@
 package com.pactera.domain;
 
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,7 +17,6 @@ import javax.persistence.Table;
  */
 @Table
 @Entity
-@ApiModel("版本实体")
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)

@@ -4,11 +4,13 @@ import com.pactera.business.dao.LaunVersionMapper;
 import com.pactera.business.service.LaunVersionService;
 import com.pactera.domain.LaunVersions;
 import com.pactera.utlis.IdUtlis;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @ClassName LaunVersionServiceImpl
@@ -17,7 +19,6 @@ import java.util.List;
  * @Date 2018/12/19 14:31
  * @Version
  */
-
 @Service
 public class LaunVersionServiceImpl implements LaunVersionService {
 
@@ -25,7 +26,8 @@ public class LaunVersionServiceImpl implements LaunVersionService {
     private LaunVersionMapper versionMapper;
 
     @Override
-    public List<LaunVersions> versions() {
+    public List<LaunVersions> versions(Long tanentId) {
+        if(null != tanentId) { return versionMapper.select(new LaunVersions().setTenantId(tanentId)); }
         return versionMapper.selectAll();
     }
 
@@ -42,8 +44,11 @@ public class LaunVersionServiceImpl implements LaunVersionService {
     @Override
     public int add(String version, Long tenantId) {
         LaunVersions launVersions = new LaunVersions();
+
+        launVersions.setTenantId(tenantId).setVersion(version);
+        if (versionMapper.selectOne(launVersions) != null) { return 0; }
+
         launVersions.setId(IdUtlis.Id()).setCreateDate(new Date());
-        launVersions.setVersion(version).setTenantId(tenantId);
         return versionMapper.insert(launVersions);
     }
 }
