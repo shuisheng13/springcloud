@@ -13,41 +13,29 @@ import java.util.Date;
 @Data
 public class LauncThemeClassVo {
 
-    private long id;
+    private String id;
 
-
-    private String classificationId;
-
+    //private String classificationId;
 
     private String classificationName;
 
-
     private int sort;
-
 
     private int quantity;
 
-
     private int shelfCount;
-
 
     private String coverImage;
 
-
     private String creator;
-
 
     private String shelfStatus;
 
-
     private String tenantId;
-
 
     private int disable;
 
-
     private Date createDate;
-
 
     private Date updateDate;
 }
