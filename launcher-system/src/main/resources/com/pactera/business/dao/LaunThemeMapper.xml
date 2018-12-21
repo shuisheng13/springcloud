@@ -3,7 +3,7 @@
 <mapper namespace="com.pactera.business.dao.LaunThemeMapper">
 	<resultMap id="BaseResultMap" type="com.pactera.domain.LaunThemeAdministration">
 		<!-- WARNING - @mbg.generated -->
-		<id column="id" jdbcType="BIGINT" property="id" />
+		<id column="id" jdbcType="VARCHAR" property="id" />
 		<result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
 		<result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
 		<result column="background" jdbcType="VARCHAR" property="background" />
@@ -29,14 +29,12 @@
 		<result column="zip_url" jdbcType="VARCHAR" property="zipUrl" />
 		<result column="preview_path" jdbcType="VARCHAR" property="previewPath" />
 		<result column="urls" jdbcType="VARCHAR" property="urls" />
-		<result column="property" jdbcType="VARCHAR" property="property" />
 		<result column="weather_app_img_url" jdbcType="VARCHAR"
 			property="weatherAppImgUrl" />
 		<result column="wide_palace" jdbcType="INTEGER" property="widePalace" />
 		<result column="wide_resolution" jdbcType="BIGINT" property="wideResolution" />
 		<result column="width_or_higth_ratio" jdbcType="VARCHAR"
 			property="widthOrHigthRatio" />
-		<result column="channelName" jdbcType="VARCHAR" property="channelName" />
 		<result column="typeName" jdbcType="VARCHAR" property="typeName" />
 		<result column="versionName" jdbcType="VARCHAR" property="versionName" />
 		<result column="createName" jdbcType="VARCHAR" property="createName" />
@@ -45,8 +43,7 @@
 
 	<resultMap id="BaseResultVoMap" type="com.pactera.vo.LaunThemeVo">
 		<!-- WARNING - @mbg.generated -->
-		<id column="id" jdbcType="BIGINT" property="id" />
-		<result column="creator_channel_id" jdbcType="BIGINT" property="creatorChannelId" />
+		<id column="id" jdbcType="VARCHAR" property="id" />
 		<result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
 		<result column="file_size" jdbcType="BIGINT" property="fileSize" />
 		<result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
@@ -56,10 +53,88 @@
 		<result column="widget_json" jdbcType="VARCHAR" property="widgetJson" />
 		<result column="theme_json" jdbcType="VARCHAR" property="themeJson" />
 		<result column="zip_url" jdbcType="VARCHAR" property="zipUrl" />
-		<result column="channelName" jdbcType="VARCHAR" property="channelName" />
 		<result column="typeName" jdbcType="VARCHAR" property="typeName" />
-		<result column="versionName" jdbcType="VARCHAR" property="versionName" />
+		<result column="version" jdbcType="VARCHAR" property="version" />
+		<result column="resource_pack_url" jdbcType="VARCHAR" property="resourcePackUrl" />
+		<result column="long_resolution" jdbcType="INTEGER" property="longResolution" />
+		<result column="wide_resolution" jdbcType="INTEGER" property="wideResolution" />
+		<result column="sort" jdbcType="INTEGER" property="sort" />
+		<result column="download_count" jdbcType="INTEGER" property="downloadCount" />
+		<result column="used_count" jdbcType="INTEGER" property="usedCount" />
+		<result column="create_id" jdbcType="INTEGER" property="createId" />
 	</resultMap>
+
+    <sql id="themeAdmin">laun_theme_administration</sql>
+    <sql id="themeClass">laun_theme_classification</sql>
+    <sql id="themeColumns">
+        ${alias}.id,
+        ${alias}.create_date,
+        ${alias}.update_date,
+        ${alias}.background,
+        ${alias}.end_time,
+        ${alias}.file_size,
+        ${alias}.fm_app_img_url,
+        ${alias}.folat_point,
+        ${alias}.long_palace,
+        ${alias}.long_resolution,
+        ${alias}.music_app_img_url,
+        ${alias}.phone_app_img_url,
+        ${alias}.start_time,
+        ${alias}.title,
+        ${alias}.type_id,
+        ${alias}.version,
+        ${alias}.weather_app_img_url,
+        ${alias}.wide_palace,
+        ${alias}.wide_resolution,
+        ${alias}.width_or_higth_ratio,
+        ${alias}.font,
+        ${alias}.config_json,
+        ${alias}.creator_channel_id,
+        ${alias}.basic_json,
+        ${alias}.widget_json,
+        ${alias}.theme_json,
+        ${alias}.create_id,
+        ${alias}.zip_url,
+        ${alias}.isPush,
+        ${alias}.status,
+        ${alias}.preview_path,
+        ${alias}.urls,
+        ${alias}.tenant_id,
+        ${alias}.description,
+        ${alias}.release_time,
+        ${alias}.recommend,
+        ${alias}.recomment_sort,
+        ${alias}.author,
+        ${alias}.download_count,
+        ${alias}.used_count,
+        ${alias}.resource_pack_url,
+        ${alias}.sort
+    </sql>
+
+	<select id="query" resultMap="BaseResultVoMap">
+        SELECT
+        <include refid="themeColumns"><property name="alias" value="t1"/></include>,
+        t2.classification_name as typeName
+        FROM <include refid="themeAdmin"></include> as t1
+        LEFT JOIN <include refid="themeClass"></include> as t2
+        ON t1.type_id = t2.id
+        <where>
+            <if test="tenantId != null">
+                AND t1.tenant_id = #{tenantId}
+            </if>
+            <if test="typeId != null">
+                AND t1.type_id = #{typeId}
+            </if>
+            <if test="title != null">
+                AND t1.title like CONCAT(CONCAT('%', #{title}), '%')
+            </if>
+            <if test="status != null">
+                AND t1.status = #{status}
+            </if>
+        </where>
+	</select>
+
+
 
 	<select id="selectByCound" resultMap="BaseResultVoMap">
 		SELECT DISTINCT lta.id,

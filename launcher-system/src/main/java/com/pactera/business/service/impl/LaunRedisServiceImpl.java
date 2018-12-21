@@ -51,11 +51,11 @@ public class LaunRedisServiceImpl implements LaunRedisService, InitializingBean 
 
 	/**
 	 * 初始化，将渠道放入redis
-	 * 
-	 * @author LL
-	 * @date 2018年6月26日 上午10:02:34
+	 *
 	 * @param
 	 * @return void
+	 * @author LL
+	 * @date 2018年6月26日 上午10:02:34
 	 */
 	public void initChannelList() {
 		List<LaunChannel> findAll = launChannelService.findAll(null);
@@ -80,78 +80,15 @@ public class LaunRedisServiceImpl implements LaunRedisService, InitializingBean 
 
 	/**
 	 * 初始化主题商店，按渠道分类放入redis
-	 * 
-	 * @author LL
-	 * @date 2018年6月26日 上午10:03:05
+	 *
 	 * @param
 	 * @return void
+	 * @author LL
+	 * @date 2018年6月26日 上午10:03:05
 	 */
 	@Override
 	public void initThemeShop() {
 
-		HashOperations<String, Object, Object> opsForHash = redisTemplate.opsForHash();
-
-		Integer status = 2;// 已上架的主题状态
-		List<LaunThemeAdministration> byExample = launThemeMapper.selectByStatus(status);
-
-		// 按照渠道进行分类
-		Map<Long, List<LaunThemeAdministration>> map = new HashMap<Long, List<LaunThemeAdministration>>();
-
-		for (LaunThemeAdministration launThemeAdministration : byExample) {
-			Long channleId = launThemeAdministration.getCreatorChannelId();
-			if (map.get(channleId) != null) {
-				map.get(channleId).add(launThemeAdministration);
-			} else {
-				List<LaunThemeAdministration> value = new ArrayList<LaunThemeAdministration>();
-				value.add(launThemeAdministration);
-				map.put(channleId, value);
-			}
-		}
-
-		// 所有渠道都拥有的主题
-		List<LaunThemeAdministration> list = map.get(0L);
-
-		Map<String, List<LaunThemeAdministration>> redisMap = new HashMap<String, List<LaunThemeAdministration>>();
-		if (map.size() > 0) {
-			if (list == null) {
-				for (Entry<Long, List<LaunThemeAdministration>> launThemeAdministration : map.entrySet()) {
-					Long key = launThemeAdministration.getKey();
-					List<LaunThemeAdministration> value = launThemeAdministration.getValue();
-					if (!key.equals(0L)) {
-						LaunChannel findById = launChannelService.findById(key.toString());
-						redisMap.put(findById.getChannelId(), value);
-					}
-
-				}
-			} else {
-				List<LaunChannel> findAll = launChannelService.findAllInit();
-				for (LaunChannel launChannel : findAll) {
-					List<LaunThemeAdministration> channelTheme = map.get(launChannel.getId());
-					if (channelTheme != null) {
-						channelTheme.addAll(list);
-						redisMap.put(launChannel.getChannelId(), channelTheme);
-					} else {
-						redisMap.put(launChannel.getChannelId(), list);
-					}
-				}
-			}
-
-		}
-		redisTemplate.delete(ConstantUtlis.THEME_REDIS_FLAG);
-		opsForHash.putAll(ConstantUtlis.THEME_REDIS_FLAG, redisMap);
-		Object refresh = valueOperations.get(ConstantUtlis.THEME_REDIS_REFRESH);
-
-		if (refresh == null) {
-			valueOperations.set(ConstantUtlis.THEME_REDIS_REFRESH, 1);
-		} else {
-			long mapRedis = Long.parseLong(refresh.toString());
-			valueOperations.set(ConstantUtlis.THEME_REDIS_REFRESH, mapRedis + 1);
-		}
-	}
-
-	public static void main(String[] args) {
-		String a = "2";
-		String b = "1";
-		System.out.println(a.compareTo(b));
 	}
 }
+

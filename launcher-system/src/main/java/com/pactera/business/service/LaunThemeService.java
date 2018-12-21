@@ -1,11 +1,11 @@
 package com.pactera.business.service;
 
-import java.util.List;
-import java.util.Map;
-
 import com.github.pagehelper.PageInfo;
 import com.pactera.domain.LaunThemeAdministration;
 import com.pactera.vo.LaunThemeVo;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @description: 主题的响应的接口
@@ -18,12 +18,12 @@ public interface LaunThemeService {
 	 * @description 根据条件去查询主题
 	 * @author liudawei
 	 * @since 2018年4月26日 上午11:26:44
+	 * @param tenantId 租户id
 	 * @param type
 	 *            类型 title 名称 status 上架状态
 	 * @return PageInfo<LaunThemeAdministration>
 	 */
-	PageInfo<LaunThemeVo> selectByCoundy(Long type, String version, Long channel, String title, Integer status,
-			int pageNum, int pageSize);
+	PageInfo<LaunThemeVo> query(Long tenantId, Long type, String title, Integer status, int pageNum, int pageSize);
 
 	/**
 	 * @description 根据id去查看主题详情
@@ -39,7 +39,7 @@ public interface LaunThemeService {
 	 * @description 根据id去删除主题
 	 * @author liudawei
 	 * @since 2018年4月26日 下午2:33:31
-	 * @param id主键
+	 * @param id 主键
 	 * @return void
 	 */
 	int delectById(Long id);
@@ -59,9 +59,9 @@ public interface LaunThemeService {
 	/**
 	 * @description 保存主题
 	 * @author peill
-	 * @param baseJson底屏json
-	 * @param widgetJson组件json
-	 * @param themeJson主题基础信息json
+	 * @param baseJson 底屏json
+	 * @param widgetJson 组件json
+	 * @param themeJson 主题基础信息json
 	 * @param saveType
 	 *            0保存widget 1主题保存
 	 * @since 2018年4月29日 下午2:46:33
@@ -75,8 +75,8 @@ public interface LaunThemeService {
 	 * 
 	 * @author LL
 	 * @date 2018年5月25日 上午10:31:14
-	 * @param theme主题
-	 * @param themeConfig需要下载的文件集合
+	 * @param theme 主题
+	 * @param themeConfig 需要下载的文件集合
 	 * @return Map<String, Object> length:文件大小 length:文件大小
 	 */
 	Map<String, Object> saveAssembleConfigJson(LaunThemeAdministration theme, Map<String, String> themeConfig);
@@ -84,9 +84,9 @@ public interface LaunThemeService {
 	/**
 	 * @description 修改主题
 	 * @author peill
-	 * @param baseJson底屏json
-	 * @param widgetJson组件json
-	 * @param themeJson主题基础信息json
+	 * @param baseJson 底屏json
+	 * @param widgetJson 组件json
+	 * @param themeJson 主题基础信息json
 	 * @param saveType
 	 *            0保存widget 1主题保存
 	 * @since 2018年5月29日 下午2:46:33
