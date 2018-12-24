@@ -1,12 +1,12 @@
 package com.pactera.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Table
 @Entity
@@ -16,7 +16,7 @@ import lombok.EqualsAndHashCode;
 public class LaunThemeFile extends LaunBase {
 
 	private static final long serialVersionUID = 7522456641544795644L;
-	private @ApiModelProperty("主题主键") Long themeId;
+	private @ApiModelProperty("主题主键") String themeId;
 	private @ApiModelProperty("文件名称") String fileName;
 	private @ApiModelProperty("文件路径") String filePath;
 	private @ApiModelProperty("文件下标") Integer fileIndex;

@@ -99,70 +99,26 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	 * @description 根据条件去插叙年主题的实现类
 	 * @author liudawei
 	 * @since 2018年4月26日 上午11:31:16
-	 * @param
+     * @param tenantId 主题分类
+     * @param type 主题分类
+     * @param title 主题名称
+     * @param status 主题状态
+     * @param pageNum 第几页
+     * @param pageSize 每页条数
 	 */
 	@Override
-	public PageInfo<LaunThemeVo> selectByCoundy(Long type, String version, Long channle, String title, Integer status,
-			int pageNum, int pageSize) {
+	public PageInfo<LaunThemeVo> query(Long tenantId, Long type, String title, Integer status, int pageNum, int pageSize) {
 
-		// 更新过期状态
-		updateOverdueTheme();
+        PageHelper.startPage(pageNum, pageSize);
+		List<LaunThemeVo> list = launThemeMapper.query(tenantId, type, title, status);
+		list.forEach(l -> {
+			//TODO 获取租户名称
+			l.setCreator("xukj");
+		});
 
-		PageHelper.startPage(pageNum, pageSize);
-		if (HStringUtlis.isNotEmpty(title)) {
-			title = "%" + title + "%";
-		}
-
-		// 判断是否为渠道管理员 0否，1是
-		Integer isChannleManager = 1;
-		LaunUser launUser = UserUtlis.launUser();
-		Integer integer = launUser.getUserType();
-		if (integer == null || integer == 1) {
-			Long channleId = launUser.getChannelId();
-			if (channleId != null && (status == null || status == 1 || status == 2 || status == 3)) {
-				channle = channleId;
-				isChannleManager = 1;
-			}
-		}
-		List<LaunThemeVo> launList = launThemeMapper.selectByCound(type, version, channle, title, status,
-				isChannleManager);
-		return new PageInfo<LaunThemeVo>(launList);
+		return new PageInfo<>(list);
 	}
 
-	/**
-	 * 批量更新过期主题状态
-	 * 
-	 * @author LL
-	 * @date 2018年7月6日 上午10:30:23
-	 * @param
-	 * @return void
-	 */
-	void updateOverdueTheme() {
-
-		// 查询上架状态的主题
-		Example example = new Example(LaunThemeAdministration.class);
-		example.or().andEqualTo("status", 2);
-		List<LaunThemeAdministration> list = launThemeMapper.selectByExample(example);
-
-		List<Long> ids = new LinkedList<Long>();
-		for (LaunThemeAdministration theme : list) {
-			Date endTime = theme.getEndTime();
-			Date now = new Date();
-			int compareDate = TimeUtils.compareDate(endTime, now);
-			if (compareDate == -1) {
-				ids.add(theme.getId());
-			}
-		}
-		if (ids.size() > 0) {
-			Example updExample = new Example(LaunThemeAdministration.class);
-			updExample.or().andIn("id", ids);
-			LaunThemeAdministration record = new LaunThemeAdministration();
-			record.setStatus(3);
-			launThemeMapper.updateByExampleSelective(record, updExample);
-			launRedisService.initThemeShop();
-
-		}
-	}
 
 	/**
 	 * @description 根据id去预览主题
@@ -171,7 +127,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	 * @param
 	 */
 	@Override
-	public Map<String, Object> selectById(Long id) {
+	public Map<String, Object> selectById(String id) {
 		List<LaunThemeFile> list = launThemeFileService.selectByThemeId(id);
 		List<LaunThemeFileVo> voList = new ArrayList<>();
 
@@ -198,7 +154,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	 * @param
 	 */
 	@Override
-	public int delectById(Long id) {
+	public int delectById(String id) {
 		LaunThemeAdministration launThemeAdministration = new LaunThemeAdministration();
 		int i = 0;
 		if (id != null) {
@@ -251,18 +207,14 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	 */
 	@Override
 	@Transactional
-	public Long saveTheme(String baseJson, String widgetJson, String themeJson, Integer saveType) {
+	public String saveTheme(String baseJson, String widgetJson, String themeJson, Integer saveType) {
 
 		LaunThemeAdministration administration = JsonUtils.jsonToClass(themeJson, LaunThemeAdministration.class);
 
-		Long themeId = IdUtlis.Id();
+		//TODO 获取租户名称
+		String themeId = IdUtlis.Id(ConstantUtlis.PRIVATE_THEME, "xukj");
 		Long adminId = 0L;
 
-		// 当前登录人
-		LaunUser launUser = UserUtlis.launUser();
-		if (launUser.getUserType() == null || launUser.getUserType() == 1) {
-			adminId = launUser.getChannelId();
-		}
 
 		/**
 		 * 当save为0时，只是保存widget。只保存对应json数据 当save为1是，保存整个主题，执行后续结构化数据及打包过程
@@ -299,10 +251,10 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 		}
 
 		// 删除临时主题
-		if (administration.getId() != null) {
-			launThemeMapper.deleteByPrimaryKey(administration.getId());
-			launThemeFileService.deleteById(administration.getId());
-		}
+        if (administration.getId() != null) {
+            launThemeMapper.deleteByPrimaryKey(administration.getId());
+            launThemeFileService.deleteById(administration.getId());
+        }
 
 		// 首先保存主题的主题，并将其对应的id返回，然后在将主键保存到各个配置文件对应的主键中，再去保存配置文件
 		String creator = administration.getCreator();
@@ -324,10 +276,11 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 		// 定义下载文件map
 		Map<String, String> map = new HashMap<String, String>();
 
-		List<Long> themeIdList = new ArrayList<>();
+		List<String> themeIdList = new ArrayList<>();
 		Map<String, String> themeConfig = null;
 		for (Long channleId : channles) {
-			themeId = IdUtlis.Id();
+			//TODO 获取租户名称
+			themeId = IdUtlis.Id(ConstantUtlis.PRIVATE_THEME, "xukj");
 			log.info("主题管理----------保存主题----------id:{}----------", themeId);
 			themeIdList.add(themeId);
 			administration.setId(themeId);
@@ -385,7 +338,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	@Async
 	@SuppressWarnings("all")
 	@Transactional
-	public Map<String, String> saveThemeConfig(Long themeId, String baseJson, String widgetJson) {
+	public Map<String, String> saveThemeConfig(String themeId, String baseJson, String widgetJson) {
 
 		log.info("主题管理----------保存主题相关配置----------id:{}----------", themeId);
 
@@ -505,13 +458,13 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	 * 
 	 * @author LL
 	 * @date 2018年5月23日 下午1:58:35
-	 * @param themeId主题主键id
-	 * @param map文件
+	 * @param themeId 主题主键id
+	 * @param map 文件
 	 *            key:图片名,value:文件存储路径
 	 * @return Long
 	 */
 	@Transactional
-	public Map<String, String> saveThemeFile(Map<String, String> map, Long themeId) {
+	public Map<String, String> saveThemeFile(Map<String, String> map, String themeId) {
 		log.info("主题管理----------保存主题相关图片----------id:{}----------", themeId);
 
 		Map<String, String> returnMap = new HashMap<String, String>();
@@ -551,8 +504,8 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	 * 
 	 * @author LL
 	 * @date 2018年5月26日 下午4:23:32
-	 * @param strUrl文件路径
-	 * @param goalUrl目标地址
+	 * @param strUrl 文件路径
+	 * @param goalUrl 目标地址
 	 * @return void
 	 */
 	public void getFileToLocal(String strUrl, String goalUrl) {
@@ -579,7 +532,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 
 	@Override
 	public Map<String, Object> saveAssembleConfigJson(LaunThemeAdministration theme, Map<String, String> fileMap) {
-		Long themeId = theme.getId();
+		String themeId = theme.getId();
 		log.info("主题管理----------打包主题zip----------id:{}----------", theme.getId());
 
 		long currentTimeMillis = System.currentTimeMillis();
@@ -755,11 +708,11 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	 * @author LL
 	 * @param currentTimeMillis
 	 * @date 2018年5月10日 下午3:56:47
-	 * @param theme主题对象
-	 * @param posterList海报列表
+	 * @param theme 主题对象
+	 * @param posterList 海报列表
 	 * @return void
 	 */
-	public Map<String, Object> getStaticConfigJson(LaunThemeAdministration theme, Long themeId,
+	public Map<String, Object> getStaticConfigJson(LaunThemeAdministration theme, String themeId,
 			long currentTimeMillis) {
 		//
 		String font = "d616244961d242a799807ff680a29f2d.ttf";
@@ -811,7 +764,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 		return returnMap;
 	}
 
-	public List<Map<String, String>> getPosterMap(Long themeId) {
+	public List<Map<String, String>> getPosterMap(String themeId) {
 		List<LaunThemeConfig> themeConfigList = configService.findByThemeId(themeId);
 		int posterType = 2;
 		String posterIdList = "";
@@ -837,14 +790,14 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	}
 
 	@Override
-	public Long updateTheme(String baseJson, String widgetJson, String themeJson, Integer saveType) {
+	public String updateTheme(String baseJson, String widgetJson, String themeJson, Integer saveType) {
 
 		LaunThemeAdministration administration = JsonUtils.jsonToClass(themeJson, LaunThemeAdministration.class);
 
 		// 如果修改的是暂存的主题，将状态修改为 为上架，执行保存操作
 		if (administration.getStatus() != null && administration.getStatus() == 0 && saveType == 1) {
 			administration.setStatus(1);
-			Long saveTheme = saveTheme(baseJson, widgetJson, themeJson, saveType);
+			String saveTheme = saveTheme(baseJson, widgetJson, themeJson, saveType);
 			return saveTheme;
 		}
 
@@ -853,7 +806,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 			saveTheme(baseJson, widgetJson, themeJson, saveType);
 		}
 
-		Long themeId = administration.getId();
+		String themeId = administration.getId();
 		launThemeFileService.deleteById(themeId);
 		// 删除之前配置文件
 		configService.deleteByThemeId(themeId);

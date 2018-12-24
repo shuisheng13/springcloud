@@ -5,6 +5,7 @@ import com.pactera.result.ResultData;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -19,6 +20,13 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ResultData> NullPointerHandler(Exception exception)  {
         exception.printStackTrace();
 	    return new ResponseEntity<>(new ResultData(exception.getMessage(), ErrorStatus.PARAMETER_ERROR),HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ResponseEntity<ResultData> HttpRequestMethodNotSupportedHandler(Exception exception)  {
+		exception.printStackTrace();
+		return new ResponseEntity<>(new ResultData(exception.getMessage(), ErrorStatus.HTTP_REQUEST_METHOD_ERROR),HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(value = Exception.class)

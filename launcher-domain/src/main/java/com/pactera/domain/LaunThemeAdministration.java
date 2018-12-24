@@ -1,26 +1,31 @@
 package com.pactera.domain;
 
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
 import java.util.Map;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
+/**
+ * 主题实体类
+ */
 @Table
 @Entity
-@ApiModel("主题实体")
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class LaunThemeAdministration extends LaunBase {
+public class LaunThemeAdministration {
 	private static final long serialVersionUID = -2054946094353463347L;
+
+	@Id
+	private @ApiModelProperty("主键") String id;
+	private @ApiModelProperty("创建时间") Date createDate;
+	private @ApiModelProperty("修改时间") Date updateDate;
+
 	private @ApiModelProperty("主题大小") Long fileSize;
 	private @ApiModelProperty("主题宫格长") int longPalace;
 	private @ApiModelProperty("主题宫格宽") int widePalace;
@@ -34,7 +39,7 @@ public class LaunThemeAdministration extends LaunBase {
 	private @ApiModelProperty("渠道id") Long createId;
 	private @ApiModelProperty("主题分类") Long typeId;
 	private @ApiModelProperty("主题名称") String title;
-	private @ApiModelProperty("主题状态1:未上架2:已上架3:已下架4:删除") Integer status;
+	private @ApiModelProperty("主题状态 1上架 2下架 3启用 4禁用 5删除") Integer status;
 	private @ApiModelProperty("开始时间") Date startTime;
 	private @ApiModelProperty("结束时间") Date endTime;
 	private @ApiModelProperty("音乐App") String musicAppImgUrl;
@@ -49,9 +54,14 @@ public class LaunThemeAdministration extends LaunBase {
 	private @ApiModelProperty("主题包url地址") String zipUrl;
 	private @ApiModelProperty("api接口主图") String previewPath;
 	private @ApiModelProperty("api接口图片urls") String urls;
+	private @ApiModelProperty("主题描述") String description;
+    private @ApiModelProperty("排序") int sort;
+    private @ApiModelProperty("下载量") int downloadCount;
+    private @ApiModelProperty("使用量") int usedCount;
+    private @ApiModelProperty("作者") String author;
+    private @ApiModelProperty("发布时间") Date releaseTime;
+    private @ApiModelProperty("上传资源包路径") String resourcePackUrl;
 
-	@Transient
-	private @ApiModelProperty("页面传值用的渠道名称") String channelName;
 	@Transient
 	@JsonProperty("sTime")
 	private @ApiModelProperty("页面传值用的起止时间") String sTime;

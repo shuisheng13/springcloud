@@ -17,6 +17,6 @@ public interface LaunThemeConfigMapper extends BaseMapper<LaunThemeConfig> {
 	 * @param id主题主键
 	 * @return List<LaunThemeConfig>
 	 */
-	List<LaunThemeConfig> findByThemeId(@Param("id") Long id);
+	List<LaunThemeConfig> findByThemeId(@Param("id") String id);
 
 }

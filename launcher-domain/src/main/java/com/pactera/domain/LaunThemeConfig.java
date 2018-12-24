@@ -1,15 +1,14 @@
 package com.pactera.domain;
 
-import java.util.List;
-
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import java.util.List;
 
 @Table
 @Entity
@@ -28,7 +27,7 @@ public class LaunThemeConfig extends LaunBase {
 	private @ApiModelProperty("横向宽权重") String widthWieghts;
 	private @ApiModelProperty("纵向高") String height;
 	private @ApiModelProperty("纵向高权重") String heightWieghts;
-	private @ApiModelProperty("主题id") Long launThemeId;
+	private @ApiModelProperty("主题id") String launThemeId;
 	private @ApiModelProperty("left , top, right，bottom宫格坐标（左、上、右、下）") String lattice;
 	private @ApiModelProperty("json资源") String property;
 	private @ApiModelProperty("父节点id") Long parentId;

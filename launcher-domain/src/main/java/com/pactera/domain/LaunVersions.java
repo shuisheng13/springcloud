@@ -23,6 +23,7 @@ import javax.persistence.Table;
 public class LaunVersions extends LaunBase {
 
     private @ApiModelProperty("版本号") String version;
-    private @ApiModelProperty("关联租户") Long tenantId;
+    private @ApiModelProperty("关联租户id") Long tenantId;
+    private @ApiModelProperty("关联租户名称") Long tenantName;
     private @ApiModelProperty("描述") String description;
 }

@@ -23,11 +23,11 @@ public class LaunVersionController {
 
     /**
      * 查询租户（所有）版本信息 tentantid如果不传查询全部
-     * @param tentantid
+     * @param tenantId
      * @return
      */
-    @GetMapping("/lists")
-    ResultData versions(Long tentantid) { return new ResultData(launVersionService.versions(tentantid)); }
+    @GetMapping("/list")
+    ResultData versions(Long tenantId) { return new ResultData(launVersionService.versions(tenantId)); }
 
     /**
      * 添加描述信息

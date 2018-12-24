@@ -25,7 +25,7 @@ public class LaunThemeFileServiceImpl implements LaunThemeFileService {
 	private LaunThemeFileMapper launThemeFileMapper;
 
 	@Override
-	public List<LaunThemeFile> selectByThemeId(Long themeId) {
+	public List<LaunThemeFile> selectByThemeId(String themeId) {
 		Example example = new Example(LaunThemeFile.class);
 
 		example.createCriteria().andEqualTo("themeId", themeId);
@@ -34,7 +34,7 @@ public class LaunThemeFileServiceImpl implements LaunThemeFileService {
 	}
 
 	@Override
-	public void insert(String json, Long themeId) {
+	public void insert(String json, String themeId) {
 		if (HStringUtlis.isNotBlank(json) && themeId != null) {
 			List<LaunThemeFile> jsonToList = JsonUtils.jsonToList(json, LaunThemeFile.class);
 			for (LaunThemeFile launThemeFile : jsonToList) {
@@ -50,7 +50,7 @@ public class LaunThemeFileServiceImpl implements LaunThemeFileService {
 	}
 
 	@Override
-	public void deleteById(Long id) {
+	public void deleteById(String id) {
 		if (id == null) {
 			return;
 		}
