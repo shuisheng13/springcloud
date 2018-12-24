@@ -1,10 +1,8 @@
 package com.pactera.business.dao;
-
 import com.pactera.config.mapper.BaseMapper;
-import com.pactera.domain.LauncThemeClassification;
+import com.pactera.domain.LaunThemeClassificationV2;
 import com.pactera.vo.LauncThemeClassVo;
 import org.springframework.data.repository.query.Param;
-
 import java.util.List;
 
 /**
@@ -12,7 +10,7 @@ import java.util.List;
  * @author:zhaodong
  * @since:2018年12月19日 上午14:29:39
  */
-public interface LauncThemeClassificationMapper extends BaseMapper<LauncThemeClassification> {
+public interface LaunThemeClassificationMapperV2 extends BaseMapper<LaunThemeClassificationV2> {
 
     /**
      * 根据id修改分类
