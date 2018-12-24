@@ -10,7 +10,7 @@ import java.util.List;
  * @author:zhaodong
  * @since:2018年12月19日 上午14:29:39
  */
-public interface LaunThemeClassificationMapperV2 extends BaseMapper<LaunThemeClassificationV2> {
+public interface LaunThemeClassificationV2Mapper extends BaseMapper<LaunThemeClassificationV2> {
 
     /**
      * 根据id修改分类
