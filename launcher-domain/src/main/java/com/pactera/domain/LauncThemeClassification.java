@@ -20,9 +20,6 @@ public class LauncThemeClassification{
 
     private static final long serialVersionUID = 7592025457847638111L;
 
-    //@ApiModelProperty("主题分类id")
-    //private String classificationId;
-
     private @ApiModelProperty("创建时间") Date createDate;
 
     private @ApiModelProperty("修改时间") Date updateDate;
