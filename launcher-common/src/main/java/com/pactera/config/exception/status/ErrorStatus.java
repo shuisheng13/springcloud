@@ -29,7 +29,9 @@ public enum ErrorStatus {
 	WIDGETPRIVEW_ERROR(140010,"封面不能为空"),
 
 
-	HTTP_REQUEST_METHOD_ERROR(400001,"请求方式错误");
+	HTTP_REQUEST_METHOD_ERROR(400001,"请求方式错误"),
+	NOT_APIKEY(140011,"无效apiKey")
+	;
 	
 	private int status;
 
