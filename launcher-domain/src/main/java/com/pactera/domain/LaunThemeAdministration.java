@@ -4,9 +4,9 @@ package com.pactera.domain;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.util.Date;
@@ -18,9 +18,14 @@ import java.util.Map;
 @Table
 @Entity
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class LaunThemeAdministration extends LaunBase {
+public class LaunThemeAdministration {
 	private static final long serialVersionUID = -2054946094353463347L;
+
+	@Id
+	private @ApiModelProperty("主键") String id;
+	private @ApiModelProperty("创建时间") Date createDate;
+	private @ApiModelProperty("修改时间") Date updateDate;
+
 	private @ApiModelProperty("主题大小") Long fileSize;
 	private @ApiModelProperty("主题宫格长") int longPalace;
 	private @ApiModelProperty("主题宫格宽") int widePalace;
@@ -49,6 +54,13 @@ public class LaunThemeAdministration extends LaunBase {
 	private @ApiModelProperty("主题包url地址") String zipUrl;
 	private @ApiModelProperty("api接口主图") String previewPath;
 	private @ApiModelProperty("api接口图片urls") String urls;
+	private @ApiModelProperty("主题描述") String description;
+    private @ApiModelProperty("排序") int sort;
+    private @ApiModelProperty("下载量") int downloadCount;
+    private @ApiModelProperty("使用量") int usedCount;
+    private @ApiModelProperty("作者") String author;
+    private @ApiModelProperty("发布时间") Date releaseTime;
+    private @ApiModelProperty("上传资源包路径") String resourcePackUrl;
 
 	@Transient
 	@JsonProperty("sTime")

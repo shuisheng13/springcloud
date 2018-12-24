@@ -1,13 +1,5 @@
 package com.pactera.serviceT;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.pactera.base.Tester;
 import com.pactera.business.dao.LaunWidgetManagerMapper;
 import com.pactera.business.dao.LaunWidgetMinPropertyMapper;
@@ -18,6 +10,13 @@ import com.pactera.constant.ConstantUtlis;
 import com.pactera.domain.LaunThemeConfig;
 import com.pactera.util.ThemeWidgetDetail;
 import com.pactera.utlis.JsonUtils;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 测试widget信息转为前端可用json
@@ -64,7 +63,7 @@ public class ThemePackageT extends Tester {
 	@Test
 	public void saveThemeConfig() {
 
-		Long themeId = 1L;
+		String themeId = "1L";
 		String baseJson = "{\"background\":\"#000000\",\"width\":588,\"height\":392,\"row\":\"30\",\"col\":\"51\",\"selscaleType\":\"6\",\"alignType\":\"CENTER\",\"backGrounditem\":{\"color\":\"#000000\",\"image\":\"1531386052615bg.png\",\"scaleType\":\"6\",\"alignType\":\"CENTER\"},\"isnine\":false,\"file\":{\"1531386052615bg.png\":\"group1/M00/00/63/wKgJGVtHGJyAEMBpAAB4dOyp3rI464.png\"}}";
 		String widgetJson = "[{\"Uid\":\"1531280392196\",\"x\":36,\"y\":0,\"width\":\"3\",\"height\":\"3\",\"name\":\"UsbStatusWidget\",\"isScroll\":0,\"setting\":[{\"description\":\"USB已连接时显示的图片\",\"default\":{\"image\":\"usbstatuswidget_usb_available.png\",\"scaleType\":\"01\",\"alignType\":\"LT\",\"color\":\"\"},\"label\":\"USB已连接：\",\"type\":\"ImageSet\",\"key\":\"available\"}],\"backgroud\":\"usbstatuswidget_preview_usb.png\",\"category\":\"USB插入状态\",\"description\":\"这是一个USB状态控件\",\"file\":{\"com_mapbar_dynamiclauncher_widgets_UsbStatusWidget.dex\":\"group1/M00/00/5E/wKgJGVtFcPyAGgCWAAAQmD9u0a0083.dex\",\"usbstatuswidget_preview_usb.png\":\"group1/M00/00/5E/wKgJGVtFcPyACiFBAAAH0PV9QXg157.png\",\"usbstatuswidget_usb_available.png\":\"group1/M00/00/5E/wKgJGVtFcPyACQ2LAAA60qTniuA355.png\"},\"codeId\":\"com.mapbar.dynamiclauncher.widgets.usbstatus.UsbStatusWidget\",\"appId\":\"\",\"id\":180710163102365,\"isPoster\":0,\"type\":0,\"Zindex\":29,\"relativeH\":34,\"relativeW\":33.007407407407406,\"relativeX\":393.17647058823536,\"relativeY\":0,\"seerelativeH\":72,\"seerelativeW\":64,\"seerelativeX\":762.3529411764707,\"seerelativeY\":0,\"isRelative\":0,\"relPosition\":{},\"weightX\":\"\",\"weightY\":\"\"}]";
 
@@ -178,7 +177,7 @@ public class ThemePackageT extends Tester {
 
 	public void test() {
 
-		Long themeId = 180523764457554L;
+		String themeId = "180523764457554L";
 		List<LaunThemeConfig> themeConfigList = configService.findByThemeId(themeId);
 
 		Map<String, List<LaunThemeConfig>> map = new HashMap<String, List<LaunThemeConfig>>();

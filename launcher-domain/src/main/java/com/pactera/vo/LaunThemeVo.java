@@ -14,13 +14,16 @@ public class LaunThemeVo implements Serializable {
 	private @ApiModelProperty("主键id") String id;
 	private @ApiModelProperty("排序权重") int sort;
 	private @ApiModelProperty("最低试用版本") String version;
-	private @ApiModelProperty("分辨率长") String longResolution;
-	private @ApiModelProperty("分辨率宽") String wideResolution;
+	private @ApiModelProperty("分辨率长") Long longResolution;
+	private @ApiModelProperty("分辨率宽") Long wideResolution;
 	private @ApiModelProperty("主题名称") String title;
-	private @ApiModelProperty("下载量") String downloadCount;
-	private @ApiModelProperty("应用量") String usedCount;
+	private @ApiModelProperty("下载量") int downloadCount;
+	private @ApiModelProperty("应用量") int usedCount;
 	private @ApiModelProperty("创建人id") String createId;
 	private @ApiModelProperty("创建人") String creator;
+	private @ApiModelProperty("主题描述") String description;
+	private @ApiModelProperty("作者") String author;
+	private @ApiModelProperty("发布时间") Date releaseTime;
 
 
 	private @ApiModelProperty("主题大小") Long fileSize;

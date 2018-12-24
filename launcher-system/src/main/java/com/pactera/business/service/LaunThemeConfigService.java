@@ -28,7 +28,7 @@ public interface LaunThemeConfigService {
 	 * @param id主题主键id
 	 * @return List<LaunThemeConfig>
 	 */
-	List<LaunThemeConfig> findByThemeId(Long id);
+	List<LaunThemeConfig> findByThemeId(String id);
 
 	/**
 	 * 根据主题id查询全部widget配置
@@ -38,6 +38,6 @@ public interface LaunThemeConfigService {
 	 * @param id主题主键id
 	 * @return List<LaunThemeConfig>
 	 */
-	void deleteByThemeId(Long id);
+	void deleteByThemeId(String id);
 
 }

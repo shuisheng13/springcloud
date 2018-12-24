@@ -7,7 +7,6 @@
 		<result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
 		<result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
 		<result column="background" jdbcType="VARCHAR" property="background" />
-		<result column="creator_channel_id" jdbcType="BIGINT" property="creatorChannelId" />
 		<result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
 		<result column="file_size" jdbcType="BIGINT" property="fileSize" />
 		<result column="fm_app_img_url" jdbcType="VARCHAR" property="fmAppImgUrl" />
@@ -35,9 +34,13 @@
 		<result column="wide_resolution" jdbcType="BIGINT" property="wideResolution" />
 		<result column="width_or_higth_ratio" jdbcType="VARCHAR"
 			property="widthOrHigthRatio" />
-		<result column="typeName" jdbcType="VARCHAR" property="typeName" />
-		<result column="versionName" jdbcType="VARCHAR" property="versionName" />
-		<result column="createName" jdbcType="VARCHAR" property="createName" />
+		<result column="description" jdbcType="VARCHAR" property="description" />
+		<result column="sort" jdbcType="INTEGER" property="sort" />
+		<result column="download_count" jdbcType="INTEGER" property="downloadCount" />
+		<result column="used_count" jdbcType="INTEGER" property="usedCount" />
+        <result column="author" jdbcType="VARCHAR" property="author" />
+        <result column="release_time" jdbcType="TIMESTAMP" property="releaseTime" />
+        <result column="resource_pack_url" jdbcType="VARCHAR" property="resourcePackUrl" />
 	</resultMap>
 
 
@@ -225,29 +228,39 @@
 	</select>
 
 	<select id="selectByTheme" resultMap="BaseResultMap">
-		SELECT
-		lta.id,lta.create_date,lta.end_time,lta.file_size,lta.fm_app_img_url,lta.folat_point,lta.creator_channel_id,lta.create_id,
-		lta.`level`,lta.long_palace,lta.long_resolution,lta.music_app_img_url,lta.phone_app_img_url,
-		lta.title,lta.start_time,lta.version
-		versionName,lta.type_id,lta.weather_app_img_url,lta.wide_palace,
-		lta.wide_resolution,lta.widget_json,lta.basic_json,lta.config_json,lta.theme_json,lta.zip_url,
-		lta.isPush,lta.`status`,IF (lta.creator_channel_id =
-		0,'所有渠道',lc.`name`) channelName,
-		ltc.classification_name typeName
-		FROM
-		laun_theme_administration
-		lta
-		LEFT
-		JOIN laun_channel lc ON
-		lta.creator_channel_id
-		= lc.id
-		LEFT JOIN
-		laun_theme_classification ltc on
-		lta.type_id = ltc.id
-		where lta.id
-		=
-		#{id}
+		SELECT <include refid="themeColumns"><property name="alias" value="t1"/></include>
+		FROM <include refid="themeAdmin"></include> AS t1
+		<where>
+			t1.id = #{id}
+		</where>
 	</select>
+
+
+
+	<!--<select id="selectByTheme" resultMap="BaseResultMap">-->
+		<!--SELECT-->
+		<!--lta.id,lta.create_date,lta.end_time,lta.file_size,lta.fm_app_img_url,lta.folat_point,lta.creator_channel_id,lta.create_id,-->
+		<!--lta.`level`,lta.long_palace,lta.long_resolution,lta.music_app_img_url,lta.phone_app_img_url,-->
+		<!--lta.title,lta.start_time,lta.version-->
+		<!--versionName,lta.type_id,lta.weather_app_img_url,lta.wide_palace,-->
+		<!--lta.wide_resolution,lta.widget_json,lta.basic_json,lta.config_json,lta.theme_json,lta.zip_url,-->
+		<!--lta.isPush,lta.`status`,IF (lta.creator_channel_id =-->
+		<!--0,'所有渠道',lc.`name`) channelName,-->
+		<!--ltc.classification_name typeName-->
+		<!--FROM-->
+		<!--laun_theme_administration-->
+		<!--lta-->
+		<!--LEFT-->
+		<!--JOIN laun_channel lc ON-->
+		<!--lta.creator_channel_id-->
+		<!--= lc.id-->
+		<!--LEFT JOIN-->
+		<!--laun_theme_classification ltc on-->
+		<!--lta.type_id = ltc.id-->
+		<!--where lta.id-->
+		<!--=-->
+		<!--#{id}-->
+	<!--</select>-->
 
 
 	<select id="selectTypeList" resultType="com.pactera.domain.LaunThemeClassification">

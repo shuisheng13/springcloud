@@ -15,10 +15,10 @@ public interface LaunThemeFileService {
 	 * 根据主体id查询文件
 	 * @author LL
 	 * @date 2018年4月27日 下午5:27:49
-	 * @param themeId主题主键id
+	 * @param themeId 主题主键id
 	 * @return List<LaunThemeFile>
 	 */
-	List<LaunThemeFile> selectByThemeId(Long themeId);
+	List<LaunThemeFile> selectByThemeId(String themeId);
 	
 	/**
 	 * 根据themeId插入文件
@@ -28,7 +28,7 @@ public interface LaunThemeFileService {
 	 * @param themeId主题主键
 	 * @return void
 	 */
-	void insert(String json,Long themeId);
+	void insert(String json,String themeId);
 
 	/**
 	 * 插入主题预览图
@@ -46,5 +46,5 @@ public interface LaunThemeFileService {
 	 * @param id主键id
 	 * @return void
 	 */
-	void deleteById(Long id);
+	void deleteById(String id);
 }

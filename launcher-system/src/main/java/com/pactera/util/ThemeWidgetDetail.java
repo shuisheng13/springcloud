@@ -1,17 +1,5 @@
 package com.pactera.util;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.pactera.business.service.LaunWidgetManagerService;
 import com.pactera.config.exception.DataStoreException;
 import com.pactera.config.exception.status.ErrorStatus;
@@ -19,6 +7,12 @@ import com.pactera.constant.ConstantUtlis;
 import com.pactera.domain.LaunThemeConfig;
 import com.pactera.domain.LaunWidget;
 import com.pactera.utlis.JsonUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * @description:主题相关处理json
@@ -57,7 +51,7 @@ public class ThemeWidgetDetail {
 	 * 
 	 * @author LL
 	 * @date 2018年5月16日 下午8:19:27
-	 * @param 基础widget
+	 * @param json 基础widget
 	 *            properties字段
 	 * @return String
 	 */
@@ -77,7 +71,7 @@ public class ThemeWidgetDetail {
 	 * 
 	 * @author LL
 	 * @date 2018年5月18日 下午2:04:45
-	 * @param Map<String,Object>单个widget的map对象
+	 * @param map<String,Object>单个widget的map对象
 	 * @param flag
 	 *            是否使用相对布局判断
 	 * @return Map<String, Object>
@@ -170,8 +164,8 @@ public class ThemeWidgetDetail {
 	 * 
 	 * @author LL
 	 * @date 2018年5月17日 下午2:16:36
-	 * @param scolleJson内部属性json
-	 * @param bottomJson底屏json
+	 * @param scolleJson 内部属性json
+	 * @param bottomJson 底屏json
 	 * @return String
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -361,12 +355,12 @@ public class ThemeWidgetDetail {
 	 * 
 	 * @author LL
 	 * @date 2018年5月21日 上午10:43:34
-	 * @param map属性信息
-	 * @param themeId所属主题id
-	 * @param parentId父节点id
+	 * @param map 属性信息
+	 * @param themeId 所属主题id
+	 * @param parentId 父节点id
 	 * @return LaunThemeConfig
 	 */
-	public static LaunThemeConfig getThemeConfigObj(Map<String, Object> map, Long parentId, Long themeId) {
+	public static LaunThemeConfig getThemeConfigObj(Map<String, Object> map, Long parentId, String themeId) {
 
 		LaunThemeConfig themeConfig = new LaunThemeConfig();
 		themeConfig.setParentId(parentId);
@@ -510,7 +504,7 @@ public class ThemeWidgetDetail {
 	 * 
 	 * @author LL
 	 * @date 2018年7月18日 上午11:12:28
-	 * @param direct对齐方式
+	 * @param direct 对齐方式
 	 * @return String
 	 */
 	public static String getCrosswiseKey(Object direct) {

@@ -51,7 +51,7 @@ public interface LaunThemeMapper extends BaseMapper<LaunThemeAdministration> {
 	 * @param id 主键
 	 * @return LaunThemeAdministration
 	 */
-	LaunThemeAdministration selectById(@Param("id") Long id);
+	LaunThemeAdministration selectById(@Param("id") String id);
 
 	/**
 	 * @description 根据id去查询主题主体
@@ -61,7 +61,7 @@ public interface LaunThemeMapper extends BaseMapper<LaunThemeAdministration> {
 	 *            主题的id
 	 * @return LaunThemeAdministration
 	 */
-	LaunThemeAdministration selectByTheme(@Param("id") Long id);
+	LaunThemeAdministration selectByTheme(@Param("id") String id);
 
 	/**
 	 * 查询主题所有分类，包含该分类使用的主题数量

@@ -40,6 +40,7 @@ public class LaunThemeController {
 	private LaunFontService launFontService;
 
 	/**
+	 * v2
 	 * 根据条件去查询主题列表
      * @param tenantId 主题分类
 	 * @param type 主题分类
@@ -49,7 +50,7 @@ public class LaunThemeController {
 	 * @param pageSize 每页条数
 	 * @return
 	 */
-	@PostMapping("query")
+	@GetMapping("query")
 	public ResultData query(Long tenantId, Long type, String title, Integer status, @RequestParam(defaultValue = "1") int pageNum,
 			@RequestParam(defaultValue = "10") int pageSize) {
 		PageInfo<LaunThemeVo> pageInfo =
@@ -100,7 +101,7 @@ public class LaunThemeController {
 	@GetMapping("selectById")
 	@ApiOperation("根据id去查看主题")
 	@ApiImplicitParam(name = "主题的id", value = "id")
-	public ResponseEntity<ResultData> selectById(Long id) {
+	public ResponseEntity<ResultData> selectById(String id) {
 		Map<String, Object> map = launThemeService.selectById(id);
 		return ResponseEntity.ok(new ResultData(map));
 	}
@@ -115,7 +116,7 @@ public class LaunThemeController {
 	@PostMapping("delectById")
 	@ApiOperation("根据id去删除")
 	@ApiImplicitParam(name = "主键id", value = "id")
-	public ResponseEntity<ResultData> delectById(Long id) {
+	public ResponseEntity<ResultData> delectById(String id) {
 		int delectById = launThemeService.delectById(id);
 		return ResponseEntity.ok(new ResultData(delectById));
 	}
@@ -166,13 +167,10 @@ public class LaunThemeController {
 	@PostMapping("saveTheme")
 	@ApiOperation("保存主题")
 	public ResponseEntity<ResultData> saveTheme(String baseJson, String widgetJson, String themeJson,
-			Integer saveType) {
+												Integer saveType) {
 
-		Long i = launThemeService.saveTheme(baseJson, widgetJson, themeJson, saveType);
-		/*
-		 * if (null != administration.getId()) { i =
-		 * launThemeService.updateOrSaveTheme(administration); } else { }
-		 */
+		String i = launThemeService.saveTheme(baseJson, widgetJson, themeJson, saveType);
+
 		return ResponseEntity.ok(new ResultData(i));
 	}
 
@@ -195,7 +193,7 @@ public class LaunThemeController {
 	public ResponseEntity<ResultData> updateTheme(String baseJson, String widgetJson, String themeJson,
 			Integer saveType) {
 
-		Long i = launThemeService.updateTheme(baseJson, widgetJson, themeJson, saveType);
+		String i = launThemeService.updateTheme(baseJson, widgetJson, themeJson, saveType);
 		/*
 		 * if (null != administration.getId()) { i =
 		 * launThemeService.updateOrSaveTheme(administration); } else { }

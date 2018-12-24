@@ -26,7 +26,7 @@ public class LaunVersionController {
      * @param tenantId
      * @return
      */
-    @GetMapping("/lists")
+    @GetMapping("/list")
     ResultData versions(Long tenantId) { return new ResultData(launVersionService.versions(tenantId)); }
 
     /**

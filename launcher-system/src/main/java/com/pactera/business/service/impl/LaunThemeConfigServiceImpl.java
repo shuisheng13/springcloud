@@ -43,7 +43,7 @@ public class LaunThemeConfigServiceImpl implements LaunThemeConfigService {
 	}
 
 	@Override
-	public List<LaunThemeConfig> findByThemeId(Long id) {
+	public List<LaunThemeConfig> findByThemeId(String id) {
 
 		List<LaunThemeConfig> list = configMapper.findByThemeId(id);
 
@@ -56,7 +56,7 @@ public class LaunThemeConfigServiceImpl implements LaunThemeConfigService {
 	}
 
 	@Override
-	public void deleteByThemeId(Long id) {
+	public void deleteByThemeId(String id) {
 
 		if (id == null) {
 			return;

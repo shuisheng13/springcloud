@@ -33,7 +33,7 @@ public interface LaunThemeService {
 	 *            主键
 	 * @return LaunThemeAdministration
 	 */
-	Map<String, Object> selectById(Long id);
+	Map<String, Object> selectById(String id);
 
 	/**
 	 * @description 根据id去删除主题
@@ -42,7 +42,7 @@ public interface LaunThemeService {
 	 * @param id 主键
 	 * @return void
 	 */
-	int delectById(Long id);
+	int delectById(String id);
 
 	/**
 	 * @description 修改上下架状态
@@ -68,7 +68,7 @@ public interface LaunThemeService {
 	 * @param
 	 * @return int
 	 */
-	Long saveTheme(String baseJson, String widgetJson, String themeJson, Integer saveType);
+	String saveTheme(String baseJson, String widgetJson, String themeJson, Integer saveType);
 
 	/**
 	 * 打包主题zip包
@@ -93,7 +93,7 @@ public interface LaunThemeService {
 	 * @param
 	 * @return int
 	 */
-	Long updateTheme(String baseJson, String widgetJson, String themeJson, Integer saveType);
+	String updateTheme(String baseJson, String widgetJson, String themeJson, Integer saveType);
 
 	/**
 	 * 根据渠道分组查询有效主题
