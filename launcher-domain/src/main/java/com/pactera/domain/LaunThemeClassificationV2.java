@@ -16,7 +16,7 @@ import java.util.Date;
 @Entity
 @ApiModel("主题分类")
 @Data
-public class LauncThemeClassification{
+public class LaunThemeClassificationV2{
 
     private static final long serialVersionUID = 7592025457847638111L;
 
