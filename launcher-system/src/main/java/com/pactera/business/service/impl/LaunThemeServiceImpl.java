@@ -95,17 +95,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	@Autowired
 	private LaunFontService launFontService;
 
-	/**
-	 * @description 根据条件去插叙年主题的实现类
-	 * @author liudawei
-	 * @since 2018年4月26日 上午11:31:16
-     * @param tenantId 主题分类
-     * @param type 主题分类
-     * @param title 主题名称
-     * @param status 主题状态
-     * @param pageNum 第几页
-     * @param pageSize 每页条数
-	 */
+
 	@Override
 	public PageInfo<LaunThemeVo> query(Long tenantId, Long type, String title, Integer status, int pageNum, int pageSize) {
 
@@ -115,10 +105,14 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 			//TODO 获取租户名称
 			l.setCreator("xukj");
 		});
-
 		return new PageInfo<>(list);
 	}
 
+
+    @Override
+    public int changeStatus(String id, Integer status) {
+        return launThemeMapper.updateByPrimaryKeySelective(new LaunThemeAdministration().setId(id).setStatus(status));
+    }
 
 	/**
 	 * @description 根据id去预览主题
@@ -165,6 +159,9 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 		return i;
 	}
 
+
+
+
 	/**
 	 * @description 修改上下架状态
 	 * @author liudawei
@@ -199,7 +196,9 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 		}
 	}
 
-	/**
+
+
+    /**
 	 * @description 保存主题
 	 * @author liudawei
 	 * @since 2018年4月29日 下午2:56:55
