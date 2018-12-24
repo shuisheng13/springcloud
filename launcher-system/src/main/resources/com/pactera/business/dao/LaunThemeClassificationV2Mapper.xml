@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.pactera.business.dao.LauncThemeClassificationMapper">
+<mapper namespace="com.pactera.business.dao.LaunThemeClassificationV2Mapper">
 
     <resultMap id="BaseResultMap" type="com.pactera.vo.LauncThemeClassVo">
         <id column="id" jdbcType="VARCHAR" property="id" />
