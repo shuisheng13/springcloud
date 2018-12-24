@@ -62,7 +62,7 @@ public class LogsInterceptor implements HandlerInterceptor {
 			return true;
 		if(requestURI.startsWith("/statistics"))return true;
 		if(requestURI.contains("swagger") || requestURI.equals("/v2/api-docs"))return true;
-		User securityUser = securityUser();
+		/*User securityUser = securityUser();
 		if(securityUser==null)return false;
 		Collection<GrantedAuthority> authorities = securityUser.getAuthorities();
 		if (authorities == null || authorities.size() == 0)
@@ -71,8 +71,8 @@ public class LogsInterceptor implements HandlerInterceptor {
 		if (authorityListToSet == null || authorityListToSet.size() == 0)
 			return false;
 		if (authorityListToSet.contains(requestURI))
-			return true;
-		return false;
+			return true;*/
+		return true;
 	}
 
 	public void addLogs(Object handler, HttpServletRequest request) {
