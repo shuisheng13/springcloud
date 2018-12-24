@@ -49,6 +49,7 @@ public class LaunThemeController {
 	 * @param pageNum 第几页
 	 * @param pageSize 每页条数
 	 * @return
+     * @author xukj
 	 */
 	@GetMapping("query")
 	public ResultData query(Long tenantId, Long type, String title, Integer status, @RequestParam(defaultValue = "1") int pageNum,
@@ -107,49 +108,17 @@ public class LaunThemeController {
 	}
 
 	/**
-	 * @description 根据id去删除主题
-	 * @author liudawei
-	 * @since 2018年4月26日 下午2:47:21
-	 * @param
+	 * @description 修改状态
+	 * 状态类型有：上架/下架（2，3）  删除（-1） 禁用/启用【未上架】（0，1）
+	 *
+	 * @author xukj
+	 * @param id
+	 * @param status
 	 * @return ResponseEntity<ResultData>
 	 */
-	@PostMapping("delectById")
-	@ApiOperation("根据id去删除")
-	@ApiImplicitParam(name = "主键id", value = "id")
-	public ResponseEntity<ResultData> delectById(String id) {
-		int delectById = launThemeService.delectById(id);
-		return ResponseEntity.ok(new ResultData(delectById));
-	}
-
-	/**
-	 * 根据id去删除主题
-	 * 
-	 * @author LL
-	 * @date 2018年5月15日 下午9:47:12
-	 * @param
-	 * @return ResponseEntity<ResultData>
-	 */
-	@PostMapping("delectTypeById")
-	@ApiOperation("根据id去删除分类")
-	@ApiImplicitParam(name = "ids", value = "主键ids")
-	public ResponseEntity<ResultData> delectTypeById(String ids) {
-		launThemeClassificationService.delectById(ids);
-		return ResponseEntity.ok(new ResultData());
-	}
-
-	/**
-	 * @description 修改上下架状态
-	 * @author liudawei
-	 * @since 2018年4月26日 下午2:47:07
-	 * @param
-	 * @return ResponseEntity<ResultData>
-	 */
-	@PostMapping("modifyStatus")
-	@ApiOperation("根据id去修改上下架状态")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "ids", value = "主键ids,已逗号分隔"),
-			@ApiImplicitParam(name = "status", value = "上下架状态") })
-	public ResponseEntity<ResultData> modifyStatus(String ids, Integer status) {
-		launThemeService.modifyStatus(ids, status);
+	@PostMapping("status")
+	public ResponseEntity<ResultData> modifyStatus(String id, Integer status) {
+		launThemeService.changeStatus(id, status);
 		return ResponseEntity.ok(new ResultData());
 	}
 

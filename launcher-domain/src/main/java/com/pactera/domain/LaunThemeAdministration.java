@@ -4,6 +4,7 @@ package com.pactera.domain;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -18,6 +19,7 @@ import java.util.Map;
 @Table
 @Entity
 @Data
+@Accessors(chain = true)
 public class LaunThemeAdministration {
 	private static final long serialVersionUID = -2054946094353463347L;
 
