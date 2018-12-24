@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @Api(description = "主题分类管理")
 @RequestMapping("themeclass")
-public class LauncThemeClassificationController {
+public class LaunThemeClassificationController {
 
     @Resource
     private LauncThemeClassificationV2Service launcThemeClassificationService;
@@ -170,11 +170,10 @@ public class LauncThemeClassificationController {
      **/
     @PostMapping("orderThemeClass")
     @ApiOperation("排序")
-   /* @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "id",paramType="query",required = true)
-    })*/
-    public ResponseEntity<ResultData> orderThemeClass(@RequestBody List<OrderThemeClassVO> OrderThemeClassVO) {
-        //ResponseEntity<ResultData> launcThemeClass = launcThemeClassificationService.themeClassIsUpOrDown(id);
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "sortOrder", value = "排序Json",paramType="query",required = true)
+    })
+    public ResponseEntity<ResultData> orderThemeClass(String sortOrder) {
         return  null;
     }
 
