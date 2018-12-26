@@ -196,9 +196,13 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 		}
 	}
 
+	@Override
+	public int sort(String id, Integer sort) {
+        return launThemeMapper.updateByPrimaryKeySelective(new LaunThemeAdministration().setId(id).setStatus(sort));
+	}
 
 
-    /**
+	/**
 	 * @description 保存主题
 	 * @author liudawei
 	 * @since 2018年4月29日 下午2:56:55
@@ -211,7 +215,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 		LaunThemeAdministration administration = JsonUtils.jsonToClass(themeJson, LaunThemeAdministration.class);
 
 		//TODO 获取租户名称
-		String themeId = IdUtlis.Id(ConstantUtlis.PRIVATE_THEME, "xukj");
+		String themeId = IdUtlis.Id(ConstantUtlis.PRIVATE_THEME,  "xukj");
 		Long adminId = 0L;
 
 
@@ -292,15 +296,15 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 			administration.setCreateId(adminId);
 			administration.setStatus(1);// 默认未上架状态
 
-			// 保存主题浏览图
-			Map<String, String> filesJson = administration.getFilesJson();
-			Map<String, String> themeFile = saveThemeFile(filesJson, themeId);
-			String previewPath = themeFile.get("previewPath");
-			String urls = themeFile.get("urls");
-			administration.setPreviewPath(previewPath);
-			administration.setUrls(urls);
+		            // 保存主题浏览图
+            Map<String, String> filesJson = administration.getFilesJson();
+            Map<String, String> themeFile = saveThemeFile(filesJson, themeId);
+            String previewPath = themeFile.get("previewPath");
+            String urls = themeFile.get("urls");
+            administration.setPreviewPath(previewPath);
+            administration.setUrls(urls);
 
-			launThemeMapper.insertSelective(administration);
+            launThemeMapper.insertSelective(administration);
 
 			map.putAll(map);
 
@@ -708,7 +712,6 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	 * @param currentTimeMillis
 	 * @date 2018年5月10日 下午3:56:47
 	 * @param theme 主题对象
-	 * @param posterList 海报列表
 	 * @return void
 	 */
 	public Map<String, Object> getStaticConfigJson(LaunThemeAdministration theme, String themeId,
@@ -793,12 +796,12 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 
 		LaunThemeAdministration administration = JsonUtils.jsonToClass(themeJson, LaunThemeAdministration.class);
 
-		// 如果修改的是暂存的主题，将状态修改为 为上架，执行保存操作
-		if (administration.getStatus() != null && administration.getStatus() == 0 && saveType == 1) {
-			administration.setStatus(1);
-			String saveTheme = saveTheme(baseJson, widgetJson, themeJson, saveType);
-			return saveTheme;
-		}
+		// 如果修改的是暂存的主题，将状态修改为 未上架，执行保存操作
+        if (administration.getStatus() != null && administration.getStatus() == 0 && saveType == 1) {
+            administration.setStatus(1);
+            String saveTheme = saveTheme(baseJson, widgetJson, themeJson, saveType);
+            return saveTheme;
+        }
 
 		if (HStringUtlis.isNotBlank(administration.getCreator())) {
 			delectById(administration.getId());

@@ -66,7 +66,13 @@ public interface LaunThemeService {
 	 */
 	void modifyStatus(String ids, Integer status);
 
-
+	/**
+	 * 修改车机端主题排序权重
+	 * @param id 主题id
+	 * @param sort 排序权重
+	 * @return
+	 */
+	int sort(String id, Integer sort);
 
 	/**
 	 * @description 保存主题
