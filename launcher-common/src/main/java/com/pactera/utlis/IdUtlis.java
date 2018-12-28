@@ -30,4 +30,10 @@ public class IdUtlis {
 		String Id = val.substring(0,7);
 		return  prefix+ creatorTwo + Id;
 	}
+
+	public static String UUId() {
+		return UUID.randomUUID().toString();
+	}
+
+
 }

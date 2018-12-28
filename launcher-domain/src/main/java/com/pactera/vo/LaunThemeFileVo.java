@@ -1,15 +1,13 @@
 package com.pactera.vo;
 
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.experimental.Accessors;
+
 import java.io.Serializable;
 
-import javax.persistence.Entity;
-
-import io.swagger.annotations.ApiModelProperty;
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
+@Data
+@Accessors(chain = true)
 public class LaunThemeFileVo implements Serializable {
 
 	private static final long serialVersionUID = 4732160826805333243L;

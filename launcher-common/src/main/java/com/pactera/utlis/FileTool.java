@@ -1,34 +1,25 @@
 package com.pactera.utlis;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.RandomAccessFile;
-import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileChannel.MapMode;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.List;
+import com.pactera.config.exception.IORuntimeException;
+import com.pactera.constant.ConstantUtlis;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipFile;
 import org.apache.tools.zip.ZipOutputStream;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileChannel.MapMode;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * 文件处理工具类
@@ -145,6 +136,20 @@ public class FileTool {
 		return null;
 	}
 
+
+    /**
+     * v2
+     * 获得MultipartFile字节流
+     * @return 字节流
+     */
+	public static byte[] getBytes(MultipartFile file) throws IORuntimeException {
+        try {
+            return file.getBytes();
+        } catch (IOException e) {
+            throw new IORuntimeException(e);
+        }
+    }
+
 	/**
 	 * 删除指定目录,也可以直接删除文件
 	 * 
@@ -161,7 +166,7 @@ public class FileTool {
 		}
 		File childs[] = fp.listFiles();
 		if (childs == null)
-			return;
+            return;
 		for (File child : childs) {
 			if (child.isFile()) {
 				child.delete();
@@ -170,6 +175,63 @@ public class FileTool {
 			}
 		}
 	}
+
+
+    /**
+     *
+     * v2
+     * 删除文件或者文件夹<br>
+     * 注意：删除文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹<br>
+     * 某个文件删除失败会终止删除操作
+     *
+     * 与deleteDir区别：deleteDir不会删除空文件夹
+     *
+     * @param file 文件对象
+     * @return 成功与否
+     * @throws IORuntimeException IO异常
+     */
+    public static boolean del(File file) throws IORuntimeException {
+        if (file == null || false == file.exists()) {
+            return false;
+        }
+
+        if (file.isDirectory()) {
+            clean(file);
+        }
+        try {
+            Files.delete(file.toPath());
+        } catch (IOException e) {
+            throw new IORuntimeException(e);
+        }
+        return true;
+    }
+
+    /**
+     *
+     * v2
+     * 清空文件夹<br>
+     * 注意：清空文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹<br>
+     * 某个文件删除失败会终止删除操作
+     *
+     * @param directory 文件夹
+     * @return 成功与否
+     * @throws IORuntimeException IO异常
+     */
+    public static boolean clean(File directory) throws IORuntimeException {
+        if (directory == null || directory.exists() == false || false == directory.isDirectory()) {
+            return true;
+        }
+
+        final File[] files = directory.listFiles();
+        for (File childFile : files) {
+            boolean isOk = del(childFile);
+            if (isOk == false) {
+                // 删除一个出错则本次删除任务失败
+                return false;
+            }
+        }
+        return true;
+    }
 
 	// ----------复制文件---------------------------------------------------------------
 	/**
@@ -829,6 +891,19 @@ public class FileTool {
 		return fileName.substring(pos);
 	}
 
+
+    /**
+     * v2
+     * 功能描述：获取当前文件的扩展名，不包括 "."符号
+     *
+     * @param fileName
+     * @return
+     */
+	public static String getExtentionWithoutPoint(String fileName) {
+		int pos = fileName.lastIndexOf(".");
+		return fileName.substring(pos + 1);
+	}
+
 	/**
 	 * 功能描述:格式化文件路径，返回标准的字符串路径，
 	 * 统一使用pathSeparator指定文件分割符号分割文件，将替换连续多个文件分割符号,为单个文件分割符号
@@ -871,7 +946,7 @@ public class FileTool {
 	 * 
 	 * @author LL
 	 * @date 2018年5月9日 下午9:25:19
-	 * @param path携带/的文件路径
+	 * @param path 携带/的文件路径
 	 * @return String
 	 */
 	public static String getFileName(String path) {
@@ -886,22 +961,54 @@ public class FileTool {
 		return "";
 	}
 
-	public static String getNewFileName(String fileName) {
-		return new Date().getTime() + getExtention(fileName);
-	}
+    /**
+     * v2
+     * 创建临时文件
+     * @param prefix
+     * @param exName 文件扩展名，不需要加“.”
+     * @param bytes
+     * @return
+     */
+    public static Path createTempFile(String prefix, String exName, byte[] bytes) throws IORuntimeException {
+	    try {
+            Path path = Files.write(Files.createTempFile(prefix, ConstantUtlis.file.DOT + exName), bytes);
+            return path;
+        } catch (IOException e) {
+            throw new IORuntimeException(e);
+        }
+    }
 
-	public static void main(String[] args) throws InterruptedException {
-		// String
-		// path1="c://text/text2\\\\text3\\\\text4//text5////text6//////text7";
-		// System.out.println(formatPath(path1));
-		String fileName = getFileName("M00/00/00/wKgJElrj60mAG-9UAAC7tXariLM730_big.jpg");
-		System.out.println(fileName);
-		String url = "D:\\CrackCaptcha.log";
-		File file = new File(url);
-		if (file.exists()) {
-			file.delete();
-		}
-		writeFile(file, fileName);
-	}
+    /**
+     * v2
+     * 删除临时文件
+     * @param path
+     * @throws IORuntimeException
+     */
+    public static void delTempFile(Path path) throws IORuntimeException {
+        try {
+            Files.deleteIfExists(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * v2
+     * File转properties
+     * @param file
+     * @return
+     * @throws IORuntimeException
+     */
+    public static Properties file2Prop(File file) throws IORuntimeException {
+        Properties prop = new Properties();
+        try (InputStream fileInputStream = new FileInputStream(file)) {
+            prop.load(fileInputStream);
+            return prop;
+        } catch (FileNotFoundException e) {
+            throw new IORuntimeException(e);
+        } catch (IOException e) {
+            throw new IORuntimeException(e);
+        }
+    }
 
 }

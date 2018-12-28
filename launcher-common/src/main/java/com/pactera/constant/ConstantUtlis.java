@@ -49,4 +49,13 @@ public interface ConstantUtlis {
 
 	String PRIVATE_THEME = "SYZT";
 
+	interface theme {
+		String tmpThemePreix = "launcher_upload_theme_";
+
+	}
+
+	interface file {
+		String DOT = ".";
+        String zip = "zip";
+	}
 }

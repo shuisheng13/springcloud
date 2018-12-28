@@ -33,6 +33,19 @@ public interface LaunThemeMapper extends BaseMapper<LaunThemeAdministration> {
             @Param("title") String title,
             @Param("status") Integer status);
 
+	/**
+	 * @description 根据条件去查询主题
+	 * @author liudawei
+	 * @since 2018年4月26日 上午11:31:01
+	 * @param type
+	 *            类型 title 名称 status 上架状态
+	 * @param isChannleManager
+	 *            是否为渠道管理员
+	 * @return List<LaunThemeAdministration>
+	 */
+	List<LaunThemeVo> selectByCound(@Param("type") Long type, @Param("version") String version,
+									@Param("channel") Long channel, @Param("title") String title, @Param("status") Integer status,
+									@Param("isChannleManager") Integer isChannleManager);
 
 	/**
 	 * @description 根据条件去查询主题

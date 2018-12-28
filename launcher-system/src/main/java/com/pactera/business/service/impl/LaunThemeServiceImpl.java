@@ -1,60 +1,37 @@
 package com.pactera.business.service.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.github.tobato.fastdfs.service.FastFileStorageClient;
+import com.pactera.business.dao.LaunThemeMapper;
+import com.pactera.business.service.*;
+import com.pactera.config.exception.DataStoreException;
+import com.pactera.config.exception.IORuntimeException;
+import com.pactera.config.exception.status.ErrorStatus;
+import com.pactera.config.security.UserUtlis;
+import com.pactera.constant.ConstantUtlis;
+import com.pactera.domain.*;
+import com.pactera.util.ThemeWidgetDetail;
+import com.pactera.utlis.*;
+import com.pactera.vo.LaunThemeFileVo;
+import com.pactera.vo.LaunThemeUploadFileVo;
+import com.pactera.vo.LaunThemeVo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.pactera.business.dao.LaunThemeMapper;
-import com.pactera.business.service.LaunApplicationPostersService;
-import com.pactera.business.service.LaunFileCrudService;
-import com.pactera.business.service.LaunFontService;
-import com.pactera.business.service.LaunRedisService;
-import com.pactera.business.service.LaunThemeConfigService;
-import com.pactera.business.service.LaunThemeFileService;
-import com.pactera.business.service.LaunThemeService;
-import com.pactera.config.exception.DataStoreException;
-import com.pactera.config.exception.status.ErrorStatus;
-import com.pactera.config.security.UserUtlis;
-import com.pactera.constant.ConstantUtlis;
-import com.pactera.domain.LaunApplicationPoster;
-import com.pactera.domain.LaunFont;
-import com.pactera.domain.LaunThemeAdministration;
-import com.pactera.domain.LaunThemeConfig;
-import com.pactera.domain.LaunThemeFile;
-import com.pactera.domain.LaunUser;
-import com.pactera.util.ThemeWidgetDetail;
-import com.pactera.utlis.FileTool;
-import com.pactera.utlis.HStringUtlis;
-import com.pactera.utlis.IdUtlis;
-import com.pactera.utlis.JsonUtils;
-import com.pactera.utlis.TimeUtils;
-import com.pactera.vo.LaunThemeFileVo;
-import com.pactera.vo.LaunThemeVo;
-
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Example;
+
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.file.Path;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * @description: 主题相关的实现类
@@ -74,7 +51,29 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	@Value("${file.path.yu}")
 	private String filePath;
 
-	@Autowired
+	@Value("${system.conf.themeTemp.v2}")
+    private String tempPath;
+
+    @Value("${upload.zip.prop}")
+    private String upThemeProp;
+
+    @Value("${upload.theme.long}")
+    private String upThemeLong;
+
+    @Value("${upload.theme.width}")
+    private String upThemeWidth;
+
+    @Value("${upload.theme.img.path}")
+    private String upThemeImgPath;
+
+    @Value("${upload.theme.img}")
+    private String upThemeImgMain;
+
+    @Autowired
+    public FastFileStorageClient fastFileStorageClient;
+
+
+    @Autowired
 	private LaunThemeMapper launThemeMapper;
 
 	@Autowired
@@ -95,7 +94,6 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	@Autowired
 	private LaunFontService launFontService;
 
-
 	@Override
 	public PageInfo<LaunThemeVo> query(Long tenantId, Long type, String title, Integer status, int pageNum, int pageSize) {
 
@@ -113,6 +111,75 @@ public class LaunThemeServiceImpl implements LaunThemeService {
     public int changeStatus(String id, Integer status) {
         return launThemeMapper.updateByPrimaryKeySelective(new LaunThemeAdministration().setId(id).setStatus(status));
     }
+
+    /**
+     * @description 根据条件去插叙年主题的实现类
+     * @author liudawei
+     * @since 2018年4月26日 上午11:31:16
+     * @param
+     */
+    @Override
+    public PageInfo<LaunThemeVo> selectByCoundy(Long type, String version, Long channle, String title, Integer status,
+                                                int pageNum, int pageSize) {
+
+		// 更新过期状态
+		updateOverdueTheme();
+
+		PageHelper.startPage(pageNum, pageSize);
+		if (HStringUtlis.isNotEmpty(title)) {
+			title = "%" + title + "%";
+		}
+
+		// 判断是否为渠道管理员 0否，1是
+		Integer isChannleManager = 1;
+		LaunUser launUser = UserUtlis.launUser();
+		Integer integer = launUser.getUserType();
+		if (integer == null || integer == 1) {
+			Long channleId = launUser.getChannelId();
+			if (channleId != null && (status == null || status == 1 || status == 2 || status == 3)) {
+				channle = channleId;
+				isChannleManager = 1;
+			}
+		}
+		List<LaunThemeVo> launList = launThemeMapper.selectByCound(type, version, channle, title, status,
+				isChannleManager);
+		return new PageInfo<LaunThemeVo>(launList);
+	}
+
+	/**
+	 * 批量更新过期主题状态
+	 *
+	 * @author LL
+	 * @date 2018年7月6日 上午10:30:23
+	 * @param
+	 * @return void
+	 */
+	void updateOverdueTheme() {
+
+		// 查询上架状态的主题
+		Example example = new Example(LaunThemeAdministration.class);
+		example.or().andEqualTo("status", 2);
+		List<LaunThemeAdministration> list = launThemeMapper.selectByExample(example);
+
+		List<String> ids = new LinkedList<>();
+		for (LaunThemeAdministration theme : list) {
+			Date endTime = theme.getEndTime();
+			Date now = new Date();
+			int compareDate = TimeUtils.compareDate(endTime, now);
+			if (compareDate == -1) {
+				ids.add(theme.getId());
+			}
+		}
+		if (ids.size() > 0) {
+			Example updExample = new Example(LaunThemeAdministration.class);
+			updExample.or().andIn("id", ids);
+			LaunThemeAdministration record = new LaunThemeAdministration();
+			record.setStatus(3);
+			launThemeMapper.updateByExampleSelective(record, updExample);
+			launRedisService.initThemeShop();
+
+		}
+	}
 
 	/**
 	 * @description 根据id去预览主题
@@ -158,9 +225,6 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 		}
 		return i;
 	}
-
-
-
 
 	/**
 	 * @description 修改上下架状态
@@ -254,10 +318,10 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 		}
 
 		// 删除临时主题
-        if (administration.getId() != null) {
-            launThemeMapper.deleteByPrimaryKey(administration.getId());
-            launThemeFileService.deleteById(administration.getId());
-        }
+		if (administration.getId() != null) {
+			launThemeMapper.deleteByPrimaryKey(administration.getId());
+			launThemeFileService.deleteById(administration.getId());
+		}
 
 		// 首先保存主题的主题，并将其对应的id返回，然后在将主键保存到各个配置文件对应的主键中，再去保存配置文件
 		String creator = administration.getCreator();
@@ -296,15 +360,15 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 			administration.setCreateId(adminId);
 			administration.setStatus(1);// 默认未上架状态
 
-		            // 保存主题浏览图
-            Map<String, String> filesJson = administration.getFilesJson();
-            Map<String, String> themeFile = saveThemeFile(filesJson, themeId);
-            String previewPath = themeFile.get("previewPath");
-            String urls = themeFile.get("urls");
-            administration.setPreviewPath(previewPath);
-            administration.setUrls(urls);
+			// 保存主题浏览图
+			Map<String, String> filesJson = administration.getFilesJson();
+			Map<String, String> themeFile = saveThemeFile(filesJson, themeId);
+			String previewPath = themeFile.get("previewPath");
+			String urls = themeFile.get("urls");
+			administration.setPreviewPath(previewPath);
+			administration.setUrls(urls);
 
-            launThemeMapper.insertSelective(administration);
+			launThemeMapper.insertSelective(administration);
 
 			map.putAll(map);
 
@@ -881,4 +945,66 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 
 		return launThemeMapper.getEffeCount();
 	}
+
+
+
+    @Override
+    public LaunThemeUploadFileVo upload(MultipartFile upload) {
+
+        Path path = FileTool.createTempFile(ConstantUtlis.theme.tmpThemePreix, ConstantUtlis.file.zip, FileTool.getBytes(upload));
+        FileTool.unZipFile(path.toFile().getAbsolutePath(), tempPath);
+        FileTool.delTempFile(path);
+        log.info("上传zip解压完成...");
+        //校验
+        List<File> files = FileTool.listFiles(tempPath);
+        log.info("校验zip完成...");
+        //把图片和车机zip发到fastfds服务器
+        LaunThemeUploadFileVo launThemeUploadFileVo = new LaunThemeUploadFileVo();
+
+        String imgMain = null;
+
+        for(File file:files) {
+            if(file.getName().equals(upThemeProp)) {
+                Properties prop = FileTool.file2Prop(file);
+                launThemeUploadFileVo.setLongResolution(prop.getProperty(upThemeLong));
+                launThemeUploadFileVo.setWideResolution(prop.getProperty(upThemeWidth));
+                imgMain = prop.getProperty(upThemeImgMain);
+                log.info("解析properties完成...prop:{}", prop.toString());
+                continue;
+            }
+            String zipPath = this.upload2fastFDS(file, ConstantUtlis.file.zip);
+            launThemeUploadFileVo.setZipUrl(zipPath);
+        }
+
+        List<File> imgFiles = FileTool.listFiles(tempPath + upThemeImgPath);
+        List<LaunThemeFileVo> imgs = new ArrayList<>();
+
+        for(File file:imgFiles) {
+            String ExName = FileTool.getExtentionWithoutPoint(file.getName());
+            String imgPath = this.upload2fastFDS(file, ExName);
+            imgs.add(new LaunThemeFileVo()
+                    .setFileName(file.getName())
+                    .setFilePath(imgPath)
+                    .setType(file.getName().equals(imgMain)?1:2));
+        }
+
+        launThemeUploadFileVo.setThemeImgsList(imgs);
+        log.info("上传图片完成...");
+        FileTool.del(new File(tempPath));
+        log.info("删除本地临时文件夹...");
+        return launThemeUploadFileVo;
+    }
+
+    private String upload2fastFDS(File file, String exName) {
+        try (InputStream fileInputStream = new FileInputStream(file)) {
+            String path = launFileCrudService.upload(fileInputStream,
+                    file.length(), exName, null);
+            log.info("上传{}完成...路径：{}", file.getName(), path);
+            return path;
+        } catch (FileNotFoundException e) {
+            throw new IORuntimeException(e);
+        } catch (IOException e) {
+            throw new IORuntimeException(e);
+        }
+    }
 }

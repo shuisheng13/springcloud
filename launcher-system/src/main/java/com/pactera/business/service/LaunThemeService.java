@@ -2,7 +2,9 @@ package com.pactera.business.service;
 
 import com.github.pagehelper.PageInfo;
 import com.pactera.domain.LaunThemeAdministration;
+import com.pactera.vo.LaunThemeUploadFileVo;
 import com.pactera.vo.LaunThemeVo;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -35,6 +37,16 @@ public interface LaunThemeService {
      */
     int changeStatus(String id, Integer status);
 
+	/**
+	 * @description 根据条件去查询主题
+	 * @author liudawei
+	 * @since 2018年4月26日 上午11:26:44
+	 * @param type
+	 *            类型 title 名称 status 上架状态
+	 * @return PageInfo<LaunThemeAdministration>
+	 */
+	PageInfo<LaunThemeVo> selectByCoundy(Long type, String version, Long channel, String title, Integer status,
+										 int pageNum, int pageSize);
 	/**
 	 * @description 根据id去查看主题详情
 	 * @author liudawei
@@ -122,4 +134,10 @@ public interface LaunThemeService {
 	 * @return List<Map<String,Object>>
 	 */
 	List<Map<String, String>> getEffeCount();
+
+	/**
+	 *
+	 * @param file 上传的文件包
+	 */
+	LaunThemeUploadFileVo upload (MultipartFile file);
 }

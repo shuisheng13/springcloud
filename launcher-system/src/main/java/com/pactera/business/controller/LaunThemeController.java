@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -123,6 +124,18 @@ public class LaunThemeController {
         launThemeService.sort(id, num);
         return new ResultData();
     }
+
+    /**
+     * zip上传
+     * @param file
+     * @return
+     */
+    @PostMapping("/upload")
+    public ResultData upload(MultipartFile file) {
+		return new ResultData(launThemeService.upload(file));
+    }
+
+
 
 	/**
      *
