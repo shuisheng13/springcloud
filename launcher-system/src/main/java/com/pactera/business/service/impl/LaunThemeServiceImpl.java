@@ -948,7 +948,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 
         LaunThemeUploadFileVo launThemeUploadFileVo = new LaunThemeUploadFileVo();
 
-        Path path = FileTool.createTempFile(ConstantUtlis.theme.tmpThemePreix, ConstantUtlis.file.zip,
+        Path path = FileTool.createTempFile(ConstantUtlis.theme.TMP_THEME_PREIX, ConstantUtlis.file.ZIP,
                 FileTool.getBytes(upload));
         FileTool.unZipFile(path.toFile().getAbsolutePath(), tempPath);
         FileTool.delTempFile(path);
@@ -962,7 +962,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
                 imgMain = this.parseProp(file,launThemeUploadFileVo);
                 continue;
             }
-            String zipPath = this.upload2fastFDS(file, ConstantUtlis.file.zip);
+            String zipPath = this.upload2fastFDS(file, ConstantUtlis.file.ZIP);
             launThemeUploadFileVo.setZipUrl(zipPath);
         }
 
@@ -1018,13 +1018,13 @@ public class LaunThemeServiceImpl implements LaunThemeService {
         boolean imgCountFlag = false;
 
 	    for(String fileName:FileTool.listFilename(tempPath)) {
-            if(fileName.equals("imgs")){imgFlag = !imgFlag;}
-            if(fileName.equals("config.properties")){propFlag = !propFlag;}
-            if(fileName.contains(".zip")){zipFlag = !zipFlag;}
+            if(fileName.equals(upThemeImgPath)){imgFlag = !imgFlag;}
+            if(fileName.equals(upThemeProp)){propFlag = !propFlag;}
+            if(fileName.contains(ConstantUtlis.file.DOT_ZIP)){zipFlag = !zipFlag;}
         }
 
         if(imgFlag) {
-            int imgCount = FileTool.listFiles(tempPath + "imgs").size();
+            int imgCount = FileTool.listFiles(tempPath + upThemeImgPath).size();
             if(imgCount < 5 && imgCount > 0) {
                 imgCountFlag = !imgCountFlag;
             }

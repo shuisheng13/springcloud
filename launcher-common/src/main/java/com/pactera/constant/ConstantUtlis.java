@@ -50,12 +50,13 @@ public interface ConstantUtlis {
 	String PRIVATE_THEME = "SYZT";
 
 	interface theme {
-		String tmpThemePreix = "launcher_upload_theme_";
+		String TMP_THEME_PREIX = "launcher_upload_theme_";
 
 	}
 
 	interface file {
 		String DOT = ".";
-        String zip = "zip";
+        String ZIP = "zip";
+        String DOT_ZIP = DOT + ZIP;
 	}
 }
