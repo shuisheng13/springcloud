@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
+import java.util.zip.ZipException;
 
 /**
  * 文件处理工具类
@@ -718,7 +719,7 @@ public class FileTool {
 		unZipFile(zipfilename, dest_dir, true);
 	}
 
-	public static void unZipFile(String zipfilename, String dest_dir, boolean overwrite) {
+	public static void unZipFile(String zipfilename, String dest_dir, boolean overwrite) throws IORuntimeException {
 		File file_dest = new File(dest_dir);
 		try {
 			if (!file_dest.exists()) {
@@ -775,9 +776,13 @@ public class FileTool {
 				}
 			} // for
 
-		} catch (IOException ioe) {
+		} catch (ZipException e) {
+		    e.printStackTrace();
+            throw new IORuntimeException(e);
+        } catch (IOException ioe) {
 			ioe.printStackTrace();
 			logger.error(ioe.getMessage());
+			throw new IORuntimeException(ioe);
 		} finally {
 			if (zipFile != null) {
 				try {
@@ -1011,4 +1016,16 @@ public class FileTool {
         }
     }
 
+    public static boolean fileExit(File file) {
+        if (file == null || false == file.exists()) {
+            return false;
+        }
+        return true;
+    }
+
+    public static void main(String[] args) {
+
+        List<String > l = listFilename("C:\\4SLOG");
+        l.forEach(System.out::println);
+    }
 }

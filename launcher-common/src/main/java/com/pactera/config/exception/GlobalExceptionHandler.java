@@ -29,6 +29,13 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(new ResultData(exception.getMessage(), ErrorStatus.HTTP_REQUEST_METHOD_ERROR),HttpStatus.BAD_REQUEST);
 	}
 
+	@ExceptionHandler(value = IORuntimeException.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	public ResponseEntity<ResultData> IOExceptionHandler(Exception exception)  {
+		exception.printStackTrace();
+		return new ResponseEntity<>(new ResultData(exception.getMessage(), ErrorStatus.IO_ERROR),HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
 	@ExceptionHandler(value = Exception.class)
 	public ResponseEntity<ResultData> defaultErrorHandler(HttpServletRequest request,HttpServletResponse response,Exception exception)  {
 		exception.printStackTrace();

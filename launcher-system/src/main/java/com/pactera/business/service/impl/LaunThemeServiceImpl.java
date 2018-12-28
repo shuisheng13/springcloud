@@ -935,11 +935,6 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 		return null;
 	}
 
-	public static void main(String[] args) {
-		Integer i = 1;
-		System.out.println(i == null);
-	}
-
 	@Override
 	public List<Map<String, String>> getEffeCount() {
 
@@ -951,25 +946,20 @@ public class LaunThemeServiceImpl implements LaunThemeService {
     @Override
     public LaunThemeUploadFileVo upload(MultipartFile upload) {
 
-        Path path = FileTool.createTempFile(ConstantUtlis.theme.tmpThemePreix, ConstantUtlis.file.zip, FileTool.getBytes(upload));
-        FileTool.unZipFile(path.toFile().getAbsolutePath(), tempPath);
-        FileTool.delTempFile(path);
-        log.info("上传zip解压完成...");
-        //校验
-        List<File> files = FileTool.listFiles(tempPath);
-        log.info("校验zip完成...");
-        //把图片和车机zip发到fastfds服务器
         LaunThemeUploadFileVo launThemeUploadFileVo = new LaunThemeUploadFileVo();
 
+        Path path = FileTool.createTempFile(ConstantUtlis.theme.tmpThemePreix, ConstantUtlis.file.zip,
+                FileTool.getBytes(upload));
+        FileTool.unZipFile(path.toFile().getAbsolutePath(), tempPath);
+        FileTool.delTempFile(path);
+        //校验
+        this.checkZip(tempPath);
+        //主题主预览图
         String imgMain = null;
 
-        for(File file:files) {
+        for(File file:FileTool.listFiles(tempPath)) {
             if(file.getName().equals(upThemeProp)) {
-                Properties prop = FileTool.file2Prop(file);
-                launThemeUploadFileVo.setLongResolution(prop.getProperty(upThemeLong));
-                launThemeUploadFileVo.setWideResolution(prop.getProperty(upThemeWidth));
-                imgMain = prop.getProperty(upThemeImgMain);
-                log.info("解析properties完成...prop:{}", prop.toString());
+                imgMain = this.parseProp(file,launThemeUploadFileVo);
                 continue;
             }
             String zipPath = this.upload2fastFDS(file, ConstantUtlis.file.zip);
@@ -977,8 +967,24 @@ public class LaunThemeServiceImpl implements LaunThemeService {
         }
 
         List<File> imgFiles = FileTool.listFiles(tempPath + upThemeImgPath);
-        List<LaunThemeFileVo> imgs = new ArrayList<>();
+        List<LaunThemeFileVo> imgs = this.uploadImgs(imgFiles, imgMain);
+        launThemeUploadFileVo.setThemeImgsList(imgs);
 
+        FileTool.del(new File(tempPath));
+        log.info("删除本地临时文件夹...");
+        return launThemeUploadFileVo;
+    }
+
+    private String parseProp(File file, LaunThemeUploadFileVo launThemeUploadFileVo) {
+        Properties prop = FileTool.file2Prop(file);
+        log.info("解析properties完成...prop:{}", prop.toString());
+        launThemeUploadFileVo.setLongResolution(prop.getProperty(upThemeLong));
+        launThemeUploadFileVo.setWideResolution(prop.getProperty(upThemeWidth));
+        return prop.getProperty(upThemeImgMain);
+    }
+
+    private List<LaunThemeFileVo> uploadImgs(List<File> imgFiles, String imgMain) {
+        List<LaunThemeFileVo> imgs = new ArrayList<>();
         for(File file:imgFiles) {
             String ExName = FileTool.getExtentionWithoutPoint(file.getName());
             String imgPath = this.upload2fastFDS(file, ExName);
@@ -987,12 +993,8 @@ public class LaunThemeServiceImpl implements LaunThemeService {
                     .setFilePath(imgPath)
                     .setType(file.getName().equals(imgMain)?1:2));
         }
-
-        launThemeUploadFileVo.setThemeImgsList(imgs);
         log.info("上传图片完成...");
-        FileTool.del(new File(tempPath));
-        log.info("删除本地临时文件夹...");
-        return launThemeUploadFileVo;
+        return imgs;
     }
 
     private String upload2fastFDS(File file, String exName) {
@@ -1007,4 +1009,41 @@ public class LaunThemeServiceImpl implements LaunThemeService {
             throw new IORuntimeException(e);
         }
     }
+
+    private boolean checkZip(String tempPath) {
+
+	    boolean imgFlag = false;
+        boolean propFlag = false;
+        boolean zipFlag = false;
+        boolean imgCountFlag = false;
+
+	    for(String fileName:FileTool.listFilename(tempPath)) {
+            if(fileName.equals("imgs")){imgFlag = !imgFlag;}
+            if(fileName.equals("config.properties")){propFlag = !propFlag;}
+            if(fileName.contains(".zip")){zipFlag = !zipFlag;}
+        }
+
+        if(imgFlag) {
+            int imgCount = FileTool.listFiles(tempPath + "imgs").size();
+            if(imgCount < 5 && imgCount > 0) {
+                imgCountFlag = !imgCountFlag;
+            }
+        }
+
+        if(!imgFlag || !propFlag || !zipFlag || !imgCountFlag) {
+            FileTool.del(new File(tempPath));
+            log.info("删除本地临时文件夹...");
+        }
+
+        if(!imgFlag){ throw new DataStoreException(ErrorStatus.UPLOAD_THEME_NO_IMGS); }
+        if(!propFlag){throw new DataStoreException(ErrorStatus.UPLOAD_THEME_NO_CONFIG);}
+        if(!zipFlag){throw new DataStoreException(ErrorStatus.UPLOAD_THEME_NO_ZIP);}
+        if(!imgCountFlag){throw new DataStoreException(ErrorStatus.UPLOAD_THEME_TOO_MANY_IMG);}
+
+
+
+
+	    return imgFlag && propFlag && zipFlag && imgCountFlag;
+    }
+
 }
