@@ -39,6 +39,10 @@ public enum ErrorStatus {
 
 
 	IO_ERROR(500001,"IO异常"),
+
+    NAME_CLASS_LAUNTHEM_ADD(140011, "添加主题分类重名"),
+    NAME_CLASS_LAUNTHEM_REEOR(140012, "添加主题分类字数超过8字符"),
+    NAME_CLASS_LAUNTHEM_UP(140013, "编辑主题分类重名")
 	;
 	
 	private int status;
