@@ -40,7 +40,6 @@
 		<result column="used_count" jdbcType="INTEGER" property="usedCount" />
         <result column="author" jdbcType="VARCHAR" property="author" />
         <result column="release_time" jdbcType="TIMESTAMP" property="releaseTime" />
-        <result column="resource_pack_url" jdbcType="VARCHAR" property="resourcePackUrl" />
 	</resultMap>
 
 
@@ -58,7 +57,6 @@
 		<result column="zip_url" jdbcType="VARCHAR" property="zipUrl" />
 		<result column="typeName" jdbcType="VARCHAR" property="typeName" />
 		<result column="version" jdbcType="VARCHAR" property="version" />
-		<result column="resource_pack_url" jdbcType="VARCHAR" property="resourcePackUrl" />
 		<result column="long_resolution" jdbcType="INTEGER" property="longResolution" />
 		<result column="wide_resolution" jdbcType="INTEGER" property="wideResolution" />
 		<result column="sort" jdbcType="INTEGER" property="sort" />
@@ -110,11 +108,11 @@
         ${alias}.author,
         ${alias}.download_count,
         ${alias}.used_count,
-        ${alias}.resource_pack_url,
         ${alias}.sort
     </sql>
 
 	<select id="query" resultMap="BaseResultVoMap">
+		<bind name="stitle" value="'%' + title + '%'" />
         SELECT
         <include refid="themeColumns"><property name="alias" value="t1"/></include>,
         t2.classification_name as typeName
@@ -129,9 +127,12 @@
             <if test="typeId != null">
                 AND t1.type_id = #{typeId}
             </if>
-            <if test="title != null">
-                AND t1.title like CONCAT(CONCAT('%', #{title}), '%')
-            </if>
+            <!--<if test="title != null">-->
+                <!--AND t1.title like CONCAT(CONCAT('%', #{title}), '%')-->
+            <!--</if>-->
+			<if test="title != null">
+			AND t1.title like #{stitle}
+			</if>
             <if test="status != null">
                 AND t1.status = #{status}
             </if>
