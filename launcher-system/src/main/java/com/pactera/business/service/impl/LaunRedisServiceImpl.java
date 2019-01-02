@@ -1,14 +1,9 @@
 package com.pactera.business.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
@@ -16,9 +11,7 @@ import org.springframework.stereotype.Service;
 import com.pactera.business.dao.LaunThemeMapper;
 import com.pactera.business.service.LaunChannelService;
 import com.pactera.business.service.LaunRedisService;
-import com.pactera.constant.ConstantUtlis;
 import com.pactera.domain.LaunChannel;
-import com.pactera.domain.LaunThemeAdministration;
 
 import lombok.extern.slf4j.Slf4j;
 
