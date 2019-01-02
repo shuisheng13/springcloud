@@ -59,4 +59,10 @@ public interface ConstantUtlis {
         String ZIP = "zip";
         String DOT_ZIP = DOT + ZIP;
 	}
+
+	interface operateType {
+
+		int DOWNLOAD = 0;
+		int USED = 1;
+	}
 }
