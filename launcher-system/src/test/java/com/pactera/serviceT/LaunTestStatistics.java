@@ -1,43 +1,22 @@
 package com.pactera.serviceT;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.ListOperations;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.SetOperations;
-import org.springframework.data.redis.core.ValueOperations;
-
 import com.pactera.base.Tester;
-import com.pactera.business.dao.LaunThemeMapper;
-import com.pactera.business.dao.LaunThemeStatisticsMapper;
-import com.pactera.business.dao.LaunWidgetMinPropertyMapper;
 import com.pactera.business.service.LaunChannelService;
-import com.pactera.business.service.LaunRedisService;
 import com.pactera.business.service.LaunStatisticsService;
 import com.pactera.business.service.LaunTaskService;
-import com.pactera.business.service.LaunThemeService;
 import com.pactera.business.service.LaunWidgetManagerService;
-import com.pactera.constant.ConstantUtlis;
-import com.pactera.domain.LaunCarStatistics;
 import com.pactera.domain.LaunChannel;
-import com.pactera.domain.LaunThemeAdministration;
-import com.pactera.domain.LaunWidgetMinProperty;
-import com.pactera.utlis.IdUtlis;
 import com.pactera.utlis.JsonUtils;
 import com.pactera.utlis.TimeUtils;
 import com.pactera.vo.LaunAttributeVo;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import tk.mybatis.mapper.entity.Example;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @description:应用相关测试
