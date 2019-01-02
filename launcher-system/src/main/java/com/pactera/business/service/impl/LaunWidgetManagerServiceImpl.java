@@ -1,29 +1,5 @@
 package com.pactera.business.service.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.commons.io.FilenameUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
@@ -31,25 +7,12 @@ import com.github.pagehelper.PageInfo;
 import com.github.tobato.fastdfs.domain.StorePath;
 import com.github.tobato.fastdfs.proto.storage.DownloadByteArray;
 import com.github.tobato.fastdfs.service.FastFileStorageClient;
-import com.pactera.business.dao.LaunAttributeMapper;
-import com.pactera.business.dao.LaunWidgetChannelMapper;
-import com.pactera.business.dao.LaunWidgetFileMapper;
-import com.pactera.business.dao.LaunWidgetManagerMapper;
-import com.pactera.business.dao.LaunWidgetMinPropertyMapper;
-import com.pactera.business.dao.LaunWidgetTypeMapper;
+import com.pactera.business.dao.*;
 import com.pactera.business.service.LaunWidgetManagerService;
 import com.pactera.config.exception.DataStoreException;
 import com.pactera.config.exception.status.ErrorStatus;
 import com.pactera.config.exception.status.SuccessStatus;
-import com.pactera.config.security.UserUtlis;
-import com.pactera.domain.LaunAttribute;
-import com.pactera.domain.LaunUser;
-import com.pactera.domain.LaunWidget;
-import com.pactera.domain.LaunWidgetChannel;
-import com.pactera.domain.LaunWidgetFile;
-import com.pactera.domain.LaunWidgetMinProperty;
-import com.pactera.domain.LaunWidgetProperty;
-import com.pactera.domain.LaunWidgetType;
+import com.pactera.domain.*;
 import com.pactera.util.CheckWidgetImg;
 import com.pactera.util.ThemeWidgetDetail;
 import com.pactera.util.widgetToJson;
@@ -60,9 +23,19 @@ import com.pactera.utlis.JsonUtils;
 import com.pactera.vo.LaunAttributeVo;
 import com.pactera.vo.LaunWidgetTypeVo;
 import com.pactera.vo.LaunWidgetVo;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Example;
+
+import java.io.*;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 
@@ -111,9 +84,9 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 			LaunWidget checkwidget = launWidgetManagerMapper.selectByPrimaryKey(widget.getId());
 			// 新增
 			if (checkwidget == null) {
-				LaunUser user = UserUtlis.launUser();
-				widget.setCreator(user.getId());
-				widget.setCreateway(user.getChannelId() == null ? 1 : 2);
+				//LaunUser user = UserUtlis.launUser();
+				//widget.setCreator(user.getId());
+				//widget.setCreateway(user.getChannelId() == null ? 1 : 2);
 				widget.setCreateDate(new Date());
 				launWidgetManagerMapper.insertSelective(widget);
 				// 修改的
@@ -232,7 +205,7 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 		Map filemap = JsonUtils.JsonToMap(filepath);
 		// String message = "创建变体成功";
 		int status = 1;
-		LaunUser user = UserUtlis.launUser();
+		//LaunUser user = UserUtlis.launUser();
 		try {
 			List<LaunWidget> widgetlist = widgetToJson.json2widget(widgetjson);
 			LaunWidgetChannel widgetchannel = null;
@@ -246,8 +219,8 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 				widget.setCodeId(oldWidget.getCodeId());
 				widget.setParentId(0L);
 				widget.setCreateDate(new Date());
-				widget.setCreator(user.getId());
-				widget.setCreateway(user.getChannelId() == null ? 1 : 2);
+				//widget.setCreator(user.getId());
+				//widget.setCreateway(user.getChannelId() == null ? 1 : 2);
 				// 全部渠道
 				if (channels == null || "".equals(channels)) {
 					Integer channelway = 1;
@@ -708,9 +681,9 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 		launWidgetmmm.setType(0);
 		launWidgetmmm.setParentId(0L);
 		// TODO
-		LaunUser user = UserUtlis.launUser();
-		launWidgetmmm.setCreator(user.getId());
-		launWidgetmmm.setCreateway(user.getChannelId() == null ? 1 : 2);
+		//LaunUser user = UserUtlis.launUser();
+		//launWidgetmmm.setCreator(user.getId());
+		//launWidgetmmm.setCreateway(user.getChannelId() == null ? 1 : 2);
 		// 基础widget默认全部
 		launWidgetmmm.setChannelway(1);
 		launWidgetManagerMapper.updateByPrimaryKeySelective(launWidgetmmm);
@@ -838,9 +811,9 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 		launWidgetmmm.setType(0);
 		launWidgetmmm.setParentId(0L);
 		// TODO
-		LaunUser user = UserUtlis.launUser();
-		launWidgetmmm.setCreator(user.getId());
-		launWidgetmmm.setCreateway(user.getChannelId() == null ? 1 : 2);
+		//LaunUser user = UserUtlis.launUser();
+		//launWidgetmmm.setCreator(user.getId());
+		//launWidgetmmm.setCreateway(user.getChannelId() == null ? 1 : 2);
 		launWidgetmmm.setChannelway(1);
 
 		launWidgetManagerMapper.updateByPrimaryKey(launWidgetmmm);
@@ -1002,10 +975,11 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 					keyWord);
 			return new PageInfo<>(widgetList);
 		} else {
-			LaunUser user = UserUtlis.launUser();
-			List<LaunWidgetVo> widgetList = launWidgetManagerMapper.findWidgetsListByCh(defaultSize, category, version,
-					keyWord, user.getId(), user.getChannelId());
-			return new PageInfo<>(widgetList);
+			//LaunUser user = UserUtlis.launUser();
+			//List<LaunWidgetVo> widgetList = launWidgetManagerMapper.findWidgetsListByCh(defaultSize, category, version,
+			//		keyWord, user.getId(), user.getChannelId());
+			//return new PageInfo<>(widgetList);
+			return new PageInfo<>(null);
 		}
 	}
 
@@ -1021,10 +995,11 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 					version, keyWord, channels, channelnum);
 			return new PageInfo<>(widgetList);
 		} else {
-			LaunUser user = UserUtlis.launUser();
-			List<LaunWidgetVo> widgetList = launWidgetManagerMapper.findWidgetsPullListByCh(defaultSize, category,
-					version, keyWord, user.getId(), user.getChannelId());
-			return new PageInfo<>(widgetList);
+			//LaunUser user = UserUtlis.launUser();
+			//List<LaunWidgetVo> widgetList = launWidgetManagerMapper.findWidgetsPullListByCh(defaultSize, category,
+			//		version, keyWord, user.getId(), user.getChannelId());
+			//return new PageInfo<>(widgetList);
+			return new PageInfo<>(null);
 		}
 	}
 
