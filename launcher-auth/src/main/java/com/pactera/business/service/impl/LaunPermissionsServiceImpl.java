@@ -1,32 +1,22 @@
 package com.pactera.business.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.pactera.business.dao.LaunPermissionsMapper;
-import com.pactera.business.dao.LaunRoleMapper;
-import com.pactera.business.dao.LaunRolePermissionsMapper;
-import com.pactera.business.dao.LaunUserMapper;
-import com.pactera.business.dao.LaunUserRoleMapper;
+import com.pactera.business.dao.*;
 import com.pactera.business.service.LaunPermissionsService;
 import com.pactera.config.exception.DataStoreException;
 import com.pactera.config.exception.status.ErrorStatus;
 import com.pactera.config.security.UserUtlis;
 import com.pactera.constant.ConstantUtlis;
-import com.pactera.domain.LaunPermissions;
-import com.pactera.domain.LaunRole;
-import com.pactera.domain.LaunRolePermissions;
-import com.pactera.domain.LaunUser;
-import com.pactera.domain.LaunUserRole;
+import com.pactera.domain.*;
 import com.pactera.utlis.IdUtlis;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 import tk.mybatis.mapper.entity.Example.Criteria;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * @description:权限
