@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -37,5 +38,5 @@ public class LaunThemeVo implements Serializable {
 	//private @ApiModelProperty("页面传值用的版本名称") String versionName;
 	private @ApiModelProperty("主题包地址") String zipUrl;
 	private @ApiModelProperty("主题状态1:未上架2:已上架3:已下架4:删除") Integer status;
-	private @ApiModelProperty("上传资源包地址") String resourcePackUrl;
+	private @ApiModelProperty("价格") BigDecimal price;
 }

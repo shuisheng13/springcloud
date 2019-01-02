@@ -8,7 +8,6 @@ import com.pactera.business.service.*;
 import com.pactera.config.exception.DataStoreException;
 import com.pactera.config.exception.IORuntimeException;
 import com.pactera.config.exception.status.ErrorStatus;
-import com.pactera.config.security.UserUtlis;
 import com.pactera.constant.ConstantUtlis;
 import com.pactera.domain.*;
 import com.pactera.util.ThemeWidgetDetail;
@@ -132,15 +131,15 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 
 		// 判断是否为渠道管理员 0否，1是
 		Integer isChannleManager = 1;
-		LaunUser launUser = UserUtlis.launUser();
-		Integer integer = launUser.getUserType();
-		if (integer == null || integer == 1) {
-			Long channleId = launUser.getChannelId();
-			if (channleId != null && (status == null || status == 1 || status == 2 || status == 3)) {
-				channle = channleId;
-				isChannleManager = 1;
-			}
-		}
+		//LaunUser launUser = UserUtlis.launUser();
+		//Integer integer = launUser.getUserType();
+		//if (integer == null || integer == 1) {
+		//	Long channleId = launUser.getChannelId();
+		//	if (channleId != null && (status == null || status == 1 || status == 2 || status == 3)) {
+		//		channle = channleId;
+		//		isChannleManager = 1;
+		//	}
+		//}
 		List<LaunThemeVo> launList = launThemeMapper.selectByCound(type, version, channle, title, status,
 				isChannleManager);
 		return new PageInfo<LaunThemeVo>(launList);
@@ -952,7 +951,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
                 FileTool.getBytes(upload));
         FileTool.unZipFile(path.toFile().getAbsolutePath(), tempPath);
         FileTool.delTempFile(path);
-        //校验
+
         this.checkZip(tempPath);
         //主题主预览图
         String imgMain = null;
