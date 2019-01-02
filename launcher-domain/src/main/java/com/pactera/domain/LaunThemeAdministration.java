@@ -62,7 +62,6 @@ public class LaunThemeAdministration {
     private @ApiModelProperty("使用量") int usedCount;
     private @ApiModelProperty("作者") String author;
     private @ApiModelProperty("发布时间") Date releaseTime;
-    private @ApiModelProperty("上传资源包路径") String resourcePackUrl;
 
 	@Transient
 	@JsonProperty("sTime")
