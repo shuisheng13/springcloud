@@ -1,36 +1,28 @@
 package com.pactera.serviceT;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.ValueOperations;
-
 import com.pactera.base.Tester;
 import com.pactera.business.dao.LaunApplicationStatisticsMapper;
 import com.pactera.business.dao.LaunCarStatisticsMapper;
 import com.pactera.business.dao.LaunThemeStatisticsMapper;
-import com.pactera.business.dao.LaunWidgetManagerMapper;
-import com.pactera.business.dao.LaunWidgetMinPropertyMapper;
-import com.pactera.business.dao.LaunWidgetPropertyMapper;
 import com.pactera.business.service.LaunChannelService;
 import com.pactera.business.service.LaunStatisticsService;
-import com.pactera.business.service.LaunThemeConfigService;
 import com.pactera.business.service.LaunThemeService;
 import com.pactera.constant.ConstantUtlis;
 import com.pactera.domain.LaunApplicationStatistics;
 import com.pactera.domain.LaunCarStatistics;
 import com.pactera.domain.LaunChannel;
-import com.pactera.domain.LaunThemeConfig;
 import com.pactera.domain.LaunThemeStatistics;
-import com.pactera.util.ThemeWidgetDetail;
 import com.pactera.utlis.IdUtlis;
 import com.pactera.utlis.JsonUtils;
 import com.pactera.utlis.TimeUtils;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.ValueOperations;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 测试widget信息转为前端可用json
