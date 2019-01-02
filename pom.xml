@@ -54,23 +54,23 @@
 	</dependencyManagement>
 
 
-	<repositories>
-		<repository>
-			<id>SLN-ext-Nexus</id>
-			<name>SLN private ext maven repository via Nexus</name>
-			<url>http://192.168.19.23:8081/repository/maven-thirdparty/</url>
-		</repository>
-		<repository>
-			<id>SLN-Central-Mirror-Nexus</id>
-			<name>SLN central mirror maven repository via Nexus</name>
-			<url>http://192.168.19.23:8081/repository/maven-central/</url>
-		</repository>
-		<repository>
-			<id>Aliyun-Central-Mirror-Nexus</id>
-			<name>Aliyun central mirror maven repository via Nexus</name>
-			<url>http://maven.aliyun.com/nexus/content/groups/central/</url>
-		</repository>
-	</repositories>
+	<!--<repositories>-->
+		<!--<repository>-->
+			<!--<id>SLN-ext-Nexus</id>-->
+			<!--<name>SLN private ext maven repository via Nexus</name>-->
+			<!--<url>http://192.168.19.23:8081/repository/maven-thirdparty/</url>-->
+		<!--</repository>-->
+		<!--<repository>-->
+			<!--<id>SLN-Central-Mirror-Nexus</id>-->
+			<!--<name>SLN central mirror maven repository via Nexus</name>-->
+			<!--<url>http://192.168.19.23:8081/repository/maven-central/</url>-->
+		<!--</repository>-->
+		<!--<repository>-->
+			<!--<id>Aliyun-Central-Mirror-Nexus</id>-->
+			<!--<name>Aliyun central mirror maven repository via Nexus</name>-->
+			<!--<url>http://maven.aliyun.com/nexus/content/groups/central/</url>-->
+		<!--</repository>-->
+	<!--</repositories>-->
 
 	<modules>
 		<module>launcher-eureka</module>
@@ -82,6 +82,7 @@
 		<module>launcher-logs</module>
 		<module>launcher-confserver</module>
 		<module>launcher-auth</module>
-    <module>launcher-client</module>
+    	<module>launcher-client</module>
+		<module>launcher-vehicle</module>
   </modules>
 </project>
