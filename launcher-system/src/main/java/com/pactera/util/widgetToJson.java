@@ -1,34 +1,19 @@
 package com.pactera.util;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.BeanUtils;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pactera.business.dao.LaunAttributeMapper;
-import com.pactera.business.dao.LaunWidgetChannelMapper;
-import com.pactera.business.dao.LaunWidgetFileMapper;
-import com.pactera.business.dao.LaunWidgetManagerMapper;
-import com.pactera.business.dao.LaunWidgetTypeMapper;
-import com.pactera.config.security.UserUtlis;
+import com.pactera.business.dao.*;
 import com.pactera.config.spring.SpringUtil;
-import com.pactera.domain.LaunAttribute;
-import com.pactera.domain.LaunUser;
 import com.pactera.domain.LaunWidget;
 import com.pactera.domain.LaunWidgetChannel;
 import com.pactera.domain.LaunWidgetFile;
 import com.pactera.domain.LaunWidgetType;
 import com.pactera.utlis.IdUtlis;
 import com.pactera.utlis.JsonUtils;
+import org.springframework.beans.BeanUtils;
+
+import java.util.*;
 
 /**
  * @description:widget、json互转相关
