@@ -1,13 +1,11 @@
 package com.pactera.serviceT;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
+
+import java.util.*;
+
+//import org.codehaus.jackson.map.ObjectMapper;
 @SuppressWarnings("all")
 public class JsonTools {
 	private static String jsonStr = "{\"api\":\"2.1\",\"message\":[\"��Ʒ\",\"tokken\"],\"request\":{\"ptype\":\"JK\",\"tokken\":\"A#daDSFkiwi239sdls#dsd\"},\"response\":{\"status\":{\"statusCode\":\"500\",\"statusMessage\":[\"��Ʒ���ʹ���\",\"tokkenʧЧ\"]},\"page\":{\"pageSize\":\"100\",\"pageIndex\":\"1\"},\"data\":{\"ptitle\":\"all product lists\",\"sDate\":\"2014-12-01\",\"eDate\":\"2016-12-01\",\"productList\":[{\"pid\":\"RA001\",\"pname\":\"��Ʒ1\"},{\"pid\":\"RA002\",\"pname\":\"��Ʒ2\"}]}},\"args\":[{\"tit\":\"RA001\",\"val\":\"��Ʒ1\"},{\"tit\":\"RA002\",\"val\":\"��Ʒ2\"}]}";
