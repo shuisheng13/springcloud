@@ -32,8 +32,7 @@ public class LaunVehicleController {
      */
     @GetMapping("/search/{value}")
     ResultData search(@PathVariable String value) {
-        themeService.search(value);
-        return new ResultData();
+        return new ResultData(themeService.search(value));
     }
 
     /**
