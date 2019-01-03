@@ -1,7 +1,7 @@
 package com.pactera.business.service;
 
-import com.pactera.vo.LaunThemeVo;
 import com.pactera.vo.ThemeDetailVO;
+import com.pactera.vo.ThemeListVO;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ public interface ThemeService {
      * @param value 关键字
      * @return
      */
-    List<LaunThemeVo> search(String value);
+    List<ThemeListVO> search(String value);
 
     /**
      * 统计主题下载（应用）次数
