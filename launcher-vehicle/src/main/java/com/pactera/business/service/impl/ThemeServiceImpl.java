@@ -9,8 +9,8 @@ import com.pactera.domain.LaunThemeAdministration;
 import com.pactera.dto.ThemeDTO;
 import com.pactera.result.ResultData;
 import com.pactera.vo.*;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -36,9 +36,10 @@ public class ThemeServiceImpl implements ThemeService {
     public List<ThemeListVO> search(String value) {
         List<LaunThemeAdministration> launThemeAdministrations = launThemeMapper.search(value);
         List<ThemeListVO> themeLists = new ArrayList<>();
+        BeanCopier beanCopier = BeanCopier.create(LaunThemeAdministration.class ,ThemeListVO.class,false);
         launThemeAdministrations.forEach(a->{
             ThemeListVO themeListVO = new ThemeListVO();
-            BeanUtils.copyProperties(a, themeListVO);
+            beanCopier.copy(a, themeListVO, null);
             themeLists.add(themeListVO);
         });
         return themeLists;
@@ -60,11 +61,14 @@ public class ThemeServiceImpl implements ThemeService {
         List<LaunThemeFileVo> files = themeDTO.getData().getFile();
 
         ThemeVO themeVo = new ThemeVO();
-        BeanUtils.copyProperties(theme, themeVo);
+        BeanCopier.create(LaunThemeVo.class ,ThemeVO.class,false).copy(theme, themeVo,null);
+
+
+        BeanCopier beanCopier = BeanCopier.create(LaunThemeFileVo.class ,ThemeFileVO.class,false);
         List<ThemeFileVO> nfiles = new ArrayList<>();
         files.forEach(f->{
             ThemeFileVO file = new ThemeFileVO();
-            BeanUtils.copyProperties(f, file);
+            beanCopier.copy(f,file,null);
             nfiles.add(file);
         });
 
