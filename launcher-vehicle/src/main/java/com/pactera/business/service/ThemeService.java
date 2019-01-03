@@ -1,6 +1,7 @@
 package com.pactera.business.service;
 
 import com.pactera.vo.LaunThemeVo;
+import com.pactera.vo.ThemeDetailVO;
 
 import java.util.List;
 
@@ -18,5 +19,8 @@ public interface ThemeService {
      * @return
      */
     int count(String id, int type);
+
+
+    ThemeDetailVO detail(String id);
 
 }

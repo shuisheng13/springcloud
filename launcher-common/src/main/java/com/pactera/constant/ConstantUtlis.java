@@ -65,4 +65,9 @@ public interface ConstantUtlis {
 		int DOWNLOAD = 0;
 		int USED = 1;
 	}
+
+	enum recommend {
+		RECOMMEND,
+		NOT_RECOMMEND
+	}
 }

@@ -62,6 +62,8 @@ public class LaunThemeAdministration {
     private @ApiModelProperty("使用量") int usedCount;
     private @ApiModelProperty("作者") String author;
     private @ApiModelProperty("发布时间") Date releaseTime;
+	private @ApiModelProperty("是否是推荐主题") boolean recommend;
+	private @ApiModelProperty("推荐排序") int recommendSort;
 
 	@Transient
 	@JsonProperty("sTime")

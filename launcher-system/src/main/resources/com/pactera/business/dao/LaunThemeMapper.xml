@@ -104,7 +104,7 @@
         ${alias}.description,
         ${alias}.release_time,
         ${alias}.recommend,
-        ${alias}.recomment_sort,
+        ${alias}.recommend_sort,
         ${alias}.author,
         ${alias}.download_count,
         ${alias}.used_count,

@@ -3,6 +3,7 @@ package com.pactera.business.controller;
 import com.github.pagehelper.PageInfo;
 import com.pactera.business.service.LaunFontService;
 import com.pactera.business.service.LaunThemeService;
+import com.pactera.constant.ConstantUtlis;
 import com.pactera.domain.LaunFont;
 import com.pactera.result.ResultData;
 import com.pactera.vo.LaunThemeVo;
@@ -121,11 +122,12 @@ public class LaunThemeController {
      */
     @PostMapping("/sort")
     public ResultData sort(@NotNull String id, @NotNull Integer num) {
-        launThemeService.sort(id, num);
+        launThemeService.sort(id, num, ConstantUtlis.recommend.NOT_RECOMMEND);
         return new ResultData();
     }
 
     /**
+     * v2
      * zip上传
      * @param file
      * @return
@@ -135,7 +137,31 @@ public class LaunThemeController {
 		return new ResultData(launThemeService.upload(file));
     }
 
+	/**
+     * v2
+	 * 主题推荐
+	 * @param id 主题id
+     * @param value 0:不推荐 1:推荐
+	 * @return
+	 */
+	@PostMapping("/recommend")
+	public ResultData recommend(String id, boolean value) {
+        launThemeService.recommend(id, value);
+		return new ResultData();
+	}
 
+    /**
+     * v2
+     * 修改车机端主题排序权重
+     * @param id 主题id
+     * @param num 权重数
+     * @return
+     */
+    @PostMapping("/recommend/sort")
+    public ResultData recommentSort(@NotNull String id, @NotNull Integer num) {
+        launThemeService.sort(id, num, ConstantUtlis.recommend.RECOMMEND);
+        return new ResultData();
+    }
 
 	/**
      *

@@ -1,6 +1,7 @@
 package com.pactera.business.service;
 
 import com.github.pagehelper.PageInfo;
+import com.pactera.constant.ConstantUtlis;
 import com.pactera.domain.LaunThemeAdministration;
 import com.pactera.vo.LaunThemeUploadFileVo;
 import com.pactera.vo.LaunThemeVo;
@@ -84,7 +85,7 @@ public interface LaunThemeService {
 	 * @param sort 排序权重
 	 * @return
 	 */
-	int sort(String id, Integer sort);
+	int sort(String id, Integer sort, ConstantUtlis.recommend recommend);
 
 	/**
 	 * @description 保存主题
@@ -140,4 +141,11 @@ public interface LaunThemeService {
 	 * @param file 上传的文件包
 	 */
 	LaunThemeUploadFileVo upload (MultipartFile file);
+
+	/**
+	 * 推荐主题
+	 * @param id 主题的id
+	 * @param value 0:不推荐  1：推荐
+	 */
+	int recommend (String id, boolean value);
 }

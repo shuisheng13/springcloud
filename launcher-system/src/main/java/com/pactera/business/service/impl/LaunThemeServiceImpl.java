@@ -260,8 +260,20 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	}
 
 	@Override
-	public int sort(String id, Integer sort) {
-        return launThemeMapper.updateByPrimaryKeySelective(new LaunThemeAdministration().setId(id).setStatus(sort));
+	public int sort(String id, Integer sort, ConstantUtlis.recommend recommend) {
+
+        LaunThemeAdministration launThemeAdministration = new LaunThemeAdministration().setId(id);
+	    switch (recommend) {
+            case RECOMMEND:
+                launThemeAdministration.setRecommendSort(sort);
+                break;
+
+            case NOT_RECOMMEND:
+                launThemeAdministration.setSort(sort);
+                break;
+        }
+
+        return launThemeMapper.updateByPrimaryKeySelective(new LaunThemeAdministration().setId(id).setSort(sort));
 	}
 
 
@@ -974,7 +986,14 @@ public class LaunThemeServiceImpl implements LaunThemeService {
         return launThemeUploadFileVo;
     }
 
-    private String parseProp(File file, LaunThemeUploadFileVo launThemeUploadFileVo) {
+	@Override
+	public int recommend(String id, boolean value) {
+        LaunThemeAdministration launThemeAdministration = new LaunThemeAdministration();
+        launThemeAdministration.setRecommend(value).setId(id);
+        return launThemeMapper.updateByPrimaryKeySelective(launThemeAdministration);
+	}
+
+	private String parseProp(File file, LaunThemeUploadFileVo launThemeUploadFileVo) {
         Properties prop = FileTool.file2Prop(file);
         log.info("解析properties完成...prop:{}", prop.toString());
         launThemeUploadFileVo.setLongResolution(prop.getProperty(upThemeLong));
