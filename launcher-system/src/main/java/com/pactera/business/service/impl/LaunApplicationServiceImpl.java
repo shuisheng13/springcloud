@@ -85,7 +85,6 @@ public class LaunApplicationServiceImpl implements LaunApplicationService {
 			String test = new String(fileName.getBytes(), "UTF-8");
 			System.out.println("上传的文件名为:"+test);
 		} catch (UnsupportedEncodingException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		String type = fileName.substring(fileName.indexOf("."), fileName.length());
@@ -110,10 +109,8 @@ public class LaunApplicationServiceImpl implements LaunApplicationService {
 			app.setLogoPath(storPath.getFullPath());
 			app.setFileName(fileName);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return app;

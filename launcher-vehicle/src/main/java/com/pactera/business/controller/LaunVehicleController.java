@@ -20,8 +20,8 @@ public class LaunVehicleController {
     @Autowired
     private ThemeService themeService;
 
-    @GetMapping("/{id}")
-    ResultData theme(@PathVariable String id) {
+    @GetMapping("/detail")
+    ResultData theme(String id) {
         return new ResultData(themeService.detail(id));
     }
 
@@ -30,8 +30,8 @@ public class LaunVehicleController {
      * @param value 关键字
      * @return 主题列表
      */
-    @GetMapping("/search/{value}")
-    ResultData search(@PathVariable String value) {
+    @GetMapping("/search")
+    ResultData search(String value) {
         return new ResultData(themeService.search(value));
     }
 
@@ -41,8 +41,8 @@ public class LaunVehicleController {
      * @param type 0:下载 1：应用
      * @return 数量
      */
-    @GetMapping("/count/{id}/{type}")
-    ResultData count (@PathVariable String id, @PathVariable int type) {
+    @GetMapping("/count")
+    ResultData count (String id, int type) {
         themeService.count(id, type);
         return new ResultData();
     }

@@ -81,7 +81,6 @@ public class widgetToJson {
 		widgetfile.setPath(map.get("path").toString());
 		//添加封面
 		launWidgetFileMapper.insertSelective(widgetfile);
-		// TODO
 		//LaunUser user = UserUtlis.launUser();
 		//widget.setCreator(user.getId());
 		return widget;
@@ -277,7 +276,7 @@ public class widgetToJson {
 				widget.setProperty(jsonObject.getString("setting"));
 				widget.setVersion(jsonObject.getInteger("version"));
 				//widget.setCreateDate(new Date());
-				// TODO 人员未对接，先统一为1
+				//人员未对接，先统一为1
 				//LaunUser user = UserUtlis.launUser();
 				//widget.setCreator(user.getId());
 				//widget.setCreateway(user.getChannelId()==null?1:2);

@@ -680,7 +680,6 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 		launWidgetmmm.setTag(tags);
 		launWidgetmmm.setType(0);
 		launWidgetmmm.setParentId(0L);
-		// TODO
 		//LaunUser user = UserUtlis.launUser();
 		//launWidgetmmm.setCreator(user.getId());
 		//launWidgetmmm.setCreateway(user.getChannelId() == null ? 1 : 2);
@@ -810,7 +809,6 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 		// launWidgetmmm.setCodeId();
 		launWidgetmmm.setType(0);
 		launWidgetmmm.setParentId(0L);
-		// TODO
 		//LaunUser user = UserUtlis.launUser();
 		//launWidgetmmm.setCreator(user.getId());
 		//launWidgetmmm.setCreateway(user.getChannelId() == null ? 1 : 2);

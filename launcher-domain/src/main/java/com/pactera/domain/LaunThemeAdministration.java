@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Map;
 
@@ -64,6 +65,7 @@ public class LaunThemeAdministration {
     private @ApiModelProperty("发布时间") Date releaseTime;
 	private @ApiModelProperty("是否是推荐主题") boolean recommend;
 	private @ApiModelProperty("推荐排序") int recommendSort;
+	private BigDecimal price;
 
 	@Transient
 	@JsonProperty("sTime")

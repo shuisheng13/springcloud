@@ -25,7 +25,6 @@
 //	@Override
 //	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 //			throws Exception {
-//		//TODO 暂时注释掉鉴权和日志   xukj  change 2018/12/19
 //		return true;
 //		//// addLogs(handler,request);
 //		//Boolean permissionsValidation = permissionsValidation(request);

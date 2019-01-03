@@ -123,7 +123,7 @@ public class FileTool {
 			MappedByteBuffer byteBuffer = fc.map(MapMode.READ_ONLY, 0, fc.size());
 			byteBuffer.load();
 			byte[] result = new byte[(int) fc.size()];
-			// 这里可能有问题 TODO
+			// 这里可能有问题
 			if (byteBuffer.remaining() > 0) {
 				byteBuffer.get(result, 0, byteBuffer.remaining());
 			}
