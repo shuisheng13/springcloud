@@ -1,6 +1,5 @@
 package com.pactera.business.controller;
 
-import com.pactera.business.service.RemoteThemeService;
 import com.pactera.business.service.ThemeService;
 import com.pactera.result.ResultData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class LaunVehicleController {
 
     @Autowired
-    private RemoteThemeService remoteThemeService;
-
-    @Autowired
     private ThemeService themeService;
 
     @GetMapping("/{id}")
-    String theme(@PathVariable String id) {
-        return remoteThemeService.detail(id);
+    ResultData theme(@PathVariable String id) {
+        return new ResultData(themeService.detail(id));
     }
 
     /**
