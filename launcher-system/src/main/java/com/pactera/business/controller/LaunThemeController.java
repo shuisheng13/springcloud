@@ -45,7 +45,7 @@ public class LaunThemeController {
 	 * @return
 	 */
 	@GetMapping("/query")
-	public ResultData query(Long tenantId, Long type, String title, Integer status,
+	public ResultData query(Long tenantId, String type, String title, Integer status,
                             @RequestParam(defaultValue = "1") int pageNum,
 			                @RequestParam(defaultValue = "10") int pageSize) {
 		PageInfo<LaunThemeVo> pageInfo =
@@ -198,8 +198,11 @@ public class LaunThemeController {
 	@PostMapping("/updateThem")
 	public ResponseEntity<ResultData> updateTheme(String baseJson, String widgetJson, String themeJson,
 			Integer saveType) {
+	    //2019/1/4 xukj change start
+		//String i = launThemeService.updateTheme(baseJson, widgetJson, themeJson, saveType);
+        String i = launThemeService.saveTheme(baseJson, widgetJson, themeJson, saveType);
+        //2019/1/4 xukj change end
 
-		String i = launThemeService.updateTheme(baseJson, widgetJson, themeJson, saveType);
 		/*
 		 * if (null != administration.getId()) { i =
 		 * launThemeService.updateOrSaveTheme(administration); } else { }

@@ -31,4 +31,9 @@ public class LaunThemeUploadFileVo {
      * 压缩包路径
      */
     private String zipUrl;
+
+    /**
+     * 文件大小
+     */
+    private Long fileSize;
 }

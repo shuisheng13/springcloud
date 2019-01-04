@@ -65,7 +65,8 @@ public class LaunThemeAdministration {
     private @ApiModelProperty("发布时间") Date releaseTime;
 	private @ApiModelProperty("是否是推荐主题") boolean recommend;
 	private @ApiModelProperty("推荐排序") int recommendSort;
-	private BigDecimal price;
+	private BigDecimal price = new BigDecimal(0);
+	private String tenantId;
 
 	@Transient
 	@JsonProperty("sTime")

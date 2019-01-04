@@ -2,6 +2,7 @@ package com.pactera.utlis;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -81,7 +82,6 @@ public class TimeUtils {
 	 *
 	 * @param time
 	 *            时间字符串
-	 * @param pattern
 	 *            时间格式
 	 * @return 毫秒时间戳
 	 */
@@ -198,7 +198,6 @@ public class TimeUtils {
 	/**
 	 * 日期+-天数
 	 * 
-	 * @param date
 	 * @param num
 	 *            增加的天数，整数为+，负数-
 	 * @return Date
@@ -214,7 +213,6 @@ public class TimeUtils {
 	/**
 	 * 日期+-天数
 	 * 
-	 * @param date
 	 * @param num
 	 *            增加的天数，整数为+，负数-
 	 * @return Date
@@ -230,7 +228,6 @@ public class TimeUtils {
 	/**
 	 * 日期+-天数
 	 * 
-	 * @param date
 	 * @param num
 	 *            增加的天数，整数为+，负数-
 	 * @return Date
@@ -269,6 +266,16 @@ public class TimeUtils {
 	public static Date getNowTimeDate() {
 		return new Date();
 	}
+
+    /**
+     * v2
+     * 获取当前时间戳
+     * @return
+     */
+	public static Date nowTimeStamp() {
+        return Date.from(Instant.now());
+    }
+
 
 	/**
 	 * 获取星期 time格式为yyyy-MM-dd HH:mm:ss
@@ -669,8 +676,8 @@ public class TimeUtils {
 	 * 
 	 * @author LL
 	 * @date 2018年8月2日 下午5:49:29
-	 * @param first时间
-	 * @param second时间
+	 * @param first 时间
+	 * @param second 时间
 	 * @return int
 	 */
 	public static int longOfTwoDate(Date first, Date second) {
@@ -689,8 +696,8 @@ public class TimeUtils {
 	 * 
 	 * @author LL
 	 * @date 2018年8月2日 下午5:49:29
-	 * @param first时间
-	 * @param second时间
+	 * @param first 时间
+	 * @param second 时间
 	 * @return int
 	 */
 	public static int longOfTwoDate(String first, String second, String pattern) {
@@ -843,7 +850,7 @@ public class TimeUtils {
 	/**
 	 * 计算时间差
 	 * 
-	 * @param time时间戳
+	 * @param time 时间戳
 	 * @return 时间差的时间戳
 	 */
 	public static long countTimeDiff(long time) {

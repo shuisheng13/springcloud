@@ -17,6 +17,7 @@ import com.pactera.vo.LaunThemeFileVo;
 import com.pactera.vo.LaunThemeUploadFileVo;
 import com.pactera.vo.LaunThemeVo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,9 +28,12 @@ import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Example;
 
 import java.io.*;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Path;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -69,6 +73,9 @@ public class LaunThemeServiceImpl implements LaunThemeService {
     @Value("${upload.theme.img}")
     private String upThemeImgMain;
 
+    @Value("${upload.theme.preix}")
+    private String upThemePreix;
+
     @Autowired
     public FastFileStorageClient fastFileStorageClient;
 
@@ -95,10 +102,10 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	private LaunFontService launFontService;
 
 	@Override
-	public PageInfo<LaunThemeVo> query(Long tenantId, Long type, String title, Integer status, int pageNum, int pageSize) {
+	public PageInfo<LaunThemeVo> query(Long tenantId, String typeId, String title, Integer status, int pageNum, int pageSize) {
 
         PageHelper.startPage(pageNum, pageSize);
-		List<LaunThemeVo> list = launThemeMapper.query(tenantId, type, title, status);
+		List<LaunThemeVo> list = launThemeMapper.query(tenantId, typeId, title, status);
 		list.forEach(l -> {
 			//TODO 获取租户名称
 			l.setCreator("xukj");
@@ -263,18 +270,14 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	@Override
 	public int sort(String id, Integer sort, ConstantUtlis.recommend recommend) {
 
-        LaunThemeAdministration launThemeAdministration = new LaunThemeAdministration().setId(id);
 	    switch (recommend) {
             case RECOMMEND:
-                launThemeAdministration.setRecommendSort(sort);
-                break;
+                return launThemeMapper.updateSort(id, null, sort);
 
             case NOT_RECOMMEND:
-                launThemeAdministration.setSort(sort);
-                break;
+                return launThemeMapper.updateSort(id, sort, null);
         }
-
-        return launThemeMapper.updateByPrimaryKeySelective(new LaunThemeAdministration().setId(id).setSort(sort));
+        return 0;
 	}
 
 
@@ -289,12 +292,10 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	public String saveTheme(String baseJson, String widgetJson, String themeJson, Integer saveType) {
 
 		LaunThemeAdministration administration = JsonUtils.jsonToClass(themeJson, LaunThemeAdministration.class);
-
-		//TODO 获取租户名称
-		String themeId = IdUtlis.Id(ConstantUtlis.PRIVATE_THEME,  "xukj");
-		Long adminId = 0L;
-
-
+        //Long adminId = 0L;
+        //TODO 获取租户id
+        administration.setTenantId("123");
+        String themeId = null;
 		/**
 		 * 当save为0时，只是保存widget。只保存对应json数据 当save为1是，保存整个主题，执行后续结构化数据及打包过程
 		 */
@@ -311,21 +312,42 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 			if (HStringUtlis.isNotBlank(administration.getETime())) {
 				administration.setEndTime(TimeUtils.millis2Date(Long.parseLong(administration.getETime())));
 			}
-			if (administration.getId() != null) {
-				launThemeFileService.deleteById(administration.getId());
-				launThemeMapper.updateByPrimaryKeySelective(administration);
-				return administration.getId();
-			} else {
-				administration.setId(themeId);
+
+			//2019/1/4 xukj add start
+            if(StringUtils.isNotBlank(administration.getId())) {
+                themeId = administration.getId();
+                launThemeMapper.deleteByPrimaryKey(themeId);
+                launThemeFileService.deleteById(themeId);
+            }else {
+                themeId = this.id();
+            }
+
+            Map<String,String> fileMaps = saveThemeFile(administration.getFilesJson(), themeId);
+            administration.setPreviewPath(fileMaps.get("previewPath"));
+            administration.setId(themeId).setCreateDate(TimeUtils.nowTimeStamp()).setStatus(ConstantUtlis.themeStatus.DOWN_SHELF);
+            launThemeMapper.insertSelective(administration);
+
+
+			//2019/1/4 xukj del start
+			//if (administration.getId() != null) {
+			//	launThemeFileService.deleteById(administration.getId());
+			//	launThemeMapper.updateByPrimaryKeySelective(administration);
+			//	return administration.getId();
+			//} else {
+			//	administration.setId(themeId);
 				// 判断如果是渠道管理员
-				administration.setCreatorChannelId(adminId);
-				administration.setCreateId(adminId);
+				//administration.setCreatorChannelId(adminId);
+				//administration.setCreateId(adminId);
 				// administration.setStatus(1);// 默认未上架状态
-				launThemeMapper.insertSelective(administration);
-			}
+			//	launThemeMapper.insertSelective(administration);
+			//}
+
 			// 保存主题浏览图
-			Map<String, String> filesJson = administration.getFilesJson();
-			saveThemeFile(filesJson, themeId);
+			//Map<String, String> filesJson = administration.getFilesJson();
+			//saveThemeFile(filesJson, themeId);
+
+
+            //2019/1/4 xukj del end
 			return themeId;
 		}
 
@@ -349,7 +371,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 				channles.add(Long.parseLong(string));
 			}
 		} else {
-			channles.add(adminId);
+			//channles.add(adminId);
 		}
 
 		// 定义下载文件map
@@ -369,7 +391,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 			administration.setWidgetJson(widgetJson);
 			administration.setCreatorChannelId(channleId);
 			administration.setThemeJson(themeJson);
-			administration.setCreateId(adminId);
+			//administration.setCreateId(adminId);
 			administration.setStatus(1);// 默认未上架状态
 
 			// 保存主题浏览图
@@ -402,6 +424,22 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 		log.info("主题管理----------主题保存完成----------ids:{}----------", Arrays.asList(themeIdList));
 		return themeId;
 	}
+
+    /**
+     * 数据库主键排重
+     * @return
+     */
+	private String id() {
+
+	    //TODO 租户英文
+        String themeId = IdUtlis.Id(ConstantUtlis.PRIVATE_THEME,  "xukj");
+        LaunThemeAdministration th = launThemeMapper.selectByTheme(themeId);
+        while(null != th) {
+            themeId = IdUtlis.Id(ConstantUtlis.PRIVATE_THEME,  "xukj");
+            th = launThemeMapper.selectById(themeId);
+        }
+        return themeId;
+    }
 
 	/**
 	 * 解析持久化主题json
@@ -960,7 +998,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 
         LaunThemeUploadFileVo launThemeUploadFileVo = new LaunThemeUploadFileVo();
 
-        Path path = FileTool.createTempFile(ConstantUtlis.theme.TMP_THEME_PREIX, ConstantUtlis.file.ZIP,
+        Path path = FileTool.createTempFile(upThemePreix , ConstantUtlis.file.ZIP,
                 FileTool.getBytes(upload));
         FileTool.unZipFile(path.toFile().getAbsolutePath(), tempPath);
         FileTool.delTempFile(path);
@@ -974,6 +1012,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
                 imgMain = this.parseProp(file,launThemeUploadFileVo);
                 continue;
             }
+            launThemeUploadFileVo.setFileSize(file.length());
             String zipPath = this.upload2fastFDS(file, ConstantUtlis.file.ZIP);
             launThemeUploadFileVo.setZipUrl(zipPath);
         }

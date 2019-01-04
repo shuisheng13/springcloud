@@ -4,9 +4,10 @@ import com.pactera.business.service.ThemeService;
 import com.pactera.result.ResultData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * @Author zhaodong
@@ -42,7 +43,7 @@ public class LaunVehicleController {
      * @return 数量
      */
     @GetMapping("/count")
-    ResultData count (String id, int type) {
+    ResultData count (@NotNull String id, @NotNull int type) {
         themeService.count(id, type);
         return new ResultData();
     }

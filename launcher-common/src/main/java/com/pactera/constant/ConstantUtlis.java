@@ -49,8 +49,27 @@ public interface ConstantUtlis {
 
 	String PRIVATE_THEME = "SYZT";
 
-	interface theme {
-		String TMP_THEME_PREIX = "launcher_upload_theme_";
+	interface themeStatus {
+        /**
+         * 主题已删除
+         */
+        int DELETE = -1;
+        /**
+         * 主题已上架
+         */
+		int ON_SHELF = 2;
+        /**
+         * 主题已下架
+         */
+		int DOWN_SHELF = 3;
+        /**
+         * 主题已禁用
+         */
+		int VALID = 1;
+        /**
+         * 主题已启用
+         */
+		int INVALID =0;
 
 	}
 

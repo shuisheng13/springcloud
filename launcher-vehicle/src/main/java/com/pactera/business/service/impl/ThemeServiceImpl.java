@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,10 +37,10 @@ public class ThemeServiceImpl implements ThemeService {
     public List<ThemeListVO> search(String value) {
         List<LaunThemeAdministration> launThemeAdministrations = launThemeMapper.search(value);
         List<ThemeListVO> themeLists = new ArrayList<>();
-        BeanCopier beanCopier = BeanCopier.create(LaunThemeAdministration.class ,ThemeListVO.class,false);
+        BeanCopier beanCopier = BeanCopier.create(LaunThemeAdministration.class ,ThemeListVO.class,true);
         launThemeAdministrations.forEach(a->{
             ThemeListVO themeListVO = new ThemeListVO();
-            beanCopier.copy(a, themeListVO, null);
+            beanCopier.copy(a, themeListVO, (Object v, Class t, Object c)->v);
             themeLists.add(themeListVO);
         });
         return themeLists;
@@ -61,7 +62,8 @@ public class ThemeServiceImpl implements ThemeService {
         List<LaunThemeFileVo> files = themeDTO.getData().getFile();
 
         ThemeVO themeVo = new ThemeVO();
-        BeanCopier.create(LaunThemeVo.class ,ThemeVO.class,false).copy(theme, themeVo,null);
+        BeanCopier.create(LaunThemeVo.class ,ThemeVO.class,true)
+                .copy(theme, themeVo, (Object o, Class aClass, Object o1)-> o);
 
 
         BeanCopier beanCopier = BeanCopier.create(LaunThemeFileVo.class ,ThemeFileVO.class,false);
