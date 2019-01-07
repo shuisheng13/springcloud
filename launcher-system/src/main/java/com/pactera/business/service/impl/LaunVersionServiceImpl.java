@@ -26,8 +26,7 @@ public class LaunVersionServiceImpl implements LaunVersionService {
     private LaunVersionMapper versionMapper;
 
     @Override
-    public List<LaunVersions> versions(Long tanentId) {
-        if(null != tanentId) { return versionMapper.select(new LaunVersions().setTenantId(tanentId)); }
+    public List<LaunVersions> versions() {
         return versionMapper.selectAll();
     }
 
@@ -42,7 +41,9 @@ public class LaunVersionServiceImpl implements LaunVersionService {
     }
 
     @Override
-    public int add(String version, Long tenantId) {
+    public int add(String version) {
+        //TODO 租户id
+        Long tenantId = 123L;
         LaunVersions launVersions = new LaunVersions();
 
         launVersions.setTenantId(tenantId).setVersion(version);

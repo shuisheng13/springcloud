@@ -18,7 +18,7 @@ public interface LaunVersionService {
      * @Param []
      * @return java.util.List<com.pactera.domain.LaunVersion>
      **/
-    List<LaunVersions> versions(Long tenantId);
+    List<LaunVersions> versions();
 
     /**
      * @Author xukj
@@ -36,6 +36,6 @@ public interface LaunVersionService {
      * @Param
      * @return
      **/
-    int add(String version, Long tenantId);
+    int add(String version);
 
 }
