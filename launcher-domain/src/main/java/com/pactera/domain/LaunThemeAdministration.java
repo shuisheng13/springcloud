@@ -40,7 +40,7 @@ public class LaunThemeAdministration {
 	private @ApiModelProperty("主题版本") String version;
 	private @ApiModelProperty("渠道id") Long creatorChannelId;
 	private @ApiModelProperty("渠道id") Long createId;
-	private @ApiModelProperty("主题分类") Long typeId;
+	private @ApiModelProperty("主题分类") String typeId;
 	private @ApiModelProperty("主题名称") String title;
 	private @ApiModelProperty("主题状态 1上架 2下架 3启用 4禁用 5删除") Integer status;
 	private @ApiModelProperty("开始时间") Date startTime;
