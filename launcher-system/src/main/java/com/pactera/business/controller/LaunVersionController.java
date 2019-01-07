@@ -39,16 +39,4 @@ public class LaunVersionController {
         int count = launVersionService.describe(id, description);
         return count == 1? new ResultData(): new ResultData((Object)count, SuccessStatus.UPDATE_DESCRIPTION_FAIL);
     }
-
-    /**
-     * 车机端上报
-     * @param version
-     * @return
-     */
-    @PostMapping("/add")
-    ResultData add(@NonNull String version) {
-        launVersionService.add(version);
-        return new ResultData();
-    }
-
 }

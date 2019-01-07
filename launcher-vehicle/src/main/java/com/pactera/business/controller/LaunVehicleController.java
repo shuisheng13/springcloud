@@ -4,6 +4,7 @@ import com.pactera.business.service.ThemeService;
 import com.pactera.result.ResultData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -42,7 +43,7 @@ public class LaunVehicleController {
      * @param type 0:下载 1：应用
      * @return 数量
      */
-    @GetMapping("/count")
+    @PostMapping("/count")
     ResultData count (@NotNull String id, @NotNull int type) {
         themeService.count(id, type);
         return new ResultData();

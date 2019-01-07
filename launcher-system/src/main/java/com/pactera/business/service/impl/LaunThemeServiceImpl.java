@@ -605,7 +605,10 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 
 			if (i == 0) {
 				themeFile.setType(1);
-				returnMap.put("previewPath", filePath + map2.getValue());
+				//xukj change start 2019/1/7
+				//returnMap.put("previewPath", filePath + map2.getValue());
+				returnMap.put("previewPath", map2.getValue());
+				//xukj change end 2019/1/7
 			} else {
 				urls.append(filePath + map2.getValue()).append(",");
 			}
