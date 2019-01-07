@@ -22,12 +22,11 @@ public class LaunVersionController {
     @Autowired LaunVersionService launVersionService;
 
     /**
-     * 查询租户（所有）版本信息 tentantid如果不传查询全部
-     * @param tenantId
+     * 查询租户（所有）版本信息
      * @return
      */
     @GetMapping("/list")
-    ResultData versions(Long tenantId) { return new ResultData(launVersionService.versions(tenantId)); }
+    ResultData versions() { return new ResultData(launVersionService.versions()); }
 
     /**
      * 添加描述信息
@@ -44,12 +43,11 @@ public class LaunVersionController {
     /**
      * 车机端上报
      * @param version
-     * @param tenantId
      * @return
      */
     @PostMapping("/add")
-    ResultData add(@NonNull String version, @NonNull Long tenantId) {
-        launVersionService.add(version, tenantId);
+    ResultData add(@NonNull String version) {
+        launVersionService.add(version);
         return new ResultData();
     }
 
