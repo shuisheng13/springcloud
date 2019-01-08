@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pactera.business.dao.LaunVehicleListMapper">
+
+    <select id="themeclasslist2" resultType="com.pactera.dto.ThemClassDTO" parameterType="String">
+          SELECT
+             id, cover_image as coverImage, classification_name as classificationName
+          FROM
+             laun_theme_classification
+          WhERE
+             tenant_id = #{tenanId}
+            AND
+             shelf_status = 1
+            AND
+             disable = 1
+          ORDER BY
+             sort
+    </select>
+
+    <select id="themTopAndByClassId" resultType="com.pactera.dto.ThemListDTO" parameterType="com.pactera.domain.LaunThemeAdministration">
+          SELECT
+             id, preview_path, title, down_count, price
+          FROM
+             laun_theme_administration
+          WHERE
+             tenant_id = #{typeId}
+            AND
+             status = 2
+        ORDER BY
+            <if test="LaunThemeAdministration.sort==-1"> sort </if>
+            <if test="LaunThemeAdministration.downloadCount==-1"> download_count </if>
+            <if test="LaunThemeAdministration.recommendSort==-1"> recommend_sort </if>
+    </select>
+
+</mapper>
