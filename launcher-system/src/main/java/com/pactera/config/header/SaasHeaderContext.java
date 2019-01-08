@@ -1,4 +1,6 @@
 package com.pactera.config.header;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import com.netflix.hystrix.strategy.concurrency.HystrixRequestVariableDefault;
@@ -52,5 +54,17 @@ public class SaasHeaderContext {
 
     public static String getUserName() {
         return getHeaders().get(GatewayHeaderKey.USER_NAME);
+    }
+
+    public static String getTenantName() {
+        if(!StringUtils.isBlank(getHeaders().get(GatewayHeaderKey.TENANT_NAME)) ){
+            try {
+                return URLDecoder.decode(getHeaders().get(GatewayHeaderKey.TENANT_NAME), "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                return null;
+            }
+        }else{
+            return null;
+        }
     }
 }
