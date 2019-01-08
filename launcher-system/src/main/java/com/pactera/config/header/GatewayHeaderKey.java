@@ -13,6 +13,7 @@ public class GatewayHeaderKey {
     public static final String TOKEN = "x-token";
     public static final String USER_NAME = "x-username";
     public static final String USER_TYPE = "x-usertype";
+    public static final String TENANT_NAME = "x-tname";
 
     public GatewayHeaderKey() {
     }
