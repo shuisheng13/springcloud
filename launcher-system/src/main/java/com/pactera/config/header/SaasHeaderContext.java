@@ -56,7 +56,7 @@ public class SaasHeaderContext {
         return getHeaders().get(GatewayHeaderKey.USER_NAME);
     }
 
-    public static String getTenant() {
+    public static String getTenantName() {
         if(!StringUtils.isBlank(getHeaders().get(GatewayHeaderKey.TENANT_NAME)) ){
             try {
                 return URLDecoder.decode(getHeaders().get(GatewayHeaderKey.TENANT_NAME), "UTF-8");
