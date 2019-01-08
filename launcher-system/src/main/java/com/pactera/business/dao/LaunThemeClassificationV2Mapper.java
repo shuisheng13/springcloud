@@ -1,9 +1,11 @@
 package com.pactera.business.dao;
 import com.pactera.config.mapper.BaseMapper;
 import com.pactera.domain.LaunThemeClassificationV2;
+import com.pactera.vo.LaunThemeInfoVo;
 import com.pactera.vo.LauncThemeClassVo;
 import org.springframework.data.repository.query.Param;
 import java.util.List;
+import java.util.Map;
 
 /**
  *  主题分类管理
@@ -28,7 +30,7 @@ public interface LaunThemeClassificationV2Mapper extends BaseMapper<LaunThemeCla
      * @Param classificationId
      * @return
      **/
-    int deleteByThemClassId(@Param("id") String id);
+    int deleteByThemClassId(@Param("id") String id,@Param("tenantId") String tenantId);
 
     /**
      * 查询主题列表
@@ -38,4 +40,22 @@ public interface LaunThemeClassificationV2Mapper extends BaseMapper<LaunThemeCla
      * @return
      **/
     List<LauncThemeClassVo> selectLauncThemeClassVo(LauncThemeClassVo launcThemeClassVo);
+
+    /**
+     * 批量更新
+     * @Author zhaodong
+     * @Date 9:48 2018/12/27
+     * @Param
+     * @return
+     **/
+    int orderThemeClass(@Param("list") List<Map> listMap);
+
+    /**
+     * 查询主题分类下面的主题详情
+     * @Author zhaodong
+     * @Date 14:47 2018/12/28
+     * @Param
+     * @return
+     **/
+    List<LaunThemeInfoVo> seLaunByThemClassId(@Param("themClassId")String themClassId);
 }

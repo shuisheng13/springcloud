@@ -61,15 +61,11 @@
 			<artifactId>javafaker</artifactId>
 			<version>${javafaker.version}</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-config</artifactId>
-		</dependency>
-
-		<!--<dependency>
-			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-consul-config</artifactId>
-		</dependency>-->
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -100,11 +96,6 @@
 			<version>1.2.8</version>
 		</dependency>
 		<!--<dependency>
-			<groupId>com.netflix.hystrix</groupId>
-			<artifactId>hystrix-core</artifactId>
-			<version>1.5.12</version>
-		</dependency>-->
-		<!--<dependency>
 			<artifactId>wecloud-saas-api</artifactId>
 			<groupId>com.navinfo.wecloud.saas</groupId>
 			<version>1.0-SNAPSHOT</version>
@@ -114,15 +105,23 @@
 			<artifactId>wecloud-starter</artifactId>
 			<version>1.63-SNAPSHOT</version>
 		</dependency>-->
-		<!--<dependency>
+		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-consul-discovery</artifactId>
-		</dependency>-->
-
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-hystrix</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
 	</dependencies>

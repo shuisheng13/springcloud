@@ -18,7 +18,7 @@ public interface LauncThemeClassificationV2Service {
      * @Param themeClassName,themeClassName,coverImage
      * @return ResponseEntity<ResultData>
      **/
-    ResponseEntity<ResultData> addthemeClass(String themeClassName, String apiKey, MultipartFile coverImage);
+    ResponseEntity<ResultData> addthemeClass(String themeClassName, MultipartFile coverImage, int tenantId);
 
     /**
      * 编辑主题分类
@@ -36,7 +36,7 @@ public interface LauncThemeClassificationV2Service {
      * @Param
      * @return
      **/
-    ResponseEntity<ResultData> deThemeClass(String id,String apiKey);
+    ResponseEntity<ResultData> deThemeClass(String id);
 
     /**
      * 查看主题分类
@@ -45,7 +45,7 @@ public interface LauncThemeClassificationV2Service {
      * @Param themeClassId
      * @return
      **/
-    ResponseEntity<ResultData> seThemeClass(String id);
+    ResponseEntity<ResultData> seThemeClass(String id, int pageNum,int pageSize);
 
     /**
      * 所有列表接口
@@ -54,7 +54,7 @@ public interface LauncThemeClassificationV2Service {
      * @Param apiKey
      * @return
      **/
-    ResponseEntity<ResultData> seThemeClassList(String apiKey,String shelfStatus,String classificationName,int pageNum,int pageSize);
+    ResponseEntity<ResultData> seThemeClassList(String shelfStatus,String classificationName,int pageNum,int pageSizet);
 
     /**
      *  上架或下架主题
@@ -63,7 +63,7 @@ public interface LauncThemeClassificationV2Service {
      * @Param
      * @return
      **/
-    ResponseEntity<ResultData> themeClassUpOrDown(String apiKey,String shelfStatus,String id);
+    ResponseEntity<ResultData> themeClassUpOrDown(String shelfStatus,String id);
 
     /**
      * 主题是否上架或下架
@@ -91,4 +91,13 @@ public interface LauncThemeClassificationV2Service {
      * @return
      **/
     String upThemeClassCountUpOrDown(int status,String id,int num);
+
+    /**
+     * 权重进行排序
+     * @Author zhaodong
+     * @Date 16:34 2018/12/26
+     * @Param
+     * @return
+     **/
+    ResponseEntity<ResultData> orderThemeClass(String sortOrder);
 }
