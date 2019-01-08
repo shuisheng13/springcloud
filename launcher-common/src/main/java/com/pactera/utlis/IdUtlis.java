@@ -25,11 +25,12 @@ public class IdUtlis {
 	public static String Id(String prefix ,String creator){
 		String substring = creator.substring(0,2);// 前两个字母大写
 		String creatorTwo = substring.toUpperCase();
-		return  prefix + creatorTwo + (int)(Math.random() * 10000000);
+        String random = Math.random() + "";
+        String num = random.substring(random.indexOf(".") + 1, 9);
+		return  prefix + creatorTwo + num;
 	}
 
 	public static String UUId() {
 		return UUID.randomUUID().toString();
 	}
-
 }
