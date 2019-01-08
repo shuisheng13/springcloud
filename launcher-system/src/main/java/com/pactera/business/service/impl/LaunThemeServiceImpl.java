@@ -21,6 +21,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -105,18 +106,25 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	public PageInfo<LaunThemeVo> query(Long tenantId, String typeId, String title, Integer status, int pageNum, int pageSize) {
 
         PageHelper.startPage(pageNum, pageSize);
-		List<LaunThemeVo> list = launThemeMapper.query(tenantId, typeId, title, status);
-		list.forEach(l -> {
-			//TODO 获取租户名称
-			l.setCreator("xukj");
+		List<LaunThemeAdministration> list = launThemeMapper.query(tenantId, typeId, title, status);
+
+		BeanCopier beanCopier = BeanCopier.create(LaunThemeAdministration.class ,LaunThemeVo.class,true);
+		List<LaunThemeVo> themes = new ArrayList<>();
+		list.forEach(theme->{
+			LaunThemeVo themeVo = new LaunThemeVo();
+			beanCopier.copy(theme, themeVo, (Object v, Class t, Object c)->v);
+			themeVo.setCreator("xukj");
+			themes.add(themeVo);
 		});
-		return new PageInfo<>(list);
+
+		return new PageInfo<>(themes);
 	}
 
 
     @Override
     public int changeStatus(String id, Integer status) {
-        return launThemeMapper.updateByPrimaryKeySelective(new LaunThemeAdministration().setId(id).setStatus(status));
+		return launThemeMapper.updateByPrimaryKeySelective(
+				new LaunThemeAdministration().setStatus(status).setId(id));
     }
 
     /**
@@ -268,16 +276,15 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	}
 
 	@Override
-	public int sort(String id, Integer sort, ConstantUtlis.recommend recommend) {
+	public int sort(String id, Integer sort) {
+		return launThemeMapper.updateByPrimaryKeySelective(
+				new LaunThemeAdministration().setSort(sort).setId(id));
+	}
 
-	    switch (recommend) {
-            case RECOMMEND:
-                return launThemeMapper.updateSort(id, null, sort);
-
-            case NOT_RECOMMEND:
-                return launThemeMapper.updateSort(id, sort, null);
-        }
-        return 0;
+	@Override
+	public int recommendSort(String id, Integer sort) {
+		return launThemeMapper.updateByPrimaryKeySelective(
+				new LaunThemeAdministration().setRecommendSort(sort).setId(id));
 	}
 
 
@@ -315,18 +322,21 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 
 			//2019/1/4 xukj add start
             if(StringUtils.isNotBlank(administration.getId())) {
-                themeId = administration.getId();
-                launThemeMapper.deleteByPrimaryKey(themeId);
-                launThemeFileService.deleteById(themeId);
-            }else {
-                themeId = this.id();
-            }
+				themeId = administration.getId();
+				launThemeFileService.deleteById(themeId);
+				administration.setPreviewPath(saveThemeFile(administration.getFilesJson(), themeId).get("previewPath"));
+				launThemeMapper.updateByPrimaryKeySelective(administration);
+				return themeId;
+			}
 
-            Map<String,String> fileMaps = saveThemeFile(administration.getFilesJson(), themeId);
-            administration.setPreviewPath(fileMaps.get("previewPath"));
-            administration.setId(themeId).setCreateDate(TimeUtils.nowTimeStamp()).setStatus(ConstantUtlis.themeStatus.DOWN_SHELF);
-            launThemeMapper.insertSelective(administration);
-
+			themeId = this.id();
+			administration.setPreviewPath(saveThemeFile(administration.getFilesJson(), themeId).get("previewPath"))
+					.setId(themeId).setCreateDate(TimeUtils.nowTimeStamp())
+					.setRecommend(false).setRecommendSort(0).setSort(0)
+					.setDownloadCount(0).setUsedCount(0)
+					.setPrice(null == administration.getPrice()?new BigDecimal(0):administration.getPrice())
+					.setStatus(ConstantUtlis.themeStatus.DOWN_SHELF);
+			launThemeMapper.insertSelective(administration);
 
 			//2019/1/4 xukj del start
 			//if (administration.getId() != null) {
@@ -1031,9 +1041,8 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 
 	@Override
 	public int recommend(String id, boolean value) {
-        LaunThemeAdministration launThemeAdministration = new LaunThemeAdministration();
-        launThemeAdministration.setRecommend(value).setId(id);
-        return launThemeMapper.updateByPrimaryKeySelective(launThemeAdministration);
+        return launThemeMapper.updateByPrimaryKeySelective(
+        		new LaunThemeAdministration().setRecommend(value).setId(id));
 	}
 
 	private String parseProp(File file, LaunThemeUploadFileVo launThemeUploadFileVo) {

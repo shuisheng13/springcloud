@@ -1,7 +1,6 @@
 package com.pactera.business.service;
 
 import com.github.pagehelper.PageInfo;
-import com.pactera.constant.ConstantUtlis;
 import com.pactera.domain.LaunThemeAdministration;
 import com.pactera.vo.LaunThemeUploadFileVo;
 import com.pactera.vo.LaunThemeVo;
@@ -85,7 +84,15 @@ public interface LaunThemeService {
 	 * @param sort 排序权重
 	 * @return
 	 */
-	int sort(String id, Integer sort, ConstantUtlis.recommend recommend);
+	int sort(String id, Integer sort);
+
+	/**
+	 * 修改车机端主题推荐排序权重
+	 * @param id 主题id
+	 * @param sort 排序权重
+	 * @return
+	 */
+	int recommendSort(String id, Integer sort);
 
 	/**
 	 * @description 保存主题

@@ -39,4 +39,6 @@ public class LaunThemeVo implements Serializable {
 	private @ApiModelProperty("主题包地址") String zipUrl;
 	private @ApiModelProperty("主题状态1:未上架2:已上架3:已下架4:删除") Integer status;
 	private @ApiModelProperty("价格") BigDecimal price;
+	private boolean recommend;
+	private Integer recommendSort;
 }

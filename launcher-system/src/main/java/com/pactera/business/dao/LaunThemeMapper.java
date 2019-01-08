@@ -27,14 +27,11 @@ public interface LaunThemeMapper extends BaseMapper<LaunThemeAdministration> {
      *
 	 * @return
 	 */
-	List<LaunThemeVo> query(
+	List<LaunThemeAdministration> query(
 	        @Param("tenantId") Long tenantId,
             @Param("typeId") String typeId,
             @Param("title") String title,
             @Param("status") Integer status);
-
-
-	int updateSort(@Param("id") String id, @Param("sort") Integer sort, @Param("recommendSort") Integer recommendSort);
 
 	/**
 	 * @description 根据条件去查询主题
