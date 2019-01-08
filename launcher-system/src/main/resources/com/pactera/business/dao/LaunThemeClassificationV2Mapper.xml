@@ -58,6 +58,9 @@
           disable=0,update_date = NOW()
         WHERE
           id = #{id}
+          <if test="tenantId!=null">
+              AND tenant_id = #{tenantId}
+          </if>
     </update>
 
     <select id="selectLauncThemeClassVo" resultMap="BaseResultMap" parameterType="com.pactera.vo.LauncThemeClassVo">
@@ -106,6 +109,34 @@
           </where>
 
 
+    </select>
+
+    <update id="orderThemeClass" parameterType="java.util.List">
+        UPDATE
+          laun_theme_classification
+        SET
+          sort =
+          <foreach collection="list" item="item" index="index" separator=" " open="case id" close="end,">
+              when #{item.id} then #{item.sort}
+           </foreach>
+           update_date =
+           <foreach collection="list" item="item" index="index" separator=" " open="case id" close="end">
+              when #{item.id} then NOW()
+           </foreach>
+        WHERE
+          id IN
+          <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+              #{item.id,jdbcType=VARCHAR}
+          </foreach>
+    </update>
+
+    <select id="seLaunByThemClassId"  resultType="com.pactera.vo.LaunThemeInfoVo" parameterType="String">
+        SELECT
+           id, version, title, end_time, download_count, used_count, author, status
+        FROM
+           laun_theme_administration
+        WHERE
+           type_id = #{themClassId}
     </select>
 
 </mapper>
