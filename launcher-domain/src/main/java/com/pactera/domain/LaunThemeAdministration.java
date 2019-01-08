@@ -58,14 +58,14 @@ public class LaunThemeAdministration {
 	private @ApiModelProperty("api接口主图") String previewPath;
 	private @ApiModelProperty("api接口图片urls") String urls;
 	private @ApiModelProperty("主题描述") String description;
-    private @ApiModelProperty("排序") int sort;
-    private @ApiModelProperty("下载量") int downloadCount;
-    private @ApiModelProperty("使用量") int usedCount;
+    private @ApiModelProperty("排序") Integer sort;
+    private @ApiModelProperty("下载量") Integer downloadCount;
+    private @ApiModelProperty("使用量") Integer usedCount;
     private @ApiModelProperty("作者") String author;
     private @ApiModelProperty("发布时间") Date releaseTime;
-	private @ApiModelProperty("是否是推荐主题") boolean recommend;
-	private @ApiModelProperty("推荐排序") int recommendSort;
-	private BigDecimal price = new BigDecimal(0);
+	private @ApiModelProperty("是否是推荐主题") Boolean recommend;
+	private @ApiModelProperty("推荐排序") Integer recommendSort;
+	private BigDecimal price;
 	private String tenantId;
 
 	@Transient

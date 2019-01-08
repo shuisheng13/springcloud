@@ -40,6 +40,7 @@
 		<result column="used_count" jdbcType="INTEGER" property="usedCount" />
         <result column="author" jdbcType="VARCHAR" property="author" />
         <result column="release_time" jdbcType="TIMESTAMP" property="releaseTime" />
+		<result column="price" jdbcType="DECIMAL" property="price" />
 	</resultMap>
 
 
@@ -108,10 +109,11 @@
         ${alias}.author,
         ${alias}.download_count,
         ${alias}.used_count,
+        ${alias}.price,
         ${alias}.sort
     </sql>
 
-	<select id="query" resultMap="BaseResultVoMap">
+	<select id="query" resultMap="BaseResultMap">
         SELECT
         <include refid="themeColumns"><property name="alias" value="t1"/></include>,
         t2.classification_name as typeName
@@ -128,23 +130,12 @@
             <if test="title != null ">
                 AND t1.title like CONCAT(CONCAT('%', #{title}), '%')
             </if>
-            <if test="status != null and status != '' ">
+            <if test="status != null">
                 AND t1.status = #{status}
             </if>
         </where>
 		ORDER BY t1.create_date
 	</select>
-
-	<update id="updateSort" >
-		UPDATE <include refid="themeAdmin"></include>
-		<if test="sort != null">
-			SET sort = #{sort}
-		</if>
-		<if test="recommendSort != null">
-			SET recommend_sort = #{recommendSort}
-		</if>
-		WHERE id = #{id}
-	</update>
 
 	<select id="selectByCound" resultMap="BaseResultVoMap">
 		SELECT DISTINCT lta.id,

@@ -40,6 +40,7 @@
 		<result column="used_count" jdbcType="INTEGER" property="usedCount" />
         <result column="author" jdbcType="VARCHAR" property="author" />
         <result column="release_time" jdbcType="TIMESTAMP" property="releaseTime" />
+        <result column="price" jdbcType="DECIMAL" property="price" />
 	</resultMap>
 
 
@@ -87,6 +88,7 @@
         ${alias}.author,
         ${alias}.download_count,
         ${alias}.used_count,
+        ${alias}.price,
         ${alias}.sort
     </sql>
 

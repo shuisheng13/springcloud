@@ -3,7 +3,6 @@ package com.pactera.business.controller;
 import com.github.pagehelper.PageInfo;
 import com.pactera.business.service.LaunFontService;
 import com.pactera.business.service.LaunThemeService;
-import com.pactera.constant.ConstantUtlis;
 import com.pactera.domain.LaunFont;
 import com.pactera.result.ResultData;
 import com.pactera.vo.LaunThemeVo;
@@ -108,9 +107,8 @@ public class LaunThemeController {
 	 * @return ResponseEntity<ResultData>
 	 */
 	@PostMapping("/status")
-	public ResultData modifyStatus(String id, Integer status) {
-		launThemeService.changeStatus(id, status);
-		return new ResultData();
+	public ResultData modifyStatus(@NotNull String id, @NotNull Integer status) {
+		return new ResultData(launThemeService.changeStatus(id, status));
 	}
 
     /**
@@ -122,7 +120,7 @@ public class LaunThemeController {
      */
     @PostMapping("/sort")
     public ResultData sort(@NotNull String id, @NotNull Integer num) {
-        launThemeService.sort(id, num, ConstantUtlis.recommend.NOT_RECOMMEND);
+        launThemeService.sort(id, num);
         return new ResultData();
     }
 
@@ -146,8 +144,7 @@ public class LaunThemeController {
 	 */
 	@PostMapping("/recommend")
 	public ResultData recommend(String id, boolean value) {
-        launThemeService.recommend(id, value);
-		return new ResultData();
+		return new ResultData(launThemeService.recommend(id, value));
 	}
 
     /**
@@ -159,8 +156,7 @@ public class LaunThemeController {
      */
     @PostMapping("/recommend/sort")
     public ResultData recommentSort(@NotNull String id, @NotNull Integer num) {
-        launThemeService.sort(id, num, ConstantUtlis.recommend.RECOMMEND);
-        return new ResultData();
+        return new ResultData(launThemeService.recommendSort(id, num));
     }
 
 	/**
