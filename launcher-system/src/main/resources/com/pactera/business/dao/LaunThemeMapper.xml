@@ -40,6 +40,8 @@
 		<result column="used_count" jdbcType="INTEGER" property="usedCount" />
         <result column="author" jdbcType="VARCHAR" property="author" />
         <result column="release_time" jdbcType="TIMESTAMP" property="releaseTime" />
+		<result column="recommend" jdbcType="BIT" property="recommend" />
+		<result column="recommend_sort" jdbcType="INTEGER" property="recommendSort" />
 		<result column="price" jdbcType="DECIMAL" property="price" />
 	</resultMap>
 
