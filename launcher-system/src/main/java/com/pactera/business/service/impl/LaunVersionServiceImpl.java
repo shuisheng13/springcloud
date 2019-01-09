@@ -1,16 +1,19 @@
 package com.pactera.business.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.pactera.business.dao.LaunVersionMapper;
 import com.pactera.business.service.LaunVersionService;
 import com.pactera.domain.LaunVersions;
-import com.pactera.utlis.IdUtlis;
-import lombok.extern.log4j.Log4j2;
+import com.pactera.utlis.TimeUtils;
+import com.pactera.vo.LaunThemeVo;
+import com.pactera.vo.LaunVersionsVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @ClassName LaunVersionServiceImpl
@@ -26,16 +29,27 @@ public class LaunVersionServiceImpl implements LaunVersionService {
     private LaunVersionMapper versionMapper;
 
     @Override
-    public List<LaunVersions> versions() {
-        return versionMapper.selectAll();
+    public PageInfo<LaunVersionsVo> versions(int pageNum, int pageSize) {
+        List<LaunVersionsVo> list = new ArrayList<>();
+
+        PageHelper.startPage(pageNum, pageSize);
+        List<LaunVersions> versions = versionMapper.selectAll();
+        BeanCopier beanCopier = BeanCopier.create(LaunVersions.class, LaunVersionsVo.class,false);
+        versions.forEach(ver->{
+            LaunVersionsVo launVersionsVo = new LaunVersionsVo();
+            beanCopier.copy(ver, launVersionsVo, null);
+            launVersionsVo.setTenantName("xukj");
+            list.add(launVersionsVo);
+        });
+
+        return new PageInfo<>(list);
     }
 
     @Override
     public int describe(Long id, String description) {
 
         LaunVersions launVersions = new LaunVersions();
-        launVersions.setId(id).setUpdateDate(new Date());
-        launVersions.setTenantId(null);
+        launVersions.setId(id).setUpdateDate(TimeUtils.nowTimeStamp());
         launVersions.setDescription(description);
         return versionMapper.updateByPrimaryKeySelective(launVersions);
     }

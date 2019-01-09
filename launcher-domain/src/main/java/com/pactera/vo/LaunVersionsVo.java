@@ -1,7 +1,6 @@
-package com.pactera.domain;
+package com.pactera.vo;
 
 import lombok.Data;
-import lombok.experimental.Accessors;
 
 /**
  * @ClassName LaunVersion
@@ -11,17 +10,12 @@ import lombok.experimental.Accessors;
  * @Version
  */
 @Data
-@Accessors(chain = true)
-public class LaunVersions extends LaunBase {
+public class LaunVersionsVo {
 
-    /**
-     * 版本号
-     */
+    private Long id;
     private String version;
-    /**
-     * 版本名称
-     */
     private String versionName;
     private Long tenantId;
+    private String tenantName;
     private String description;
 }

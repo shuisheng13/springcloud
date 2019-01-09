@@ -1,8 +1,7 @@
 package com.pactera.business.service;
 
-import com.pactera.domain.LaunVersions;
-
-import java.util.List;
+import com.github.pagehelper.PageInfo;
+import com.pactera.vo.LaunVersionsVo;
 
 /**
  *
@@ -15,10 +14,11 @@ public interface LaunVersionService {
      * @Author xukj
      * @Description 获取所有版本列表
      * @Date 14:29 2018/12/19
-     * @Param []
+     * @Param pageSize
+     * @Param pageNum
      * @return java.util.List<com.pactera.domain.LaunVersion>
      **/
-    List<LaunVersions> versions();
+    PageInfo<LaunVersionsVo> versions(int pageNum, int pageSize);
 
     /**
      * @Author xukj

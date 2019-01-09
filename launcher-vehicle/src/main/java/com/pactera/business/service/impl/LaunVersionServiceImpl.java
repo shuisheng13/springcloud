@@ -4,11 +4,9 @@ import com.pactera.business.dao.LaunVersionMapper;
 import com.pactera.business.service.LaunVersionService;
 import com.pactera.domain.LaunVersions;
 import com.pactera.utlis.IdUtlis;
+import com.pactera.utlis.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * @ClassName LaunVersionServiceImpl
@@ -32,7 +30,7 @@ public class LaunVersionServiceImpl implements LaunVersionService {
         launVersions.setTenantId(tenantId).setVersion(version);
         if (versionMapper.selectOne(launVersions) != null) { return 0; }
 
-        launVersions.setId(IdUtlis.Id()).setCreateDate(new Date());
+        launVersions.setId(IdUtlis.Id()).setCreateDate(TimeUtils.nowTimeStamp());
         return versionMapper.insert(launVersions);
     }
 }
