@@ -215,7 +215,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 		}
 		Map<String, Object> map = new HashMap<>();
 		LaunThemeAdministration themeAdministration = launThemeMapper.selectByTheme(id);
-
+		if(null == themeAdministration) { return map; }
 		LaunThemeVo themeVo = new LaunThemeVo();
 		BeanUtils.copyProperties(themeAdministration, themeVo);
 		map.put("theme", themeVo);
