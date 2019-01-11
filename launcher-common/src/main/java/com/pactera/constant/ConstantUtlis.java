@@ -65,11 +65,11 @@ public interface ConstantUtlis {
         /**
          * 主题已禁用
          */
-		int VALID = 1;
+		int VALID = 0;
         /**
          * 主题已启用
          */
-		int INVALID =0;
+		int INVALID =1;
 
 	}
 

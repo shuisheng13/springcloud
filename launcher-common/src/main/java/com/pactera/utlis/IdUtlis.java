@@ -1,5 +1,7 @@
 package com.pactera.utlis;
 
+import com.github.promeg.pinyinhelper.Pinyin;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
@@ -22,15 +24,23 @@ public class IdUtlis {
 	}
 
 	// 生成主题分类id
-	public static String Id(String prefix ,String creator){
-		String substring = creator.substring(0,2);// 前两个字母大写
-		String creatorTwo = substring.toUpperCase();
+	public static String Id(String prefix, String creator){
+
+        char[] chars = creator.toCharArray();
+        StringBuilder sb = new StringBuilder();
+        for(int i=0; i<2; i++) {
+            String value = Pinyin.isChinese(chars[i])?
+                    Pinyin.toPinyin(chars[i]).substring(0,1):
+                    String.valueOf(Character.toUpperCase(chars[i]));
+            sb.append(value);
+        }
         String random = Math.random() + "";
         String num = random.substring(random.indexOf(".") + 1, 9);
-		return  prefix + creatorTwo + num;
+		return  prefix + sb.toString() + num;
 	}
 
 	public static String UUId() {
 		return UUID.randomUUID().toString();
 	}
+
 }
