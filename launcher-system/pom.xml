@@ -95,16 +95,12 @@
 			<artifactId>fastjson</artifactId>
 			<version>1.2.8</version>
 		</dependency>
-		<!--<dependency>
-			<artifactId>wecloud-saas-api</artifactId>
-			<groupId>com.navinfo.wecloud.saas</groupId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>-->
-		<!--<dependency>
+
+		<dependency>
 			<groupId>com.navinfo.wecloud</groupId>
 			<artifactId>wecloud-starter</artifactId>
 			<version>1.63-SNAPSHOT</version>
-		</dependency>-->
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-consul-discovery</artifactId>

@@ -46,6 +46,7 @@ import java.util.regex.Pattern;
 @Service
 @Slf4j
 public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
+
 	@Autowired
 	public LaunWidgetManagerMapper launWidgetManagerMapper;
 	@Autowired
@@ -401,7 +402,8 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 			launWidgetFile.setFileName(originalFilename);
 			launWidgetFile.setPath(storePath.getFullPath());
 			launWidgetFile.setType(2);
-			// launWidgetFile.setUserId(null); 现在没有人
+			//TODO
+			launWidgetFile.setUserId(null); //放着租户名
 			// 解析路径
 			// Map<String, Object> mapPath = analyzeUrl(storePath.getPath());
 			// 下载(包括重命名)
@@ -965,12 +967,10 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 	 * 查询widget列表
 	 */
 	@Override
-	public PageInfo<LaunWidgetVo> findWidgetsList(Integer pageNum, Integer pageSize, String defaultSize, Long category,
-			Integer version, String keyWord, Integer type) {
+	public PageInfo<LaunWidgetVo> findWidgetsList(Integer pageNum, Integer pageSize, String defaultSize, Long category, Integer version, String keyWord, Integer type) {
 		PageHelper.startPage(pageNum, pageSize);
 		if (type == 0) {
-			List<LaunWidgetVo> widgetList = launWidgetManagerMapper.findWidgetsListByAd(defaultSize, category, version,
-					keyWord);
+			List<LaunWidgetVo> widgetList = launWidgetManagerMapper.findWidgetsListByAd(defaultSize, category, version, keyWord);
 			return new PageInfo<>(widgetList);
 		} else {
 			//LaunUser user = UserUtlis.launUser();

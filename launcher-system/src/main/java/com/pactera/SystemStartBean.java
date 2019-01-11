@@ -1,6 +1,7 @@
 package com.pactera;
 import javax.servlet.MultipartConfigElement;
-import com.pactera.config.header.SaasCommonHeaderFilter;
+//import com.pactera.config.header.SaasCommonHeaderFilter;
+import com.navinfo.wecloud.common.filter.SaasCommonHeaderFilter;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;

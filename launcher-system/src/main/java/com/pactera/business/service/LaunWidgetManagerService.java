@@ -24,7 +24,6 @@ import com.pactera.vo.LaunWidgetVo;
 public interface LaunWidgetManagerService {
 	
 	
-	
 	/**
 	 * 新增自定义widget信息
 	 * @param widgetjon 新增的widget的json
