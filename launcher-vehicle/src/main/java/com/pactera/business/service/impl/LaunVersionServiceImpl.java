@@ -1,5 +1,6 @@
 package com.pactera.business.service.impl;
 
+import com.navinfo.wecloud.saas.api.facade.ApiKeyFacade;
 import com.pactera.business.dao.LaunVersionMapper;
 import com.pactera.business.service.LaunVersionService;
 import com.pactera.domain.LaunVersions;
@@ -21,13 +22,16 @@ public class LaunVersionServiceImpl implements LaunVersionService {
     @Autowired
     private LaunVersionMapper versionMapper;
 
+    @Autowired
+    private ApiKeyFacade apiKeyFacade;
+
     @Override
-    public int add(String version) {
-        //TODO 租户id
-        Long tenantId = 123L;
+    public int add(String version,String versionName, String apiKey) {
+        String tenantId = apiKeyFacade.queryTenantByApiKey(apiKey).getData().getId() + "";
+        if(null == tenantId){return 0;}
         LaunVersions launVersions = new LaunVersions();
 
-        launVersions.setTenantId(tenantId).setVersion(version);
+        launVersions.setTenantId(tenantId).setVersion(version).setVersionName(versionName);
         if (versionMapper.selectOne(launVersions) != null) { return 0; }
 
         launVersions.setId(IdUtlis.Id()).setCreateDate(TimeUtils.nowTimeStamp());
