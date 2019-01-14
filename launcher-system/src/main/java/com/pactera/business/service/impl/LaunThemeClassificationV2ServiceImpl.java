@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +49,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
     private TenantFacade tenantFacade;
 
     @Resource
-    LaunThemeService launThemeService;
+    private LaunThemeService launThemeService;
 
     /**
      * 主题分类添加(只有普通租户)
@@ -426,6 +427,30 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
             log.info("该主题分类不存在>>>>>>>>>>>>>>>>该主题分类不存在>>>>>>>>>>>>>>>>上下架影响主题>>>>" + new Date());
             return "error";
         }
+    }
+
+    /**
+     * @Author zhaodong
+     * @Date 17:16 2019/1/14
+     * @Param
+     * @return
+     **/
+    public ResponseEntity<ResultData> themeClassByTid(){
+        LauncThemeClassVo vo = new LauncThemeClassVo();
+        vo.setDisable(1);
+        vo.setTenantId(SaasHeaderContextV1.getTenantId()+"");
+        List<LauncThemeClassVo> launcThemeClassVos = LauncThemeClassMapper.selectLauncThemeClassVo(vo);
+        List<JSONObject> list = new ArrayList<>();
+        for (LauncThemeClassVo laun:launcThemeClassVos){
+            JSONObject json1 = new JSONObject();
+            json1.put("themeClassName",laun.getClassificationName());
+            json1.put("classNameId",laun.getId());
+            list.add(json1);
+        }
+        JSONObject json = new JSONObject();
+        json.put("list",list);
+        ResultData resultData = new ResultData(json);
+        return ResponseEntity.ok(resultData);
     }
 
     //判断是否有id重复的

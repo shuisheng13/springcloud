@@ -100,4 +100,13 @@ public interface LauncThemeClassificationV2Service {
      * @return
      **/
     ResponseEntity<ResultData> orderThemeClass(String sortOrder);
+
+    /**
+     * 主题应用下拉的分类列表
+     * @Author zhaodong
+     * @Date 17:15 2019/1/14
+     * @Param
+     * @return
+     **/
+    ResponseEntity<ResultData> themeClassByTid();
 }

@@ -213,5 +213,18 @@ public class LaunThemeClassificationController {
         return  ResponseEntity.ok(date);
     }
 
+    /**
+     * 主题应用的下拉主题分类列表
+     * @Author zhaodong
+     * @Date 17:13 2019/1/14
+     * @Param
+     * @return
+     **/
+    @GetMapping("themeClassByTid")
+    public ResponseEntity<ResultData> themeClassByTid(){
+        ResponseEntity<ResultData> resultDataResponseEntity = launcThemeClassificationService.themeClassByTid();
+        return resultDataResponseEntity;
+    }
+
 
 }
