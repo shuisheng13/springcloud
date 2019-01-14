@@ -12,7 +12,7 @@ public interface ThemeService {
      * @param value 关键字
      * @return
      */
-    List<ThemeListVO> search(String value);
+    List<ThemeListVO> search(String value, String apiKey);
 
     /**
      * 统计主题下载（应用）次数

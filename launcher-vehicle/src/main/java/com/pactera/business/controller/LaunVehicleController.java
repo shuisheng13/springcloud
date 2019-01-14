@@ -33,8 +33,8 @@ public class LaunVehicleController {
      * @return 主题列表
      */
     @GetMapping("/search")
-    ResultData search(String value) {
-        return new ResultData(themeService.search(value));
+    ResultData search(String value, String apiKey) {
+        return new ResultData(themeService.search(value, apiKey));
     }
 
     /**

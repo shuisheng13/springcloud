@@ -1,5 +1,6 @@
 package com.pactera.business.service.impl;
 
+import com.navinfo.wecloud.saas.api.facade.ApiKeyFacade;
 import com.pactera.business.dao.LaunThemeMapper;
 import com.pactera.business.service.RemoteThemeService;
 import com.pactera.business.service.ThemeService;
@@ -13,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,9 +33,13 @@ public class ThemeServiceImpl implements ThemeService {
     @Autowired
     private RemoteThemeService remoteThemeService;
 
+    @Autowired
+    private ApiKeyFacade apiKeyFacade;
+
     @Override
-    public List<ThemeListVO> search(String value) {
-        List<LaunThemeAdministration> launThemeAdministrations = launThemeMapper.search(value);
+    public List<ThemeListVO> search(String value, String apiKey) {
+        String tenantId = apiKeyFacade.queryTenantByApiKey(apiKey).getData().getId() + "";
+        List<LaunThemeAdministration> launThemeAdministrations = launThemeMapper.search(value, tenantId);
         List<ThemeListVO> themeLists = new ArrayList<>();
         BeanCopier beanCopier = BeanCopier.create(LaunThemeAdministration.class ,ThemeListVO.class,true);
         launThemeAdministrations.forEach(a->{

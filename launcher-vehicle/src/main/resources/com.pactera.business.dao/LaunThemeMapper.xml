@@ -99,7 +99,7 @@
         FROM
           <include refid="themeAdmin"/> as t1
         <where>
-             t1.status = 2
+             t1.status = 2 AND t1.tenant_id = #{tenantId}
              <if test="value != null"> AND t1.title LIKE CONCAT(CONCAT('%', #{value}), '%') </if></where>
         UNION
 	    SELECT
@@ -107,7 +107,7 @@
         FROM <include refid="themeAdmin"></include> as t2
         LEFT JOIN <include refid="themeClass"></include> as t3 ON t2.type_id = t3.id
         <where>
-            t2.status = 2
+            t2.status = 2 AND t2.tenant_id = #{tenantId}
             <if test="value != null"> AND t3.classification_name LIKE CONCAT(CONCAT('%', #{value}), '%') </if></where>
 
         UNION
@@ -116,7 +116,7 @@
         FROM
         <include refid="themeAdmin"></include> as t4
         <where>
-            t4.status = 2
+            t4.status = 2 AND t4.tenant_id = #{tenantId}
             <if test="value != null">AND t4.author LIKE CONCAT(CONCAT('%', #{value}), '%') </if></where>
 	</select>
 
