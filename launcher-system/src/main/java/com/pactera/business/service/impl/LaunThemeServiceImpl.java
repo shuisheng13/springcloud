@@ -13,9 +13,7 @@ import com.pactera.constant.ConstantUtlis;
 import com.pactera.domain.*;
 import com.pactera.util.ThemeWidgetDetail;
 import com.pactera.utlis.*;
-import com.pactera.vo.LaunThemeFileVo;
-import com.pactera.vo.LaunThemeUploadFileVo;
-import com.pactera.vo.LaunThemeVo;
+import com.pactera.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -35,6 +33,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * @description: 主题相关的实现类
@@ -101,20 +100,24 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	private LaunFontService launFontService;
 
 	@Override
-	public PageInfo<LaunThemeVo> query(Long tenantId, String typeId, String title, Integer status, int pageNum, int pageSize) {
+	public LaunPage<LaunThemeVo> query(Long tenantId, String typeId, String title, Integer status, int pageNum, int pageSize) {
 
-        PageHelper.startPage(pageNum, pageSize);
-		List<LaunThemeAdministration> list = launThemeMapper.query(tenantId, typeId, title, status);
+        PageInfo<LaunThemeAdministration> pageInfo = PageHelper.startPage(pageNum, pageSize).doSelectPageInfo(
+                () -> launThemeMapper.selectAll());
+        BeanCopier beanCopier = BeanCopier.create(LaunThemeAdministration.class, LaunThemeVo.class,true);
+        List<LaunThemeVo> value = pageInfo.getList().stream().map(theme->{
+            LaunThemeVo themeVo = new LaunThemeVo();
+            beanCopier.copy(theme, themeVo, (Object v, Class t, Object c)->v);
+            return themeVo;
+        }).collect(Collectors.toList());
 
-		BeanCopier beanCopier = BeanCopier.create(LaunThemeAdministration.class ,LaunThemeVo.class,true);
-		List<LaunThemeVo> themes = new ArrayList<>();
-		list.forEach(theme->{
-			LaunThemeVo themeVo = new LaunThemeVo();
-			beanCopier.copy(theme, themeVo, (Object v, Class t, Object c)->v);
-			themes.add(themeVo);
-		});
-
-		return new PageInfo<>(themes);
+        return new LaunPage<LaunThemeVo>()
+                .setPageNum(pageNum)
+                .setPageSize(pageSize)
+                .setPages(pageInfo.getPages())
+                .setSize(pageInfo.getSize())
+                .setTotal(pageInfo.getTotal())
+                .setList(value);
 	}
 
 

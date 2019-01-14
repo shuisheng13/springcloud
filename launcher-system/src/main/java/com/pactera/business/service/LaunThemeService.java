@@ -2,6 +2,7 @@ package com.pactera.business.service;
 
 import com.github.pagehelper.PageInfo;
 import com.pactera.domain.LaunThemeAdministration;
+import com.pactera.vo.LaunPage;
 import com.pactera.vo.LaunThemeUploadFileVo;
 import com.pactera.vo.LaunThemeVo;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,7 +29,7 @@ public interface LaunThemeService {
      * @param pageNum 第几页
      * @param pageSize 每页条数
      */
-	PageInfo<LaunThemeVo> query(Long tenantId, String typeId, String title, Integer status, int pageNum, int pageSize);
+	LaunPage<LaunThemeVo> query(Long tenantId, String typeId, String title, Integer status, int pageNum, int pageSize);
 
     /**
      * v2 版本 删除，上下架 禁用启用使用
