@@ -29,8 +29,7 @@ public class LaunVersionController {
      * @return
      */
     @PostMapping("/add")
-    ResultData add(@NonNull String version) {
-        launVersionService.add(version);
-        return new ResultData();
+    ResultData add(@NonNull String version, @NonNull String apiKey, @NonNull String versionName) {
+        return new ResultData(launVersionService.add(version, versionName, apiKey));
     }
 }
