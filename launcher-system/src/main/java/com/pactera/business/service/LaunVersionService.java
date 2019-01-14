@@ -1,6 +1,6 @@
 package com.pactera.business.service;
 
-import com.github.pagehelper.PageInfo;
+import com.pactera.vo.LaunPage;
 import com.pactera.vo.LaunVersionsVo;
 
 /**
@@ -18,7 +18,7 @@ public interface LaunVersionService {
      * @Param pageNum
      * @return java.util.List<com.pactera.domain.LaunVersion>
      **/
-    PageInfo<LaunVersionsVo> versions(int pageNum, int pageSize);
+    LaunPage<LaunVersionsVo> query(int pageNum, int pageSize);
 
     /**
      * @Author xukj

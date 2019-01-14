@@ -28,7 +28,7 @@ public class LaunVersionController {
     @GetMapping("/list")
     ResultData versions(@RequestParam(defaultValue = "1") int pageNum,
                         @RequestParam(defaultValue = "10") int pageSize) {
-        return new ResultData(launVersionService.versions(pageNum, pageSize)); }
+        return new ResultData(launVersionService.query(pageNum, pageSize)); }
 
     /**
      * 添加描述信息
