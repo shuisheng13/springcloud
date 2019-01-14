@@ -8,7 +8,7 @@ import com.pactera.business.service.*;
 import com.pactera.config.exception.DataStoreException;
 import com.pactera.config.exception.IORuntimeException;
 import com.pactera.config.exception.status.ErrorStatus;
-import com.pactera.config.header.SaasHeaderContext;
+import com.pactera.config.header.SaasHeaderContextV1;
 import com.pactera.constant.ConstantUtlis;
 import com.pactera.domain.*;
 import com.pactera.util.ThemeWidgetDetail;
@@ -33,8 +33,6 @@ import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Path;
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -113,7 +111,6 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 		list.forEach(theme->{
 			LaunThemeVo themeVo = new LaunThemeVo();
 			beanCopier.copy(theme, themeVo, (Object v, Class t, Object c)->v);
-			themeVo.setCreator("xukj");
 			themes.add(themeVo);
 		});
 
@@ -300,8 +297,8 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 
 		LaunThemeAdministration administration = JsonUtils.jsonToClass(themeJson, LaunThemeAdministration.class);
         //Long adminId = 0L;
-        //TODO 获取租户id
-        administration.setTenantId("123");
+        administration.setTenantId(String.valueOf(SaasHeaderContextV1.getTenantId()));
+        administration.setCreator(SaasHeaderContextV1.getUserName());
         String themeId = null;
 		/**
 		 * 当save为0时，只是保存widget。只保存对应json数据 当save为1是，保存整个主题，执行后续结构化数据及打包过程
@@ -390,8 +387,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 		List<String> themeIdList = new ArrayList<>();
 		Map<String, String> themeConfig = null;
 		for (Long channleId : channles) {
-			//TODO 获取租户名称
-			themeId = IdUtlis.Id(ConstantUtlis.PRIVATE_THEME, "xukj");
+			themeId = IdUtlis.Id(ConstantUtlis.PRIVATE_THEME, "");
 			log.info("主题管理----------保存主题----------id:{}----------", themeId);
 			themeIdList.add(themeId);
 			administration.setId(themeId);
@@ -440,12 +436,11 @@ public class LaunThemeServiceImpl implements LaunThemeService {
      * @return
      */
 	private String id() {
-
-	    //TODO 租户英文
-        String themeId = IdUtlis.Id(ConstantUtlis.PRIVATE_THEME,  "xukj");
+		String tenantName = SaasHeaderContextV1.getTenantName();
+        String themeId = IdUtlis.Id(ConstantUtlis.PRIVATE_THEME,  tenantName);
         LaunThemeAdministration th = launThemeMapper.selectByTheme(themeId);
         while(null != th) {
-            themeId = IdUtlis.Id(ConstantUtlis.PRIVATE_THEME,  "xukj");
+            themeId = IdUtlis.Id(ConstantUtlis.PRIVATE_THEME,  tenantName);
             th = launThemeMapper.selectById(themeId);
         }
         return themeId;
