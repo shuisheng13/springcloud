@@ -22,6 +22,6 @@ public class LaunVersions extends LaunBase {
      * 版本名称
      */
     private String versionName;
-    private Long tenantId;
+    private String tenantId;
     private String description;
 }
