@@ -18,7 +18,7 @@ public interface LauncThemeClassificationV2Service {
      * @Param themeClassName,themeClassName,coverImage
      * @return ResponseEntity<ResultData>
      **/
-    ResponseEntity<ResultData> addthemeClass(String themeClassName, MultipartFile coverImage, int tenantId);
+    ResponseEntity<ResultData> addthemeClass(String themeClassName, MultipartFile coverImage);
 
     /**
      * 编辑主题分类
@@ -81,7 +81,7 @@ public interface LauncThemeClassificationV2Service {
      * @Param
      * @return
      **/
-    String upThemeClassCount(int status,String id,int num);
+    String upThemeClassCount(int status,String id);
 
     /**
      * 更新该分类下的以上架的主题数(供下架(批量下架)主题，上架(批量上架主题)主题等接口调用,(1-上架,0-下架))
@@ -90,7 +90,7 @@ public interface LauncThemeClassificationV2Service {
      * @Param
      * @return
      **/
-    String upThemeClassCountUpOrDown(int status,String id,int num);
+    String upThemeClassCountUpOrDown(int status,String id);
 
     /**
      * 权重进行排序

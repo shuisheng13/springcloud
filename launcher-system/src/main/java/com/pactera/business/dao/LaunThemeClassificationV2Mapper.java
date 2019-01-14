@@ -30,7 +30,7 @@ public interface LaunThemeClassificationV2Mapper extends BaseMapper<LaunThemeCla
      * @Param classificationId
      * @return
      **/
-    int deleteByThemClassId(@Param("id") String id,@Param("tenantId") String tenantId);
+    int deleteByThemClassId(String id,String tenantId);
 
     /**
      * 查询主题列表

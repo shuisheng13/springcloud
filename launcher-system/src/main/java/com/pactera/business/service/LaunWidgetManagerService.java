@@ -46,7 +46,7 @@ public interface LaunWidgetManagerService {
 	 * @param channels 渠道数组
 	 * @return
 	 */
-	int saveSingleWidget(String widgetjson,String filepath,String channels);	
+	int saveSingleWidget(String widgetjson,String filepath);
 	
 	
 	/**
@@ -56,7 +56,7 @@ public interface LaunWidgetManagerService {
 	 * @param channels 渠道数组
 	 * @return
 	 */
-	int updateSingleWidget(String widgetjson,String filepath,String channels);	
+	int updateSingleWidget(String widgetjson,String filepath);
 	
 	/**
 	 * widget关联渠道添加

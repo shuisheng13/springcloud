@@ -3,8 +3,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 //import com.navinfo.wecloud.common.filter.SaasHeaderContext;
+import com.navinfo.wecloud.saas.api.facade.TenantFacade;
 import com.pactera.business.dao.LaunThemeClassificationV2Mapper;
 import com.pactera.business.service.LaunFileCrudService;
+import com.pactera.business.service.LaunThemeService;
 import com.pactera.business.service.LauncThemeClassificationV2Service;
 import com.pactera.config.exception.status.ErrorStatus;
 import com.pactera.config.header.SaasHeaderContextV1;
@@ -14,10 +16,12 @@ import com.pactera.utlis.HStringUtlis;
 import com.pactera.utlis.IdUtlis;
 import com.pactera.utlis.JsonUtils;
 import com.pactera.vo.LaunThemeInfoVo;
+import com.pactera.vo.LaunThemeVo;
 import com.pactera.vo.LauncThemeClassVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import java.util.Date;
@@ -40,6 +44,12 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
     @Resource
     private LaunFileCrudService launFileCrudService;
 
+    @Resource
+    private TenantFacade tenantFacade;
+
+    @Resource
+    LaunThemeService launThemeService;
+
     /**
      * 主题分类添加(只有普通租户)
      *
@@ -49,7 +59,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
      * @Param themeClassName, themeClassName, coverImage
      **/
     @Override
-    public ResponseEntity<ResultData> addthemeClass(String themeClassName, MultipartFile coverImage, int tenantId) {
+    public ResponseEntity<ResultData> addthemeClass(String themeClassName, MultipartFile coverImage) {
 
         //System.out.println(SaasHeaderContextV1.getTenantName()+"-------"+SaasHeaderContextV1.getTenantId()+"======"+SaasHeaderContextV1.getUserType());
         //Integer tenantId2;
@@ -66,7 +76,6 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
         if (themeClassName.length() > 8) {
             ResultData resultData = new ResultData(ErrorStatus.NAME_CLASS_LAUNTHEM_REEOR.status(), ErrorStatus.NAME_CLASS_LAUNTHEM_REEOR.message());
             return ResponseEntity.ok(resultData);
-
         }
         //检查添加的分类是否重名
         LauncThemeClassVo themeClassVo = new LauncThemeClassVo();
@@ -82,7 +91,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
         }
         LaunThemeClassificationV2 themeClass = new LaunThemeClassificationV2();
         // 封装属性
-        themeClass.setId(IdUtlis.Id("ZTFL", SaasHeaderContextV1.getUserName()));
+        themeClass.setId(ThemeClassId());
         themeClass.setClassificationName(themeClassName);
         themeClass.setCreator(SaasHeaderContextV1.getUserName());
         themeClass.setTenantId(tenantId2 + "");
@@ -122,8 +131,8 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
      **/
     @Override
     public ResponseEntity<ResultData> upThemeClass(String themeClassName, String id, MultipartFile coverImage) {
-        // 校验名字字符是否超过16字符
-        if (themeClassName.length() > 16) {
+        // 校验名字字符是否超过8字符
+        if (themeClassName.length() > 8) {
             ResultData resultData = new ResultData(ErrorStatus.NAME_CLASS_LAUNTHEM_REEOR.status(), ErrorStatus.NAME_CLASS_LAUNTHEM_REEOR.message());
             return ResponseEntity.ok(resultData);
         }
@@ -209,7 +218,6 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
      **/
     @Override
     public ResponseEntity<ResultData> seThemeClass(String id, int pageNum, int pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
         LauncThemeClassVo themeClassVo = new LauncThemeClassVo();
         themeClassVo.setDisable(1);
         themeClassVo.setId(id);
@@ -219,10 +227,9 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
             json.put("classificationName", launcTheme.getClassificationName());
             json.put("coverImage", launcTheme.getCoverImage());
         }
-        List<LaunThemeInfoVo> launThemeInfoVos = LauncThemeClassMapper.seLaunByThemClassId(id);
-        //分页
-        PageInfo<LaunThemeInfoVo> PageInfo = new PageInfo<>(launThemeInfoVos);
-        json.put("list", PageInfo);
+        launThemeService.query(null,id,null,null,pageNum,pageSize);
+        PageInfo<LaunThemeVo> query = launThemeService.query(null, id, null, null, pageNum, pageSize);
+        json.put("themlist", query);
         ResultData resultData = new ResultData();
         resultData.setData(json);
         return ResponseEntity.ok(resultData);
@@ -353,7 +360,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
      * @Param
      **/
     @Override
-    public String upThemeClassCount(int status, String id, int num) {
+    public String upThemeClassCount(int status, String id) {
         LauncThemeClassVo themeClassVo = new LauncThemeClassVo();
         themeClassVo.setDisable(1);
         themeClassVo.setId(id);
@@ -365,12 +372,14 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
             themeClassVo1.setUpdateDate(new Date());
             if (status == 1) {// 代表添加
                 log.info("添加主题>>>>>>>>>>>>>>>>添加主题使得分类数量增加>>>>" + new Date());
-                quantity = quantity + num;
+                quantity = quantity + 1;
                 themeClassVo1.setQuantity(quantity);
-            } else {// 删除
+            } else if (status == 0){// 删除
                 log.info("删除主题>>>>>>>>>>>>>>>>删除主题使得分类数量减少>>>>" + new Date());
-                quantity = quantity - num;
+                quantity = quantity - 1;
                 themeClassVo1.setQuantity(quantity);
+            } else {
+                return "error";
             }
             LauncThemeClassMapper.updateByThemClassId(themeClassVo1);
             return "OK";
@@ -390,7 +399,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
      * @Param
      **/
     @Override
-    public String upThemeClassCountUpOrDown(int status, String id, int num) {
+    public String upThemeClassCountUpOrDown(int status, String id) {
         LauncThemeClassVo themeClassVo = new LauncThemeClassVo();
         themeClassVo.setDisable(1);
         themeClassVo.setId(id);
@@ -402,12 +411,14 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
             themeClassVo.setUpdateDate(new Date());
             if (status == 1) {// 代表添加
                 log.info("上架主题>>>>>>>>>>>>>>>>上架主题使得分类中上架主题数增加>>>>" + new Date());
-                shelfCount = shelfCount + num;
+                shelfCount = shelfCount + 1;
                 themeClassVo.setShelfCount(shelfCount);
-            } else {// 删除
+            } else if (status == 0){// 删除
                 log.info("下架主题>>>>>>>>>>>>>>>>下架主题使得分类中下架主题数减少>>>>" + new Date());
-                shelfCount = shelfCount - num;
+                shelfCount = shelfCount - 1;
                 themeClassVo.setShelfCount(shelfCount);
+            } else {
+                return "error";
             }
             LauncThemeClassMapper.updateByThemClassId(themeClassVo);
             return "ok";
@@ -417,5 +428,17 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
         }
     }
 
+    //判断是否有id重复的
+    private String ThemeClassId(){
+        // 获取id
+       String id = IdUtlis.Id("ZTFL", SaasHeaderContextV1.getTenantName());
+       LaunThemeClassificationV2 launTheme = LauncThemeClassMapper.selectByPrimaryKey(id);
+       if (launTheme == null){
+            return id;
+       }else{
+            return this.ThemeClassId();
+       }
+
+    }
 
 }
