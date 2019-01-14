@@ -28,7 +28,10 @@ public class IdUtlis {
 
         char[] chars = creator.toCharArray();
         StringBuilder sb = new StringBuilder();
-        for(int i=0; i<2; i++) {
+
+        int loop = chars.length < 2?chars.length:2;
+
+        for(int i=0; i<loop; i++) {
             String value = Pinyin.isChinese(chars[i])?
                     Pinyin.toPinyin(chars[i]).substring(0,1):
                     String.valueOf(Character.toUpperCase(chars[i]));
