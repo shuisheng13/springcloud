@@ -45,8 +45,45 @@
 		#{createDate})
 	</insert>
 
-	<!-- 管理员查看widget列表 -->
+
+	<!-- 管理员查看widget列表,JUMP修改，因为没有了渠道，去掉渠道关联，创建改为租户，去掉所用渠道 -->
 	<select id="findWidgetsListByAd" resultType="com.pactera.vo.LaunWidgetVo">
+		SELECT
+		laun_widget.`name` `name`,
+		laun_widget.id id,
+		laun_widget.default_size
+		defaultSize,
+		laun_widget.type type,
+		laun_widget_type.type_name typeName,
+		laun_widget.version versionName,
+		laun_widget.description,
+		laun_widget.code_id,
+		laun_widget.author,
+		laun_widget_file.path,
+		FROM
+		laun_widget
+		JOIN laun_widget_type on laun_widget.category = laun_widget_type.id
+		JOIN laun_widget_file on laun_widget_file.widget_id = laun_widget.id
+		and laun_widget_file.file_name = laun_widget.prew_image
+		WHERE laun_widget.type in(0,1,2) and laun_widget.parent_id = 0
+		<if test="keyWord != '' and keyWord != null">
+			and laun_widget.name like CONCAT('%',#{keyWord},'%')
+		</if>
+		<if test="defaultSize != '' and defaultSize != null">
+			and laun_widget.default_size like
+			CONCAT('%',#{defaultSize,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="category != '' and category != null">
+			and laun_widget.category = #{category}
+		</if>
+		<if test="version != '' and version != null">
+			and laun_widget.version = #{version}
+		</if>
+		ORDER BY
+		laun_widget.create_date DESC
+	</select>
+	<!-- 管理员查看widget列表 -->
+	<!--<select id="findWidgetsListByAd" resultType="com.pactera.vo.LaunWidgetVo">
 		SELECT
 		laun_widget.`name` `name`,
 		laun_widget.id id,
@@ -86,7 +123,7 @@
 		</if>
 		ORDER BY
 		laun_widget.create_date DESC
-	</select>
+	</select>-->
 	
 	<select id="findWidgetsPullListByAd" resultType="com.pactera.vo.LaunWidgetVo">
 		SELECT

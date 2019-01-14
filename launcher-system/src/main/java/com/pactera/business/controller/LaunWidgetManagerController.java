@@ -102,26 +102,33 @@ public class LaunWidgetManagerController {
 
 	@GetMapping("findWidgetsList")
 	@ApiOperation("查询widget列表")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "pageNum", value = "当前页"),
-			@ApiImplicitParam(name = "pageSize", value = "每页显示的条数"),
-			@ApiImplicitParam(name = "defaultSize", value = "默认尺寸"), @ApiImplicitParam(name = "category", value = "分类"),
-			@ApiImplicitParam(name = "version", value = "最低支持版本"), @ApiImplicitParam(name = "keyWord", value = "关键词"),
-			@ApiImplicitParam(name = "type", value = "人员类别") })
+	@ApiImplicitParams({ @ApiImplicitParam(name = "pageNum", value = "当前页",paramType="query"),
+			@ApiImplicitParam(name = "pageSize", value = "每页显示的条数",paramType="query"),
+			@ApiImplicitParam(name = "defaultSize", value = "默认尺寸",paramType="query"),
+			@ApiImplicitParam(name = "category", value = "分类",paramType="query"),
+			@ApiImplicitParam(name = "version", value = "最低支持版本",paramType="query"),
+			@ApiImplicitParam(name = "keyWord", value = "关键词",paramType="query"),
+			//@ApiImplicitParam(name = "type", value = "人员类别")
+	})
 	public ResponseEntity<ResultData> findWidgetsList(@RequestParam(defaultValue = "1") Integer pageNum,
 			@RequestParam(defaultValue = "10") Integer pageSize, String defaultSize, Long category, Integer version,
-			String keyWord, Integer type) {
+			String keyWord) {
 		PageInfo<LaunWidgetVo> pageInfo = launWidgetManagerService.findWidgetsList(pageNum, pageSize, defaultSize,
-				category, version, keyWord, type);
+				category, version, keyWord, 0);
 		return ResponseEntity.ok(new ResultData(SuccessStatus.OPERATION_SUCCESS.status(), pageInfo));
 	}
+
 
 	@GetMapping("findWidgetsPullList")
 	@ApiOperation("用于管理员创建主题或widget时的下拉列表")
 	@ApiImplicitParams({ @ApiImplicitParam(name = "pageNum", value = "当前页"),
 			@ApiImplicitParam(name = "pageSize", value = "每页显示的条数"),
-			@ApiImplicitParam(name = "defaultSize", value = "默认尺寸"), @ApiImplicitParam(name = "category", value = "分类"),
-			@ApiImplicitParam(name = "version", value = "最低支持版本"), @ApiImplicitParam(name = "keyWord", value = "关键词"),
-			@ApiImplicitParam(name = "type", value = "人员类别") })
+			@ApiImplicitParam(name = "defaultSize", value = "默认尺寸"),
+			@ApiImplicitParam(name = "category", value = "分类"),
+			@ApiImplicitParam(name = "version", value = "最低支持版本"),
+			@ApiImplicitParam(name = "keyWord", value = "关键词"),
+			@ApiImplicitParam(name = "type", value = "人员类别")
+	})
 	public ResponseEntity<ResultData> findWidgetsPullList(@RequestParam(defaultValue = "1") Integer pageNum,
 			@RequestParam(defaultValue = "10") Integer pageSize, String defaultSize, Long category, Integer version,
 			String keyWord, Integer type, String channels, Integer channelnum) {
@@ -206,8 +213,8 @@ public class LaunWidgetManagerController {
 	@ApiImplicitParams({ @ApiImplicitParam(name = "widgetjson", value = "widget信息json"),
 			@ApiImplicitParam(name = "filepath", value = "图片路径json"),
 			@ApiImplicitParam(name = "channels", value = "渠道数组") })
-	public ResponseEntity<ResultData> saveWidget(String widgetjson, String filepath, String channels) {
-		int status = launWidgetManagerService.saveSingleWidget(widgetjson, filepath, channels);
+	public ResponseEntity<ResultData> saveWidget(String widgetjson, String filepath) {
+		int status = launWidgetManagerService.saveSingleWidget(widgetjson, filepath);
 		if (status == 1) {
 			return ResponseEntity.ok(new ResultData(SuccessStatus.WIDGETSAVE_SUCCESS.status(),
 					SuccessStatus.WIDGETSAVE_SUCCESS.message()));
@@ -222,8 +229,8 @@ public class LaunWidgetManagerController {
 	@ApiImplicitParams({ @ApiImplicitParam(name = "widgetjson", value = "widget信息json"),
 			@ApiImplicitParam(name = "filepath", value = "图片路径json"),
 			@ApiImplicitParam(name = "channels", value = "渠道数组") })
-	public ResponseEntity<ResultData> updateWidget(String widgetjson, String filepath, String channels) {
-		int status = launWidgetManagerService.updateSingleWidget(widgetjson, filepath, channels);
+	public ResponseEntity<ResultData> updateWidget(String widgetjson, String filepath) {
+		int status = launWidgetManagerService.updateSingleWidget(widgetjson, filepath);
 		if (status == 1) {
 			return ResponseEntity.ok(new ResultData(SuccessStatus.WIDGETUPDATE_SUCCESS.status(),
 					SuccessStatus.WIDGETUPDATE_SUCCESS.message()));

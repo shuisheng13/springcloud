@@ -37,10 +37,10 @@
             <if test="shelfStatus!=null">
                 shelf_status = #{shelfStatus},
             </if>
-            <if test="quantity>0">
+            <if test="quantity>-1">
                 quantity = #{quantity},
             </if>
-            <if test="shelfCount>0">
+            <if test="shelfCount>-1">
                 shelf_count = #{shelfCount},
             </if>
         </set>
@@ -51,16 +51,14 @@
         </if>
     </update>
 
-    <update id="deleteByThemClassId">
+    <update id="deleteByThemClassId" parameterType="String">
         UPDATE
           laun_theme_classification
         SET
           disable=0,update_date = NOW()
         WHERE
-          id = #{id}
-          <if test="tenantId!=null">
-              AND tenant_id = #{tenantId}
-          </if>
+          id = #{0} AND tenant_id = #{1}
+
     </update>
 
     <select id="selectLauncThemeClassVo" resultMap="BaseResultMap" parameterType="com.pactera.vo.LauncThemeClassVo">

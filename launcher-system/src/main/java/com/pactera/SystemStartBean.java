@@ -10,6 +10,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -23,6 +24,7 @@ import com.github.tobato.fastdfs.FdfsClientConfig;
 @MapperScan(basePackages = "com.pactera.business.dao")
 @Configuration
 @EnableConfigurationProperties
+@EnableFeignClients({"com.navinfo.wecloud.saas.api.facade"})
 public class SystemStartBean {
     public static void main(String[] args) {
         SpringApplication.run(SystemStartBean.class, args);

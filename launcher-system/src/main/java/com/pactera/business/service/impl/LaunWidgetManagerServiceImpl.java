@@ -12,6 +12,7 @@ import com.pactera.business.service.LaunWidgetManagerService;
 import com.pactera.config.exception.DataStoreException;
 import com.pactera.config.exception.status.ErrorStatus;
 import com.pactera.config.exception.status.SuccessStatus;
+import com.pactera.config.header.SaasHeaderContextV1;
 import com.pactera.domain.*;
 import com.pactera.util.CheckWidgetImg;
 import com.pactera.util.ThemeWidgetDetail;
@@ -83,15 +84,14 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 			widget.setCustomWidgetJson(customWidgetJson);
 			widget.setProperty(groupjson);
 			LaunWidget checkwidget = launWidgetManagerMapper.selectByPrimaryKey(widget.getId());
-			// 新增
-			if (checkwidget == null) {
+			if (checkwidget == null) {// 新增
 				//LaunUser user = UserUtlis.launUser();
 				//widget.setCreator(user.getId());
 				//widget.setCreateway(user.getChannelId() == null ? 1 : 2);
+				widget.setAouthor(SaasHeaderContextV1.getUserName());
 				widget.setCreateDate(new Date());
 				launWidgetManagerMapper.insertSelective(widget);
-				// 修改的
-			} else {
+			} else {// 修改的
 				LaunWidget widgetdel = new LaunWidget();
 				widgetdel.setParentId(widget.getId());
 				// 删除全部子widget
@@ -133,7 +133,7 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 	@Override
 	@SuppressWarnings("rawtypes")
 	@Transactional
-	public int updateSingleWidget(String widgetjson, String filepath, String channels) {
+	public int updateSingleWidget(String widgetjson, String filepath) {
 		Map filemap = JsonUtils.JsonToMap(filepath);
 
 		// String message = "变体修改成功";
@@ -151,7 +151,7 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 				widgetfile = new LaunWidgetFile();
 				widgetfile.setWidgetId(widget.getId());
 				launWidgetFileMapper.delete(widgetfile);
-				// 全部渠道
+				/*// 全部渠道
 				if (channels == null || "".equals(channels)) {
 					Integer channelway = 1;
 					widget.setChannelway(channelway);
@@ -163,7 +163,7 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 						widgetchannel.setChannelId(Long.parseLong(channelId));
 						launWidgetChannelMapper.insertSelective(widgetchannel);
 					}
-				}
+				}*/
 				// 修改widget信息
 				launWidgetManagerMapper.updateByPrimaryKeySelective(widget);
 
@@ -202,7 +202,7 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 	@Override
 	@SuppressWarnings("rawtypes")
 	@Transactional
-	public int saveSingleWidget(String widgetjson, String filepath, String channels) {
+	public int saveSingleWidget(String widgetjson, String filepath) {
 		Map filemap = JsonUtils.JsonToMap(filepath);
 		// String message = "创建变体成功";
 		int status = 1;
@@ -220,10 +220,11 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 				widget.setCodeId(oldWidget.getCodeId());
 				widget.setParentId(0L);
 				widget.setCreateDate(new Date());
+				widget.setAouthor(SaasHeaderContextV1.getUserName());
 				//widget.setCreator(user.getId());
 				//widget.setCreateway(user.getChannelId() == null ? 1 : 2);
 				// 全部渠道
-				if (channels == null || "".equals(channels)) {
+				/*if (channels == null || "".equals(channels)) {
 					Integer channelway = 1;
 					widget.setChannelway(channelway);
 					// 所选渠道
@@ -237,7 +238,7 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 						// widget关联渠道
 						launWidgetChannelMapper.insertSelective(widgetchannel);
 					}
-				}
+				}*/
 				// 添加变体
 				launWidgetManagerMapper.insertSelective(widget);
 
@@ -402,8 +403,9 @@ public class LaunWidgetManagerServiceImpl implements LaunWidgetManagerService {
 			launWidgetFile.setFileName(originalFilename);
 			launWidgetFile.setPath(storePath.getFullPath());
 			launWidgetFile.setType(2);
-			//TODO
-			launWidgetFile.setUserId(null); //放着租户名
+			//JUMP添加
+			launWidgetFile.setAuthor(SaasHeaderContextV1.getUserName()); //放着用户名
+
 			// 解析路径
 			// Map<String, Object> mapPath = analyzeUrl(storePath.getPath());
 			// 下载(包括重命名)

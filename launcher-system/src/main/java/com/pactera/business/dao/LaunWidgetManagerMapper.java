@@ -61,8 +61,7 @@ public interface LaunWidgetManagerMapper extends BaseMapper<LaunWidget> {
 	 * @param keyWord
 	 * @return
 	 */
-	List<LaunWidgetVo> findWidgetsListByAd(@Param("defaultSize") String defaultSize, @Param("category") Long category,
-			@Param("version") Integer version, @Param("keyWord") String keyWord);
+	List<LaunWidgetVo> findWidgetsListByAd(@Param("defaultSize") String defaultSize, @Param("category") Long category, @Param("version") Integer version, @Param("keyWord") String keyWord);
 	
 	/**
 	 * @description:渠道查询widget列表
