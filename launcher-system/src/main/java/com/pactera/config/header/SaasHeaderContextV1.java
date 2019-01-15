@@ -15,6 +15,10 @@ public class SaasHeaderContextV1 {
         return SaasHeaderContext.getTenantId()+"";
     }
 
+    public static int getTenantIdInt() {
+        return SaasHeaderContext.getTenantId();
+    }
+
     public static Integer getUserId() {
         return SaasHeaderContext.getUserId();
     }
