@@ -15,6 +15,7 @@ import com.pactera.result.ResultData;
 import com.pactera.utlis.HStringUtlis;
 import com.pactera.utlis.IdUtlis;
 import com.pactera.utlis.JsonUtils;
+import com.pactera.vo.LaunPage;
 import com.pactera.vo.LaunThemeInfoVo;
 import com.pactera.vo.LaunThemeVo;
 import com.pactera.vo.LauncThemeClassVo;
@@ -228,8 +229,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
             json.put("classificationName", launcTheme.getClassificationName());
             json.put("coverImage", launcTheme.getCoverImage());
         }
-        launThemeService.query(null,id,null,null,pageNum,pageSize);
-        PageInfo<LaunThemeVo> query = launThemeService.query(null, id, null, null, pageNum, pageSize);
+        LaunPage<LaunThemeVo> query = launThemeService.query(null, id, null, null, pageNum, pageSize);
         json.put("themlist", query);
         ResultData resultData = new ResultData();
         resultData.setData(json);
@@ -262,7 +262,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
         List<LauncThemeClassVo> launcThemeClass = LauncThemeClassMapper.selectLauncThemeClassVo(themeClass);
         PageInfo<LauncThemeClassVo> PageInfo = new PageInfo<>(launcThemeClass);
         ResultData resultData = new ResultData();
-        resultData.setData(PageInfo);
+        resultData.setData(new LaunPage(PageInfo, launcThemeClass));
         return ResponseEntity.ok(resultData);
     }
 
