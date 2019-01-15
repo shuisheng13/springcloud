@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,13 +40,7 @@ public class LaunVersionServiceImpl implements LaunVersionService {
             return launVersionsVo;
         }).collect(Collectors.toList());
 
-        return new LaunPage<LaunVersionsVo>()
-                .setPageNum(pageNum)
-                .setPageSize(pageSize)
-                .setPages(pageInfo.getPages())
-                .setSize(pageInfo.getSize())
-                .setTotal(pageInfo.getTotal())
-                .setList(value);
+        return new LaunPage(pageInfo, value);
     }
 
     @Override
