@@ -11,8 +11,8 @@ import com.navinfo.wecloud.common.filter.SaasHeaderContext;
  */
 public class SaasHeaderContextV1 {
 
-    public static Integer getTenantId() {
-        return SaasHeaderContext.getTenantId();
+    public static String getTenantId() {
+        return SaasHeaderContext.getTenantId()+"";
     }
 
     public static Integer getUserId() {

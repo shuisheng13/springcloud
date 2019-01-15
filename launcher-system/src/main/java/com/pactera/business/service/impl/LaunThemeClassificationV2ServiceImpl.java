@@ -82,8 +82,8 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
         //检查添加的分类是否重名
         LauncThemeClassVo themeClassVo = new LauncThemeClassVo();
         themeClassVo.setDisable(1);
-        int tenantId2 = SaasHeaderContextV1.getTenantId();
-        themeClassVo.setTenantId(tenantId2 + "");
+        String tenantId2 = SaasHeaderContextV1.getTenantId();
+        themeClassVo.setTenantId(tenantId2);
         List<LauncThemeClassVo> launcThemeClass = LauncThemeClassMapper.selectLauncThemeClassVo(themeClassVo);
         for (LauncThemeClassVo laun : launcThemeClass) {
             if (themeClassName.equals(laun.getClassificationName())) {
@@ -147,8 +147,8 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
             int tenantId2 = SaasHeaderContextV1.getTenantId();
             themeClassVo.setTenantId(tenantId2 + "");
         }*/
-        int tenantId2 = SaasHeaderContextV1.getTenantId();
-        themeClassVo.setTenantId(tenantId2 + "");
+        String tenantId2 = SaasHeaderContextV1.getTenantId();
+        themeClassVo.setTenantId(tenantId2);
         themeClassVo.setDisable(1);
         List<LauncThemeClassVo> launcThemeClass = LauncThemeClassMapper.selectLauncThemeClassVo(themeClassVo);
         for (LauncThemeClassVo laun : launcThemeClass) {
@@ -246,7 +246,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
      **/
     @Override
     public ResponseEntity<ResultData> seThemeClassList(String shelfStatus, String classificationName, int pageNum, int pageSize) {
-        Integer tenantId = SaasHeaderContextV1.getTenantId();
+        String tenantId = SaasHeaderContextV1.getTenantId();
         PageHelper.startPage(pageNum, pageSize);
         if (HStringUtlis.isNotEmpty(classificationName)) {
             classificationName = "%" + classificationName + "%";
@@ -255,7 +255,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
        /* if (SaasHeaderContextV1.getUserType() == 1) {// 为1的时候为普通租户
             themeClass.setTenantId(tenantId + "");
         }*/
-        themeClass.setTenantId(tenantId + "");
+        themeClass.setTenantId(tenantId);
         themeClass.setClassificationName(classificationName);
         themeClass.setDisable(1);
         themeClass.setShelfStatus(shelfStatus);
@@ -276,7 +276,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
      **/
     @Override
     public ResponseEntity<ResultData> themeClassUpOrDown(String shelfStatus, String id) {
-        Integer tenantId = SaasHeaderContextV1.getTenantId();
+        String tenantId = SaasHeaderContextV1.getTenantId();
         // 租户id为空,不行
         /*if (SaasHeaderContextV1.getUserType() == 0) {// 最高管理员直接修改
             LauncThemeClassVo themeClassVo = new LauncThemeClassVo();
@@ -286,7 +286,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
         } else {*/
             LauncThemeClassVo themeClassVo = new LauncThemeClassVo();
             themeClassVo.setUpdateDate(new Date());
-            themeClassVo.setTenantId(tenantId + "");
+            themeClassVo.setTenantId(tenantId);
             themeClassVo.setId(id);
             themeClassVo.setShelfStatus(shelfStatus);
             int i = LauncThemeClassMapper.updateByThemClassId(themeClassVo);
