@@ -1,7 +1,6 @@
 package com.pactera.business.dao;
 import com.pactera.config.mapper.BaseMapper;
 import com.pactera.domain.LaunThemeClassificationV2;
-import com.pactera.vo.LaunThemeInfoVo;
 import com.pactera.vo.LauncThemeClassVo;
 import org.springframework.data.repository.query.Param;
 import java.util.List;
