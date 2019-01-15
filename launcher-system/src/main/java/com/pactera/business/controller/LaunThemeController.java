@@ -1,11 +1,9 @@
 package com.pactera.business.controller;
 
-import com.github.pagehelper.PageInfo;
 import com.pactera.business.service.LaunFontService;
 import com.pactera.business.service.LaunThemeService;
 import com.pactera.domain.LaunFont;
 import com.pactera.result.ResultData;
-import com.pactera.vo.LaunThemeVo;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -47,9 +45,7 @@ public class LaunThemeController {
 	public ResultData query(Long tenantId, String type, String title, Integer status,
                             @RequestParam(defaultValue = "1") int pageNum,
 			                @RequestParam(defaultValue = "10") int pageSize) {
-		PageInfo<LaunThemeVo> pageInfo =
-                launThemeService.query(tenantId, type, title, status, pageNum, pageSize);
-		return new ResultData(pageInfo);
+		return new ResultData(launThemeService.query(tenantId, type, title, status, pageNum, pageSize));
 	}
 
 

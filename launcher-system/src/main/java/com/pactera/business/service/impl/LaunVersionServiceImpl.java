@@ -6,7 +6,7 @@ import com.pactera.business.dao.LaunVersionMapper;
 import com.pactera.business.service.LaunVersionService;
 import com.pactera.domain.LaunVersions;
 import com.pactera.utlis.TimeUtils;
-import com.pactera.vo.LaunThemeVo;
+import com.pactera.vo.LaunPage;
 import com.pactera.vo.LaunVersionsVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName LaunVersionServiceImpl
@@ -29,20 +30,24 @@ public class LaunVersionServiceImpl implements LaunVersionService {
     private LaunVersionMapper versionMapper;
 
     @Override
-    public PageInfo<LaunVersionsVo> versions(int pageNum, int pageSize) {
-        List<LaunVersionsVo> list = new ArrayList<>();
-
-        PageHelper.startPage(pageNum, pageSize);
-        List<LaunVersions> versions = versionMapper.selectAll();
+    public LaunPage<LaunVersionsVo> query(int pageNum, int pageSize) {
+        PageInfo<LaunVersions> pageInfo = PageHelper.startPage(pageNum, pageSize).doSelectPageInfo(
+                () -> versionMapper.selectAll());
         BeanCopier beanCopier = BeanCopier.create(LaunVersions.class, LaunVersionsVo.class,false);
-        versions.forEach(ver->{
+        List<LaunVersionsVo> value = pageInfo.getList().stream().map(ver->{
             LaunVersionsVo launVersionsVo = new LaunVersionsVo();
             beanCopier.copy(ver, launVersionsVo, null);
-            launVersionsVo.setTenantName("xukj");
-            list.add(launVersionsVo);
-        });
+            launVersionsVo.setTenantName("租户名称");
+            return launVersionsVo;
+        }).collect(Collectors.toList());
 
-        return new PageInfo<>(list);
+        return new LaunPage<LaunVersionsVo>()
+                .setPageNum(pageNum)
+                .setPageSize(pageSize)
+                .setPages(pageInfo.getPages())
+                .setSize(pageInfo.getSize())
+                .setTotal(pageInfo.getTotal())
+                .setList(value);
     }
 
     @Override
