@@ -50,12 +50,4 @@ public interface LaunThemeClassificationV2Mapper extends BaseMapper<LaunThemeCla
      **/
     int orderThemeClass(@Param("list") List<Map> listMap);
 
-    /**
-     * 查询主题分类下面的主题详情
-     * @Author zhaodong
-     * @Date 14:47 2018/12/28
-     * @Param
-     * @return
-     **/
-    List<LaunThemeInfoVo> seLaunByThemClassId(@Param("themClassId")String themClassId);
 }

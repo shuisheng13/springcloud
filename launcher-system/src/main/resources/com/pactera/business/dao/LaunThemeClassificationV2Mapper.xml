@@ -128,13 +128,6 @@
           </foreach>
     </update>
 
-    <select id="seLaunByThemClassId"  resultType="com.pactera.vo.LaunThemeInfoVo" parameterType="String">
-        SELECT
-           id, version, title, end_time, download_count, used_count, author, status
-        FROM
-           laun_theme_administration
-        WHERE
-           type_id = #{themClassId}
-    </select>
+
 
 </mapper>

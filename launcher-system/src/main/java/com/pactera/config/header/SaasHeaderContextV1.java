@@ -12,14 +12,25 @@ import com.navinfo.wecloud.common.filter.SaasHeaderContext;
 public class SaasHeaderContextV1 {
 
     public static String getTenantId() {
-        return SaasHeaderContext.getTenantId()+"";
+        Integer tenantId = SaasHeaderContext.getTenantId();
+        if (tenantId!=null) {
+            return tenantId + "";
+        }else {
+            new Exception("租户id不能为空").printStackTrace();
+        }
+        return null;
     }
 
-    public static int getTenantIdInt() {
-        return SaasHeaderContext.getTenantId();
+    public static int getTenantIdInt() throws Exception {
+        Integer tenantId = SaasHeaderContext.getTenantId();
+        if (tenantId != null) {
+            return tenantId;
+        } else {
+            new Exception("租户id不能为空").printStackTrace();
+        }
+        return -1;
     }
-
-    public static Integer getUserId() {
+        public static Integer getUserId() {
         return SaasHeaderContext.getUserId();
     }
 
