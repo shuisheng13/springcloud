@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -44,5 +45,12 @@ public class GlobalExceptionHandler {
 			return ResponseEntity.status(httpException.getHttpStatus()).body(new ResultData(httpException.getStatus(),httpException.getMessage()));
 		}
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResultData(HttpStatus.BAD_REQUEST.value(),"请求异常"));
+	}
+
+	@ExceptionHandler(value = UnsupportedEncodingException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ResponseEntity<ResultData> UnsupportedEncodingException(Exception exception)  {
+		exception.printStackTrace();
+		return new ResponseEntity<>(new ResultData(exception.getMessage(), ErrorStatus.PARAMETER_ERROR),HttpStatus.BAD_REQUEST);
 	}
 }
