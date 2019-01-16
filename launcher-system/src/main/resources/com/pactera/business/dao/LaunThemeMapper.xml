@@ -43,6 +43,7 @@
 		<result column="recommend" jdbcType="BIT" property="recommend" />
 		<result column="recommend_sort" jdbcType="INTEGER" property="recommendSort" />
 		<result column="price" jdbcType="DECIMAL" property="price" />
+		<result column="addition" jdbcType="INTEGER" property="addition" />
 	</resultMap>
 
 
@@ -112,7 +113,8 @@
         ${alias}.download_count,
         ${alias}.used_count,
         ${alias}.price,
-        ${alias}.sort
+        ${alias}.sort,
+        ${alias}.addtion
     </sql>
 
 	<select id="query" resultMap="BaseResultMap">
