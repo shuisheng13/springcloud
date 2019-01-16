@@ -49,28 +49,37 @@ public interface ConstantUtlis {
 
 	String PRIVATE_THEME = "SYZT";
 
-	interface themeStatus {
+	enum themeStatus {
         /**
          * 主题已删除
          */
-        int DELETE = -1;
+        DELETE(-1),
         /**
          * 主题已上架
          */
-		int ON_SHELF = 2;
+		ON_SHELF(2),
         /**
          * 主题已下架
          */
-		int DOWN_SHELF = 3;
+		DOWN_SHELF(3),
         /**
          * 主题已禁用
          */
-		int VALID = 0;
-        /**
-         * 主题已启用
-         */
-		int INVALID =1;
+		FORBIDDEN(0);
+        ///**
+        // * 主题已启用
+        // */
+		//int INVALID =1;
 
+		int code;
+
+		themeStatus(int code){
+			this.code = code;
+		}
+
+		public int getCode() {
+			return code;
+		}
 	}
 
 	interface file {
