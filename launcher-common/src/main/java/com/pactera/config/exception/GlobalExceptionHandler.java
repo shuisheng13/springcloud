@@ -3,6 +3,8 @@ package com.pactera.config.exception;
 import com.pactera.config.exception.status.ErrorStatus;
 import com.pactera.result.ResultData;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -11,10 +13,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolationException;
 import java.io.UnsupportedEncodingException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    Log logger = LogFactory.getLog(GlobalExceptionHandler.class);
 
 	@ExceptionHandler(value = NullPointerException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -35,6 +40,13 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ResultData> IOExceptionHandler(Exception exception)  {
 		exception.printStackTrace();
 		return new ResponseEntity<>(new ResultData(exception.getMessage(), ErrorStatus.IO_ERROR),HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@ExceptionHandler(value = ConstraintViolationException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ResponseEntity<ResultData> ConstraintViolationExceptionHandler(ConstraintViolationException exception)  {
+        logger.error(exception.getConstraintViolations().iterator().next().getMessage());
+		return new ResponseEntity<>(new ResultData(exception.getConstraintViolations().iterator().next().getMessage(), ErrorStatus.PARAMETER_ERROR),HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(value = Exception.class)
