@@ -21,9 +21,14 @@ public class ThemeVO {
     private String author;
     private Date releaseTime;
     private Integer downloadCount;
+    private Integer addtion;
     private Integer usedCount;
     private Integer sort;
     private Long fileSize;
     private String zipUrl;
     private BigDecimal price;
+
+    public Integer getDownloadCount() {
+        return downloadCount + addtion;
+    }
 }
