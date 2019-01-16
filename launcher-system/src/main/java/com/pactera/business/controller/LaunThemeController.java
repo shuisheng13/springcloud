@@ -5,6 +5,7 @@ import com.pactera.business.service.LaunThemeService;
 import com.pactera.constant.ValidMessage;
 import com.pactera.domain.LaunFont;
 import com.pactera.result.ResultData;
+import com.pactera.valid.ThemeSaveValidator;
 import com.pactera.valid.annotation.ThemeStatus;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -121,7 +122,7 @@ public class LaunThemeController {
      * @return
      */
     @PostMapping("/sort")
-    public ResultData sort(@NotNull(message = "#{mess}") String id, @NotNull(message = ValidMessage.SORT_NOT_NULL) @Min(1) Integer num) {
+    public ResultData sort(@NotNull(message = ValidMessage.FILE_NOT_NULL) String id, @NotNull(message = ValidMessage.SORT_NOT_NULL) @Min(1) Integer num) {
         launThemeService.sort(id, num);
         return new ResultData();
     }
@@ -161,6 +162,9 @@ public class LaunThemeController {
         return new ResultData(launThemeService.recommendSort(id, num));
     }
 
+	@Autowired
+	private ThemeSaveValidator validator;
+
 	/**
      *
      * v2
@@ -171,7 +175,7 @@ public class LaunThemeController {
 	 * @return ResponseEntity<ResultData>
 	 */
 	@PostMapping("/saveTheme")
-	public ResultData saveTheme(String themeJson) {
+	public ResultData saveTheme(@NotNull(message = "themeJson不可为空") String themeJson) {
 		return new ResultData(launThemeService.saveTheme(null, null, themeJson, 0));
 	}
 
@@ -181,18 +185,14 @@ public class LaunThemeController {
 	 * @description 根据id和渠道去保存和修改
 	 * @author liudawei
 	 * @since 2018年4月29日 下午2:46:58
-	 * @param baseJson 底屏json
-	 * @param widgetJson 组件json
 	 * @param themeJson 主题内容json
-	 * @param saveType 保存类型:0暂存;1保存
 	 * @return ResponseEntity<ResultData>
 	 */
 	@PostMapping("/updateThem")
-	public ResponseEntity<ResultData> updateTheme(String baseJson, String widgetJson, String themeJson,
-			Integer saveType) {
+	public ResponseEntity<ResultData> updateTheme(@NotNull(message = "themeJson不可为空") String themeJson ) {
 	    //2019/1/4 xukj change start
 		//String i = launThemeService.updateTheme(baseJson, widgetJson, themeJson, saveType);
-        String i = launThemeService.saveTheme(baseJson, widgetJson, themeJson, saveType);
+        String i = launThemeService.saveTheme(null, null, themeJson, 0);
         //2019/1/4 xukj change end
 
 		/*

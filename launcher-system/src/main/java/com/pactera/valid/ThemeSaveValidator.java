@@ -22,7 +22,16 @@ public class ThemeSaveValidator implements Validator {
 
     @Override
     public void validate(Object obj, Errors errors) {
-        ValidationUtils.rejectIfEmpty(errors, "title", "主题名称不能为空");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "title", "主题名称不能为空");
+        ValidationUtils.rejectIfEmpty(errors, "longResolution", "分辨率长不能为空");
+        ValidationUtils.rejectIfEmpty(errors, "wideResolution", "分辨率宽不能为空");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "version", "版本id不能为空");
+        ValidationUtils.rejectIfEmpty(errors, "filesJson", "预览图不能为空");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "zipUrl", "压缩包路径不能为空");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", "描述不能为空");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "author", "作者不能为空");
+        ValidationUtils.rejectIfEmpty(errors, "releaseTime", "发布时间不能为空");
+
         LaunThemeSaveVo p = (LaunThemeSaveVo) obj;
         //if (p.getAge() < 0) {
         //    e.rejectValue("age", "negativevalue");

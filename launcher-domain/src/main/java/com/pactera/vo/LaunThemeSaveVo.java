@@ -22,6 +22,7 @@ public class LaunThemeSaveVo {
     private String version;
     private String typeId;
     private Map<String, String> filesJson;
+
     private String title;
     private String zipUrl;
     private String description;
