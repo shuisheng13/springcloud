@@ -114,7 +114,7 @@
         ${alias}.used_count,
         ${alias}.price,
         ${alias}.sort,
-        ${alias}.addtion
+        ${alias}.addition
     </sql>
 
 	<select id="query" resultMap="BaseResultMap">
