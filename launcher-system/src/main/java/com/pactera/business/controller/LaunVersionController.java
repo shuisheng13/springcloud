@@ -22,13 +22,25 @@ public class LaunVersionController {
     @Autowired LaunVersionService launVersionService;
 
     /**
-     * 查询租户（所有）版本信息
+     * 查询租户（所有）版本信息，分页
+     *
      * @return
      */
-    @GetMapping("/list")
-    ResultData versions(@RequestParam(defaultValue = "1") int pageNum,
-                        @RequestParam(defaultValue = "10") int pageSize) {
-        return new ResultData(launVersionService.query(pageNum, pageSize)); }
+    @GetMapping("/query")
+    ResultData query(
+            @RequestParam(defaultValue = "1") int pageNum,
+            @RequestParam(defaultValue = "10") int pageSize) {
+        return new ResultData(launVersionService.query(pageNum, pageSize));
+    }
+
+    /**
+     * 通过租户查询versions 不带分页
+     * @return
+     */
+    @GetMapping("list")
+    ResultData versions() {
+        return new ResultData(launVersionService.list());
+    }
 
     /**
      * 添加描述信息
@@ -39,6 +51,6 @@ public class LaunVersionController {
     @PostMapping("/describe")
     ResultData describe(@NonNull Long id, @RequestParam(defaultValue = "") String description) {
         int count = launVersionService.describe(id, description);
-        return count == 1? new ResultData(): new ResultData((Object)count, SuccessStatus.UPDATE_DESCRIPTION_FAIL);
+        return count == 1 ? new ResultData() : new ResultData((Object) count, SuccessStatus.UPDATE_DESCRIPTION_FAIL);
     }
 }
