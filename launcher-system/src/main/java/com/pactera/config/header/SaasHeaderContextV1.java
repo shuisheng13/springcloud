@@ -16,21 +16,20 @@ public class SaasHeaderContextV1 {
         if (tenantId!=null) {
             return tenantId + "";
         }else {
-            new Exception("租户id不能为空").printStackTrace();
+            throw new NullPointerException("租户id不能为空");
         }
-        return null;
     }
 
-    public static int getTenantIdInt() throws Exception {
+    public static int getTenantIdInt() {
         Integer tenantId = SaasHeaderContext.getTenantId();
         if (tenantId != null) {
             return tenantId;
         } else {
-            new Exception("租户id不能为空").printStackTrace();
+            throw new NullPointerException("租户id不能为空");
         }
-        return -1;
     }
-        public static Integer getUserId() {
+
+    public static Integer getUserId() {
         return SaasHeaderContext.getUserId();
     }
 
@@ -39,8 +38,7 @@ public class SaasHeaderContextV1 {
     }
 
     public static Integer getUserType() {
-        return StringUtils.isBlank(SaasHeaderContext.getHeaders().get(GatewayHeaderKey.USER_TYPE)) ? null
-                : Integer.valueOf(SaasHeaderContext.getHeaders().get(GatewayHeaderKey.USER_TYPE));
+        return StringUtils.isBlank(SaasHeaderContext.getHeaders().get(GatewayHeaderKey.USER_TYPE)) ? null : Integer.valueOf(SaasHeaderContext.getHeaders().get(GatewayHeaderKey.USER_TYPE));
     }
 
     public static String getOrgCode() {
@@ -52,19 +50,24 @@ public class SaasHeaderContextV1 {
     }
 
     public static String getUserName() {
-        return SaasHeaderContext.getUserName();
+        if(!StringUtils.isBlank(SaasHeaderContext.getUserName()) ){
+            return SaasHeaderContext.getUserName();
+        }else{
+            throw new NullPointerException("用户名字不能为空");
+        }
     }
 
     public static String getTenantName() {
-        System.out.println(SaasHeaderContext.getHeaders().get(GatewayHeaderKey.TENANT_NAME));
+        // System.out.println(SaasHeaderContext.getHeaders().get(GatewayHeaderKey.TENANT_NAME));
         if(!StringUtils.isBlank(SaasHeaderContext.getHeaders().get(GatewayHeaderKey.TENANT_NAME)) ){
             try {
                 return URLDecoder.decode(SaasHeaderContext.getHeaders().get(GatewayHeaderKey.TENANT_NAME), "UTF-8");
             } catch (UnsupportedEncodingException e) {
-                return null;
+                e.printStackTrace();
             }
         }else{
-            return null;
+            throw new NullPointerException("租户名字不能为空");
         }
+        return null;
     }
 }
