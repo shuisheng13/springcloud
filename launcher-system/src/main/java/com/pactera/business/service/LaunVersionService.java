@@ -3,6 +3,8 @@ package com.pactera.business.service;
 import com.pactera.vo.LaunPage;
 import com.pactera.vo.LaunVersionsVo;
 
+import java.util.List;
+
 /**
  *
  * @author xukj
@@ -28,4 +30,10 @@ public interface LaunVersionService {
      * @return
      **/
     int describe(Long id, String description);
+
+    /**
+     * 获取所有版本列表
+     * @return
+     */
+    List<LaunVersionsVo> list();
 }

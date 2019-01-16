@@ -27,7 +27,7 @@ public class LaunVersionServiceImpl implements LaunVersionService {
 
     @Override
     public int add(String version,String versionName, String apiKey) {
-        String tenantId = apiKeyFacade.queryTenantByApiKey(apiKey).getData().getId() + "";
+        Integer tenantId = apiKeyFacade.queryTenantByApiKey(apiKey).getData().getId();
         if(null == tenantId){return 0;}
         LaunVersions launVersions = new LaunVersions();
 

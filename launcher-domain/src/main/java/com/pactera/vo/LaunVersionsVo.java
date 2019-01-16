@@ -15,7 +15,7 @@ public class LaunVersionsVo {
     private Long id;
     private String version;
     private String versionName;
-    private Long tenantId;
+    private Integer tenantId;
     private String tenantName;
     private String description;
 }
