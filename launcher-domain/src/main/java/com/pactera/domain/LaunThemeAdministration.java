@@ -67,6 +67,7 @@ public class LaunThemeAdministration {
 	private @ApiModelProperty("推荐排序") Integer recommendSort;
 	private BigDecimal price;
 	private String tenantId;
+	private Long addition;
 
 	@Transient
 	@JsonProperty("sTime")
