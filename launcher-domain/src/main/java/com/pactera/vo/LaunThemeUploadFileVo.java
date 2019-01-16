@@ -21,11 +21,11 @@ public class LaunThemeUploadFileVo {
     /**
      *  主题分辨率宽
      */
-    private String wideResolution;
+    private Long wideResolution;
     /**
      *  主题分辨率长
      */
-    private String longResolution;
+    private Long longResolution;
 
     /**
      * 压缩包路径
