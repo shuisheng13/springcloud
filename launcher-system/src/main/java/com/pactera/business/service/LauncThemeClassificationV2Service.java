@@ -4,6 +4,8 @@ import com.pactera.result.ResultData;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 /**
  *  主题分类管理
  * @author:zhaodong
@@ -81,7 +83,7 @@ public interface LauncThemeClassificationV2Service {
      * @Param
      * @return
      **/
-    String upThemeClassCount(int status,String id);
+    String upThemeClassCount(int status,List<String> id);
 
     /**
      * 更新该分类下的以上架的主题数(供下架(批量下架)主题，上架(批量上架主题)主题等接口调用,(1-上架,0-下架))
@@ -90,7 +92,7 @@ public interface LauncThemeClassificationV2Service {
      * @Param
      * @return
      **/
-    String upThemeClassCountUpOrDown(int status,String id);
+    String upThemeClassCountUpOrDown(int status, List<String> id);
 
     /**
      * 权重进行排序
