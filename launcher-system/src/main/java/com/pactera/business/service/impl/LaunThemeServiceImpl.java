@@ -320,9 +320,9 @@ public class LaunThemeServiceImpl implements LaunThemeService {
         LaunThemeSaveVo launThemeSaveVo = JsonUtils.jsonToClass(themeJson, LaunThemeSaveVo.class);
         this.themeJsonValid(launThemeSaveVo);
         LaunThemeAdministration administration = new LaunThemeAdministration();
-        BeanCopier.create(LaunThemeSaveVo.class, LaunThemeAdministration.class, true)
-                .copy(launThemeSaveVo, administration, (Object v, Class t, Object c)->v);
-
+        //BeanCopier.create(LaunThemeSaveVo.class, LaunThemeAdministration.class, true)
+        //        .copy(launThemeSaveVo, administration, (Object v, Class t, Object c)->v);
+		BeanUtils.copyProperties(launThemeSaveVo, administration);
         //Long adminId = 0L;
         administration.setTenantId(String.valueOf(SaasHeaderContextV1.getTenantId()));
         administration.setCreator(SaasHeaderContextV1.getUserName());
@@ -337,13 +337,12 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 			administration.setWidgetJson(widgetJson);
 			administration.setBasicJson(baseJson);
 			administration.setThemeJson(themeJson);
-			if (HStringUtlis.isNotBlank(administration.getSTime())) {
-				administration.setStartTime(TimeUtils.millis2Date(Long.parseLong(administration.getSTime())));
-			}
-			if (HStringUtlis.isNotBlank(administration.getETime())) {
-				administration.setEndTime(TimeUtils.millis2Date(Long.parseLong(administration.getETime())));
-			}
-
+			//if (HStringUtlis.isNotBlank(administration.getStartTime())) {
+			//	administration.setStartTime(TimeUtils.millis2Date(Long.parseLong(administration.getStartTime())));
+			//}
+			//if (HStringUtlis.isNotBlank(administration.getEndTime()) {
+			//	administration.setEndTime(TimeUtils.millis2Date(Long.parseLong(administration.getEndTime())));
+			//}
 			//2019/1/4 xukj add start
             if(StringUtils.isNotBlank(administration.getId())) {
                 themeId = administration.getId();
@@ -419,8 +418,8 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 			themeIdList.add(themeId);
 			administration.setId(themeId);
 			administration.setBasicJson(baseJson);
-			administration.setStartTime(TimeUtils.millis2Date(Long.parseLong(administration.getSTime())));
-			administration.setEndTime(TimeUtils.millis2Date(Long.parseLong(administration.getETime())));
+			//administration.setStartTime(TimeUtils.millis2Date(Long.parseLong(administration.getSTime())));
+			//administration.setEndTime(TimeUtils.millis2Date(Long.parseLong(administration.getETime())));
 			administration.setWidgetJson(widgetJson);
 			administration.setCreatorChannelId(channleId);
 			administration.setThemeJson(themeJson);
@@ -977,12 +976,12 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 		 * 当save为0时，只是保存widget。只保存对应json数据 当save为1是，保存整个主题，执行后续结构化数据及打包过程
 		 */
 		if (saveType == 0) {
-			if (HStringUtlis.isNotBlank(administration.getSTime())) {
-				administration.setStartTime(TimeUtils.millis2Date(Long.parseLong(administration.getSTime())));
-			}
-			if (HStringUtlis.isNotBlank(administration.getETime())) {
-				administration.setEndTime(TimeUtils.millis2Date(Long.parseLong(administration.getETime())));
-			}
+			//if (HStringUtlis.isNotBlank(administration.getSTime())) {
+			//	administration.setStartTime(TimeUtils.millis2Date(Long.parseLong(administration.getSTime())));
+			//}
+			//if (HStringUtlis.isNotBlank(administration.getETime())) {
+			//	administration.setEndTime(TimeUtils.millis2Date(Long.parseLong(administration.getETime())));
+			//}
 
 			administration.setWidgetJson(widgetJson);
 			administration.setBasicJson(baseJson);
@@ -996,8 +995,8 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 		 */
 		administration.setId(themeId);
 		administration.setBasicJson(baseJson);
-		administration.setStartTime(TimeUtils.millis2Date(Long.parseLong(administration.getSTime())));
-		administration.setEndTime(TimeUtils.millis2Date(Long.parseLong(administration.getETime())));
+		//administration.setStartTime(TimeUtils.millis2Date(Long.parseLong(administration.getSTime())));
+		//administration.setEndTime(TimeUtils.millis2Date(Long.parseLong(administration.getETime())));
 		administration.setWidgetJson(widgetJson);
 		administration.setThemeJson(themeJson);
 
