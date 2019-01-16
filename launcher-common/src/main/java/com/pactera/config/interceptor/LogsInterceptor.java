@@ -6,6 +6,8 @@ import com.pactera.utlis.IpUtlis;
 import com.pactera.utlis.JsonUtils;
 import com.pactera.utlis.TimeUtils;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -18,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LogsInterceptor implements HandlerInterceptor {
+
+	Logger logger = LoggerFactory.getLogger(LogsInterceptor.class.getName());
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -91,9 +95,11 @@ public class LogsInterceptor implements HandlerInterceptor {
 			LogsService logsService = SpringUtil.getBean(LogsService.class);
 			logsService.saveUserLogs(hashMap);
 		} catch (Exception e) {
-			System.out.println("异常信息：" + e.getMessage());
+			//System.out.println("异常信息：" + e.getMessage());
+			logger.error("异常信息：" + e.getMessage());
 		} finally {
-			System.out.println("日志：" + JsonUtils.ObjectToJson(hashMap));
+			//System.out.println("日志：" + JsonUtils.ObjectToJson(hashMap));
+			logger.info("日志：" + JsonUtils.ObjectToJson(hashMap));
 		}
 	}
 
