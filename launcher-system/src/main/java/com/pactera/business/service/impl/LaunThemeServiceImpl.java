@@ -13,6 +13,7 @@ import com.pactera.constant.ConstantUtlis;
 import com.pactera.domain.*;
 import com.pactera.util.ThemeWidgetDetail;
 import com.pactera.utlis.*;
+import com.pactera.valid.ThemeSaveValidator;
 import com.pactera.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -23,6 +24,8 @@ import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.AbstractErrors;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Example;
 
@@ -99,6 +102,12 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	@Autowired
 	private LaunFontService launFontService;
 
+	@Autowired
+	private LauncThemeClassificationV2Service launcThemeClassificationV2Service;
+
+    @Autowired
+    private ThemeSaveValidator validator;
+
 	@Override
 	public LaunPage<LaunThemeVo> query(Long tenantId, String typeId, String title, Integer status, int pageNum, int pageSize) {
 
@@ -116,8 +125,11 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int changeStatus(String id, Integer status) {
-		return launThemeMapper.updateByPrimaryKeySelective(
+
+        launcThemeClassificationV2Service.upThemeClassCountUpOrDown(status == ConstantUtlis.themeStatus.ON_SHELF.getCode()? 1:0,id);
+        return launThemeMapper.updateByPrimaryKeySelective(
 				new LaunThemeAdministration().setStatus(status).setId(id));
     }
 
@@ -282,6 +294,31 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	}
 
 
+	private boolean ThemeJsonValid(LaunThemeSaveVo launThemeSaveVo){
+
+
+        //validator.validate(launThemeSaveVo, result);
+        //boolean titleFlag = false;
+        //boolean versionFlag = false;
+        //boolean description = false;
+        //boolean author = false;
+        //boolean releasetime = false;
+        //boolean zipUrl = false;
+        //boolean fileJson = false;
+        //
+        //if(StringUtils.isNotBlank(launThemeSaveVo.getTitle())){titleFlag = !titleFlag;}
+        //if(StringUtils.isNotBlank(launThemeSaveVo.getVersion())){versionFlag = !versionFlag;}
+        //if(StringUtils.isNotBlank(launThemeSaveVo.getDescription())){description = !description;}
+        //if(StringUtils.isNotBlank(launThemeSaveVo.getAuthor())){author = !author;}
+        //if(null != launThemeSaveVo.getReleaseTime()){releasetime = !releasetime;}
+        //if(StringUtils.isNotBlank(launThemeSaveVo.getZipUrl())){zipUrl = !zipUrl;}
+        //if(null != launThemeSaveVo.getFilesJson()){fileJson = !fileJson;}
+        //
+        //return titleFlag && versionFlag && description && author && releasetime && zipUrl && fileJson;
+        //return result.hasErrors();
+		return true;
+    }
+
 	/**
 	 * @description 保存主题
 	 * @author liudawei
@@ -292,7 +329,12 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	@Transactional
 	public String saveTheme(String baseJson, String widgetJson, String themeJson, Integer saveType) {
 
-		LaunThemeAdministration administration = JsonUtils.jsonToClass(themeJson, LaunThemeAdministration.class);
+        LaunThemeSaveVo launThemeSaveVo = JsonUtils.jsonToClass(themeJson, LaunThemeSaveVo.class);
+        if(!this.ThemeJsonValid(launThemeSaveVo)){return null;}
+        LaunThemeAdministration administration = new LaunThemeAdministration();
+        BeanCopier.create(LaunThemeSaveVo.class, LaunThemeAdministration.class, true)
+                .copy(launThemeSaveVo, administration, (Object v, Class t, Object c)->v);
+
         //Long adminId = 0L;
         administration.setTenantId(String.valueOf(SaasHeaderContextV1.getTenantId()));
         administration.setCreator(SaasHeaderContextV1.getUserName());
@@ -316,21 +358,21 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 
 			//2019/1/4 xukj add start
             if(StringUtils.isNotBlank(administration.getId())) {
-				themeId = administration.getId();
-				launThemeFileService.deleteById(themeId);
-				administration.setPreviewPath(saveThemeFile(administration.getFilesJson(), themeId).get("previewPath"));
-				launThemeMapper.updateByPrimaryKeySelective(administration);
-				return themeId;
-			}
+                themeId = administration.getId();
+                administration.setPreviewPath(this.saveThemeFile(administration.getFilesJson(), themeId).get("previewPath"));
+                launThemeMapper.updateByPrimaryKeySelective(administration);
+                return themeId;
+            }
 
 			themeId = this.id();
-			administration.setPreviewPath(saveThemeFile(administration.getFilesJson(), themeId).get("previewPath"))
+			administration.setPreviewPath(this.saveThemeFile(administration.getFilesJson(), themeId).get("previewPath"))
 					.setId(themeId).setCreateDate(TimeUtils.nowTimeStamp())
 					.setRecommend(false).setRecommendSort(0).setSort(0)
-					.setDownloadCount(0).setUsedCount(0)
+					.setDownloadCount(0).setUsedCount(0).setAddition(0L)
 					.setPrice(null == administration.getPrice()?new BigDecimal(0):administration.getPrice())
-					.setStatus(ConstantUtlis.themeStatus.DOWN_SHELF);
+					.setStatus(ConstantUtlis.themeStatus.DOWN_SHELF.getCode());
 			launThemeMapper.insertSelective(administration);
+            launcThemeClassificationV2Service.upThemeClassCount(1, themeId);
 
 			//2019/1/4 xukj del start
 			//if (administration.getId() != null) {
@@ -586,6 +628,9 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	public Map<String, String> saveThemeFile(Map<String, String> map, String themeId) {
 		log.info("主题管理----------保存主题相关图片----------id:{}----------", themeId);
 
+		//xukj add start 2019-01-15
+        launThemeFileService.deleteById(themeId);
+        //xukj add end 2019-01-15
 		Map<String, String> returnMap = new HashMap<String, String>();
 
 		LaunThemeFile themeFile = null;
@@ -1037,11 +1082,11 @@ public class LaunThemeServiceImpl implements LaunThemeService {
         		new LaunThemeAdministration().setRecommend(value).setId(id));
 	}
 
-	private String parseProp(File file, LaunThemeUploadFileVo launThemeUploadFileVo) {
+    private String parseProp(File file, LaunThemeUploadFileVo launThemeUploadFileVo) {
         Properties prop = FileTool.file2Prop(file);
         log.info("解析properties完成...prop:{}", prop.toString());
-        launThemeUploadFileVo.setLongResolution(prop.getProperty(upThemeLong));
-        launThemeUploadFileVo.setWideResolution(prop.getProperty(upThemeWidth));
+        launThemeUploadFileVo.setLongResolution(Long.getLong(prop.getProperty(upThemeLong)));
+        launThemeUploadFileVo.setWideResolution(Long.getLong(prop.getProperty(upThemeWidth)));
         return prop.getProperty(upThemeImgMain);
     }
 
@@ -1101,8 +1146,6 @@ public class LaunThemeServiceImpl implements LaunThemeService {
         if(!propFlag){throw new DataStoreException(ErrorStatus.UPLOAD_THEME_NO_CONFIG);}
         if(!zipFlag){throw new DataStoreException(ErrorStatus.UPLOAD_THEME_NO_ZIP);}
         if(!imgCountFlag){throw new DataStoreException(ErrorStatus.UPLOAD_THEME_TOO_MANY_IMG);}
-
-
 
 
 	    return imgFlag && propFlag && zipFlag && imgCountFlag;
