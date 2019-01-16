@@ -2,16 +2,20 @@ package com.pactera.business.controller;
 
 import com.pactera.business.service.LaunFontService;
 import com.pactera.business.service.LaunThemeService;
+import com.pactera.constant.ValidMessage;
 import com.pactera.domain.LaunFont;
 import com.pactera.result.ResultData;
+import com.pactera.valid.annotation.ThemeStatus;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -22,6 +26,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/theme")
+@Validated
 public class LaunThemeController {
 
 	@Autowired
@@ -103,7 +108,7 @@ public class LaunThemeController {
 	 * @return ResponseEntity<ResultData>
 	 */
 	@PostMapping("/status")
-	public ResultData modifyStatus(@NotNull String id, @NotNull Integer status) {
+	public ResultData modifyStatus(@NotNull(message = ValidMessage.ID_NOT_NULL) String id, @ThemeStatus(message = "{theme.mess}") Integer status) {
 		return new ResultData(launThemeService.changeStatus(id, status));
 	}
 
@@ -115,7 +120,7 @@ public class LaunThemeController {
      * @return
      */
     @PostMapping("/sort")
-    public ResultData sort(@NotNull String id, @NotNull Integer num) {
+    public ResultData sort(@NotNull(message = "#{mess}") String id, @NotNull(message = ValidMessage.SORT_NOT_NULL) @Min(1) Integer num) {
         launThemeService.sort(id, num);
         return new ResultData();
     }
@@ -127,7 +132,7 @@ public class LaunThemeController {
      * @return
      */
     @PostMapping("/upload")
-    public ResultData upload(MultipartFile file) {
+    public ResultData upload(@NotNull(message = ValidMessage.FILE_NOT_NULL)MultipartFile file) {
 		return new ResultData(launThemeService.upload(file));
     }
 
@@ -139,7 +144,7 @@ public class LaunThemeController {
 	 * @return
 	 */
 	@PostMapping("/recommend")
-	public ResultData recommend(String id, boolean value) {
+	public ResultData recommend(@NotNull(message = ValidMessage.ID_NOT_NULL) String id, @NotNull(message = ValidMessage.RECOMMEND_NOT_NULL) boolean value) {
 		return new ResultData(launThemeService.recommend(id, value));
 	}
 
@@ -151,7 +156,7 @@ public class LaunThemeController {
      * @return
      */
     @PostMapping("/recommend/sort")
-    public ResultData recommentSort(@NotNull String id, @NotNull Integer num) {
+    public ResultData recommentSort(@NotNull(message = ValidMessage.ID_NOT_NULL) String id, @NotNull(message = ValidMessage.SORT_NOT_NULL) @Min(1) Integer num) {
         return new ResultData(launThemeService.recommendSort(id, num));
     }
 
@@ -161,18 +166,12 @@ public class LaunThemeController {
 	 * @description 根据id和渠道去保存和修改
 	 * @author liudawei
 	 * @since 2018年4月29日 下午2:46:58
-	 * @param baseJson 底屏json
-	 * @param widgetJson 组件json
 	 * @param themeJson 主题内容 json
-	 * @param saveType 保存类型:0暂存;1保存
 	 * @return ResponseEntity<ResultData>
 	 */
 	@PostMapping("/saveTheme")
-	public ResponseEntity<ResultData> saveTheme(String baseJson, String widgetJson, String themeJson, Integer saveType) {
-
-		String i = launThemeService.saveTheme(baseJson, widgetJson, themeJson, saveType);
-
-		return ResponseEntity.ok(new ResultData(i));
+	public ResultData saveTheme(String themeJson) {
+		return new ResultData(launThemeService.saveTheme(null, null, themeJson, 0));
 	}
 
 	/**
