@@ -41,6 +41,7 @@
         <result column="author" jdbcType="VARCHAR" property="author" />
         <result column="release_time" jdbcType="TIMESTAMP" property="releaseTime" />
         <result column="price" jdbcType="DECIMAL" property="price" />
+        <result column="addition" jdbcType="INTEGER" property="addition" />
 	</resultMap>
 
 
@@ -89,7 +90,8 @@
         ${alias}.download_count,
         ${alias}.used_count,
         ${alias}.price,
-        ${alias}.sort
+        ${alias}.sort,
+        ${alias}.addition
     </sql>
 
 	<select id="search" resultMap="BaseResultMap">
