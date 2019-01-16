@@ -2,7 +2,6 @@ package com.pactera.business.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-//import com.navinfo.wecloud.common.filter.SaasHeaderContext;
 import com.navinfo.wecloud.saas.api.facade.TenantFacade;
 import com.pactera.business.dao.LaunThemeClassificationV2Mapper;
 import com.pactera.business.service.LaunFileCrudService;
@@ -16,13 +15,11 @@ import com.pactera.utlis.HStringUtlis;
 import com.pactera.utlis.IdUtlis;
 import com.pactera.utlis.JsonUtils;
 import com.pactera.vo.LaunPage;
-import com.pactera.vo.LaunThemeInfoVo;
 import com.pactera.vo.LaunThemeVo;
 import com.pactera.vo.LauncThemeClassVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -364,6 +361,8 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
     public String upThemeClassCount(int status, List<String> id) {
         // 先查询主题分类id
         List<String> strings = LauncThemeClassMapper.selectClassIdByThemId(id);
+        // 将重复的分类id分堆
+
         String id2 ="";
         LauncThemeClassVo themeClassVo = new LauncThemeClassVo();
         themeClassVo.setDisable(1);
