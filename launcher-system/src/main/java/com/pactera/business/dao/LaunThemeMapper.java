@@ -95,4 +95,6 @@ public interface LaunThemeMapper extends BaseMapper<LaunThemeAdministration> {
 	 */
 	List<Map<String, String>> getEffeCount();
 
+	int changeStatus(@Param("ids") List<String> ids, @Param("status")Integer status);
+
 }

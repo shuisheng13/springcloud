@@ -33,10 +33,10 @@ public interface LaunThemeService {
 
     /**
      * v2 版本 删除，上下架 禁用启用使用
-     * @param id
+     * @param ids
      * @param status
      */
-    int changeStatus(String id, Integer status);
+    int changeStatus(List<String> ids, Integer status);
 
 	/**
 	 * @description 根据条件去查询主题

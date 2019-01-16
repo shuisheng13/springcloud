@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -103,13 +104,13 @@ public class LaunThemeController {
 	 * 状态类型有：上架/下架（2，3）  删除（-1） 禁用/启用【未上架】（0，1）
 	 *
 	 * @author xukj
-	 * @param id
+	 * @param ids
 	 * @param status
 	 * @return ResponseEntity<ResultData>
 	 */
 	@PostMapping("/status")
-	public ResultData modifyStatus(@NotNull(message = ValidMessage.ID_NOT_NULL) String id, @ThemeStatus(message = "{theme.mess}") Integer status) {
-		return new ResultData(launThemeService.changeStatus(id, status));
+	public ResultData modifyStatus(@NotNull(message = ValidMessage.ID_NOT_NULL) String[] ids, @ThemeStatus(message = "{theme.mess}") Integer status) {
+		return new ResultData(launThemeService.changeStatus(Arrays.asList(ids), status));
 	}
 
     /**

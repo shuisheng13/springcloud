@@ -292,4 +292,13 @@
 		GROUP BY
 		creator_channel_id
 	</select>
+
+	<update id="changeStatus" parameterType="java.util.List">
+		update <include refid="themeAdmin"></include> as t1 set t1.status = #{status}
+		where id in
+		<foreach collection="ids" index="index" item="id"
+				 separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</update>
 </mapper>

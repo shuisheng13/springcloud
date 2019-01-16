@@ -126,11 +126,10 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int changeStatus(String id, Integer status) {
+    public int changeStatus(List<String> ids, Integer status) {
 
-        launcThemeClassificationV2Service.upThemeClassCountUpOrDown(status == ConstantUtlis.themeStatus.ON_SHELF.getCode()? 1:0,id);
-        return launThemeMapper.updateByPrimaryKeySelective(
-				new LaunThemeAdministration().setStatus(status).setId(id));
+        //launcThemeClassificationV2Service.upThemeClassCountUpOrDown(status == ConstantUtlis.themeStatus.ON_SHELF.getCode()? 1:0,id);
+		return launThemeMapper.changeStatus(ids, status);
     }
 
     /**
