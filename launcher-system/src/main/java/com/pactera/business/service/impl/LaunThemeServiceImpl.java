@@ -112,7 +112,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	public LaunPage<LaunThemeVo> query(Long tenantId, String typeId, String title, Integer status, int pageNum, int pageSize) {
 
         PageInfo<LaunThemeAdministration> pageInfo = PageHelper.startPage(pageNum, pageSize).doSelectPageInfo(
-                () -> launThemeMapper.selectAll());
+                () -> launThemeMapper.query(tenantId, typeId, title, status));
         BeanCopier beanCopier = BeanCopier.create(LaunThemeAdministration.class, LaunThemeVo.class,true);
         List<LaunThemeVo> themes = pageInfo.getList().stream().map(theme->{
             LaunThemeVo themeVo = new LaunThemeVo();
