@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  *  主题分类管理
@@ -186,7 +187,7 @@ public class LaunThemeClassificationController {
             @ApiImplicitParam(name = "status", value = "操作主题状态，(1-添加，0-删除)",paramType="query",required = true),
             @ApiImplicitParam(name = "id", value = "id",paramType="query",required = true),
     })
-    public ResponseEntity<ResultData> upThemeClassCount(int status,String id) {
+    public ResponseEntity<ResultData> upThemeClassCount(int status, List<String> id) {
         String s = launcThemeClassificationService.upThemeClassCount(status, id);
         ResultData date = new ResultData();
         date.setData(s);
@@ -206,7 +207,7 @@ public class LaunThemeClassificationController {
             @ApiImplicitParam(name = "status", value = "操作主题状态，(1-上架，0-下架)",paramType="query",required = true),
             @ApiImplicitParam(name = "id", value = "id",paramType="query",required = true),
     })
-    public ResponseEntity<ResultData> upThemeClassCountUpOrDown(int status,String id) {
+    public ResponseEntity<ResultData> upThemeClassCountUpOrDown(int status,List<String> id) {
         String s = launcThemeClassificationService.upThemeClassCountUpOrDown(status, id);
         ResultData date = new ResultData();
         date.setData(s);

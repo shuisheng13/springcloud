@@ -361,15 +361,18 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
      * @Param
      **/
     @Override
-    public String upThemeClassCount(int status, String id) {
+    public String upThemeClassCount(int status, List<String> id) {
+        // 先查询主题分类id
+        List<String> strings = LauncThemeClassMapper.selectClassIdByThemId(id);
+        String id2 ="";
         LauncThemeClassVo themeClassVo = new LauncThemeClassVo();
         themeClassVo.setDisable(1);
-        themeClassVo.setId(id);
+        themeClassVo.setId(id2);
         List<LauncThemeClassVo> launcThemeClass = LauncThemeClassMapper.selectLauncThemeClassVo(themeClassVo);
         if (!launcThemeClass.isEmpty()) {
             int quantity = launcThemeClass.get(0).getQuantity();
             LauncThemeClassVo themeClassVo1 = new LauncThemeClassVo();
-            themeClassVo1.setId(id);
+            themeClassVo1.setId(id2);
             themeClassVo1.setUpdateDate(new Date());
             if (status == 1) {// 代表添加
                 log.info("添加主题>>>>>>>>>>>>>>>>添加主题使得分类数量增加>>>>" + new Date());
@@ -400,15 +403,16 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
      * @Param
      **/
     @Override
-    public String upThemeClassCountUpOrDown(int status, String id) {
+    public String upThemeClassCountUpOrDown(int status, List<String> id) {
+        String id2="";
         LauncThemeClassVo themeClassVo = new LauncThemeClassVo();
         themeClassVo.setDisable(1);
-        themeClassVo.setId(id);
+        themeClassVo.setId(id2);
         List<LauncThemeClassVo> launcThemeClass = LauncThemeClassMapper.selectLauncThemeClassVo(themeClassVo);
         if (!launcThemeClass.isEmpty()) {
             int shelfCount = launcThemeClass.get(0).getShelfCount();
             themeClassVo = new LauncThemeClassVo();
-            themeClassVo.setId(id);
+            themeClassVo.setId(id2);
             themeClassVo.setUpdateDate(new Date());
             if (status == 1) {// 代表添加
                 log.info("上架主题>>>>>>>>>>>>>>>>上架主题使得分类中上架主题数增加>>>>" + new Date());
