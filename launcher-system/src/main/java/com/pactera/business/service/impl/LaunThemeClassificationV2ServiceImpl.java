@@ -269,6 +269,8 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
         } else {*/
             LauncThemeClassVo themeClassVo = new LauncThemeClassVo();
             themeClassVo.setUpdateDate(new Date());
+            themeClassVo.setShelfCount(-2);
+            themeClassVo.setQuantity(-2);
             themeClassVo.setTenantId(tenantId);
             themeClassVo.setId(id);
             themeClassVo.setShelfStatus(shelfStatus);
