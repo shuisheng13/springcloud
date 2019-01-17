@@ -27,7 +27,7 @@ public class LaunThemeSaveVo {
     private String zipUrl;
     private String description;
     //附加量
-    private Long addition;
+    private Integer addition;
     private String author;
     private Date releaseTime;
     private BigDecimal price;
