@@ -85,7 +85,7 @@ public interface LaunThemeService {
 	 * @param sort 排序权重
 	 * @return
 	 */
-	int sort(String id, Integer sort);
+	int sort(String id, Long sort);
 
 	/**
 	 * 修改车机端主题推荐排序权重

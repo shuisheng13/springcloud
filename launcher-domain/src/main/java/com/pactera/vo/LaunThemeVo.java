@@ -13,13 +13,13 @@ public class LaunThemeVo implements Serializable {
 	private static final long serialVersionUID = 8860802962131092316L;
 
 	private @ApiModelProperty("主键id") String id;
-	private @ApiModelProperty("排序权重") int sort;
+	private @ApiModelProperty("排序权重") Long sort;
 	private @ApiModelProperty("最低试用版本") String version;
 	private @ApiModelProperty("分辨率长") Long longResolution;
 	private @ApiModelProperty("分辨率宽") Long wideResolution;
 	private @ApiModelProperty("主题名称") String title;
-	private @ApiModelProperty("下载量") int downloadCount;
-	private @ApiModelProperty("应用量") int usedCount;
+	private @ApiModelProperty("下载量") Integer downloadCount;
+	private @ApiModelProperty("应用量") Integer usedCount;
 	private @ApiModelProperty("创建人id") String createId;
 	private @ApiModelProperty("创建人") String creator;
 	private @ApiModelProperty("主题描述") String description;
@@ -39,7 +39,7 @@ public class LaunThemeVo implements Serializable {
 	private @ApiModelProperty("主题包地址") String zipUrl;
 	private @ApiModelProperty("主题状态1:未上架2:已上架3:已下架4:删除") Integer status;
 	private @ApiModelProperty("价格") BigDecimal price;
-	private boolean recommend;
+	private Boolean recommend;
 	private Integer recommendSort;
 	private Long addition;
 }

@@ -281,15 +281,13 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	}
 
 	@Override
-	public int sort(String id, Integer sort) {
-		return launThemeMapper.updateByPrimaryKeySelective(
-				new LaunThemeAdministration().setSort(sort).setId(id));
+	public int sort(String id, Long sort) {
+        return launThemeMapper.sort(id, sort);
 	}
 
 	@Override
 	public int recommendSort(String id, Integer sort) {
-		return launThemeMapper.updateByPrimaryKeySelective(
-				new LaunThemeAdministration().setRecommendSort(sort).setId(id));
+		return 0;
 	}
 
 	private void themeJsonValid(LaunThemeSaveVo launThemeSaveVo){
@@ -325,7 +323,6 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 		BeanUtils.copyProperties(launThemeSaveVo, administration);
         //Long adminId = 0L;
         administration.setTenantId(String.valueOf(SaasHeaderContextV1.getTenantId()));
-        administration.setCreator(SaasHeaderContextV1.getUserName());
         String themeId = null;
 		/**
 		 * 当save为0时，只是保存widget。只保存对应json数据 当save为1是，保存整个主题，执行后续结构化数据及打包过程
@@ -337,12 +334,12 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 			administration.setWidgetJson(widgetJson);
 			administration.setBasicJson(baseJson);
 			administration.setThemeJson(themeJson);
-			//if (HStringUtlis.isNotBlank(administration.getStartTime())) {
-			//	administration.setStartTime(TimeUtils.millis2Date(Long.parseLong(administration.getStartTime())));
-			//}
-			//if (HStringUtlis.isNotBlank(administration.getEndTime()) {
-			//	administration.setEndTime(TimeUtils.millis2Date(Long.parseLong(administration.getEndTime())));
-			//}
+			if (HStringUtlis.isNotBlank(launThemeSaveVo.getStartTime())) {
+				administration.setStartTime(TimeUtils.millis2Date(Long.parseLong(launThemeSaveVo.getStartTime())));
+			}
+			if (HStringUtlis.isNotBlank(launThemeSaveVo.getEndTime())) {
+				administration.setEndTime(TimeUtils.millis2Date(Long.parseLong(launThemeSaveVo.getEndTime())));
+			}
 			//2019/1/4 xukj add start
             if(StringUtils.isNotBlank(administration.getId())) {
                 themeId = administration.getId();
@@ -354,7 +351,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 			themeId = this.id();
 			administration.setPreviewPath(this.saveThemeFile(administration.getFilesJson(), themeId).get("previewPath"))
 					.setId(themeId).setCreateDate(TimeUtils.nowTimeStamp())
-					.setRecommend(false).setRecommendSort(0).setSort(0)
+					.setRecommend(false).setRecommendSort(0).setSort(0L)
 					.setDownloadCount(0).setUsedCount(0).setAddition(0L)
 					.setPrice(null == administration.getPrice()?new BigDecimal(0):administration.getPrice())
 					.setStatus(ConstantUtlis.themeStatus.DOWN_SHELF.getCode());
@@ -375,7 +372,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 			//	launThemeMapper.insertSelective(administration);
 			//}
 
-			// 保存主题浏览图
+			//// 保存主题浏览图
 			//Map<String, String> filesJson = administration.getFilesJson();
 			//saveThemeFile(filesJson, themeId);
 
@@ -418,8 +415,10 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 			themeIdList.add(themeId);
 			administration.setId(themeId);
 			administration.setBasicJson(baseJson);
+			//xukj del start
 			//administration.setStartTime(TimeUtils.millis2Date(Long.parseLong(administration.getSTime())));
 			//administration.setEndTime(TimeUtils.millis2Date(Long.parseLong(administration.getETime())));
+			//xukj del end
 			administration.setWidgetJson(widgetJson);
 			administration.setCreatorChannelId(channleId);
 			administration.setThemeJson(themeJson);

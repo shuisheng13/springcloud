@@ -34,6 +34,13 @@ public interface LaunThemeMapper extends BaseMapper<LaunThemeAdministration> {
             @Param("status") Integer status);
 
 	/**
+	 * 排序
+	 * @param id
+	 * @return
+	 */
+	int sort(@Param("id") String id, @Param("sort") Long sort);
+
+	/**
 	 * @description 根据条件去查询主题
 	 * @author liudawei
 	 * @since 2018年4月26日 上午11:31:01

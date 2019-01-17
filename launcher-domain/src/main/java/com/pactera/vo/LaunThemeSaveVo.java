@@ -33,4 +33,5 @@ public class LaunThemeSaveVo {
     private BigDecimal price;
     private String startTime;
     private String endTime;
+    private Long fileSize;
 }

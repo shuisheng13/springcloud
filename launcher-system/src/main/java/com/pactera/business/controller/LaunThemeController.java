@@ -122,9 +122,8 @@ public class LaunThemeController {
      * @return
      */
     @PostMapping("/sort")
-    public ResultData sort(@NotNull(message = ValidMessage.FILE_NOT_NULL) String id, @NotNull(message = ValidMessage.SORT_NOT_NULL) @Min(1) Integer num) {
-        launThemeService.sort(id, num);
-        return new ResultData();
+    public ResultData sort(@NotNull(message = ValidMessage.FILE_NOT_NULL) String id, @NotNull(message = ValidMessage.SORT_NOT_NULL) @Min(1) Long num) {
+		return new ResultData(launThemeService.sort(id, num));
     }
 
     /**
