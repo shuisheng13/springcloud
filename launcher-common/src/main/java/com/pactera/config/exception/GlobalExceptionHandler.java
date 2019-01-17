@@ -60,6 +60,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(value = Exception.class)
 	public ResponseEntity<ResultData> defaultErrorHandler(HttpServletRequest request,HttpServletResponse response,Exception exception)  {
 		exception.printStackTrace();
+		logger.error(exception.getStackTrace());
 		if(exception instanceof DataStoreException){
 			DataStoreException httpException=(DataStoreException)exception;
 			return ResponseEntity.status(httpException.getHttpStatus()).body(new ResultData(httpException.getStatus(),httpException.getMessage()));
