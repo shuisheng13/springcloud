@@ -40,7 +40,6 @@ public class LaunThemeController {
 	/**
 	 * v2
 	 * 根据条件去查询主题列表
-     * @param tenantId 主题分类
 	 * @param type 主题分类
 	 * @param title 主题名称
 	 * @param status 主题状态
@@ -49,7 +48,7 @@ public class LaunThemeController {
 	 * @return
 	 */
 	@GetMapping("/query")
-	public ResultData query(Long tenantId, String type, String title, Integer status,
+	public ResultData query(String type, String title, Integer status,
                             @RequestParam(defaultValue = "1") int pageNum,
 			                @RequestParam(defaultValue = "10") int pageSize) {
 		return new ResultData(launThemeService.query(type, title, status, pageNum, pageSize));
