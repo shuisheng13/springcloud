@@ -114,13 +114,13 @@
           laun_theme_classification
         SET
           sort =
-          <foreach collection="list" item="item" index="index" separator=" " open="case id" close="end,">
-              when #{item.id} then #{item.sort}
-           </foreach>
-           update_date =
-           <foreach collection="list" item="item" index="index" separator=" " open="case id" close="end">
-              when #{item.id} then NOW()
-           </foreach>
+             <foreach collection="list" item="item" index="index" separator=" " open="case id" close="end,">
+                when #{item.id} then #{item.sort}
+             </foreach>
+          update_date =
+             <foreach collection="list" item="item" index="index" separator=" " open="case id" close="end">
+                when #{item.id} then NOW()
+             </foreach>
         WHERE
           id IN
           <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
@@ -128,6 +128,96 @@
           </foreach>
     </update>
 
+    <select id="selectClassIdByThemId" parameterType="java.util.List" resultType="com.pactera.domain.LaunThemeAdministration">
+         SELECT
+           id,
+           type_id as typeId,
+           status
+         FROM
+           laun_theme_administration
+         WHERE
+           id IN
+           <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+                #{item}
+           </foreach>
+    </select>
 
+    <select id="selectThemeCountByClassId" parameterType="java.util.Map" resultType="Integer">
+        SELECT
+          quantity
+        FROM
+          laun_theme_classification
+        WHERE
+          id IN
+            <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+               #{item,jdbcType=VARCHAR}
+            </foreach>
+        ORDER BY
+               FIND_IN_SET(id,#{order})
+    </select>
+
+    <select id="selectThemeCountUpByClassId" parameterType="java.util.List" resultType="Integer">
+        SELECT
+           shelf_count
+        FROM
+           laun_theme_classification
+        WHERE
+           id IN
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+            ORDER BY
+             FIND_IN_SET( id,FIND_IN_SET(id,#{order}))
+    </select>
+
+
+    <update id="upClassThemTypeInOrDe" parameterType="java.util.List">
+        UPDATE
+           laun_theme_classification
+        SET
+           quantity =
+        <foreach collection="list" item="item" index="index" separator=" " open="case id" close="end,">
+            when #{item.typeId} then #{item.quantity}
+        </foreach>
+        update_date =
+        <foreach collection="list" item="item" index="index" separator=" " open="case id" close="end">
+            when #{item.typeId} then NOW()
+        </foreach>
+            WHERE
+              id IN
+            <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+               #{item.typeId,jdbcType=VARCHAR}
+            </foreach>
+    </update>
+
+
+
+    <update id="upClassThemTypeUpOrDown" parameterType="java.util.List">
+        UPDATE
+        laun_theme_classification
+        SET
+        shelf_count =
+        <foreach collection="list" item="item" index="index" separator=" " open="case id" close="end,">
+            when #{item.typeId} then #{item.shelfCount}
+        </foreach>
+        update_date =
+        <foreach collection="list" item="item" index="index" separator=" " open="case id" close="end">
+            when #{item.typeId} then NOW()
+        </foreach>
+        WHERE
+        id IN
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item.typeId,jdbcType=VARCHAR}
+        </foreach>
+    </update>
+
+    <update id="updateThemTypeOrder">
+        UPDATE
+           laun_theme_classification
+        SET
+           sort = #{0}
+        WHERE
+           id = #{1}
+     </update>
 
 </mapper>
