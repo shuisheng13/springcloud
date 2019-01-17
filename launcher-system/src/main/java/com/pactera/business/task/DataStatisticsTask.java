@@ -57,7 +57,7 @@ public class DataStatisticsTask {
 	 * @date 2018年7月31日 下午2:49:33
 	 * @return void
 	 */
-	@Scheduled(cron = "${task.cron.getTodayStatistics}")
+	//@Scheduled(cron = "${task.cron.getTodayStatistics}")
 	@Async
 	public void taskStatistics() {
 
@@ -100,7 +100,7 @@ public class DataStatisticsTask {
 	 * @date 2018年7月31日 下午2:49:33
 	 * @return void
 	 */
-	@Scheduled(cron = "${task.cron.getThemeStatistics}")
+	//@Scheduled(cron = "${task.cron.getThemeStatistics}")
 	@Async
 	public void taskTodayNum() {
 		// 获取渠道信息集合
@@ -172,7 +172,7 @@ public class DataStatisticsTask {
 	 * @return void
 	 */
 	@Async
-	@Scheduled(cron = "${task.cron.getThemeEffeStatistics}")
+	//@Scheduled(cron = "${task.cron.getThemeEffeStatistics}")
 	public void getThemeEffeStatistics() {
 		// 根据渠道查询有效主题数量
 		List<Map<String, String>> list = launThemeService.getEffeCount();
