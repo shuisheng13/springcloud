@@ -127,7 +127,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
      * @Param themeClassName, themeClassId, coverImage
      **/
     @Override
-    public ResponseEntity<ResultData> upThemeClass(String themeClassName, String id, MultipartFile coverImage) {
+    public ResponseEntity<ResultData> upThemeClass(String themeClassName, String id, String coverImage) {
         // 校验名字字符是否超过8字符
         if (themeClassName.length() > 8) {
             ResultData resultData = new ResultData(ErrorStatus.NAME_CLASS_LAUNTHEM_REEOR.status(), ErrorStatus.NAME_CLASS_LAUNTHEM_REEOR.message());
@@ -164,22 +164,10 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
         }*/
         themeClass.setTenantId(SaasHeaderContextV1.getTenantId() + "");
         themeClass.setId(id);
-        String coverImageUrl = launFileCrudService.fileUpload(coverImage);
-        if (coverImageUrl == null) {
-            ResultData resultData = new ResultData(ErrorStatus.WIDGETUPLOAD_ERROR.status(), ErrorStatus.WIDGETUPLOAD_ERROR.message());
-            return ResponseEntity.ok(resultData);
-        } else {
-            themeClass.setCoverImage(coverImageUrl);
-        }
-        int i = LauncThemeClassMapper.updateByThemClassId(themeClass);
-        if (i == 1) {
-            ResultData resultData = new ResultData();
-            return ResponseEntity.ok(resultData);
-        } else {
-            ResultData resultData = new ResultData(400, "更新失败");
-            return ResponseEntity.ok(resultData);
-        }
-
+        themeClass.setCoverImage(coverImage);
+        LauncThemeClassMapper.updateByThemClassId(themeClass);
+        ResultData resultData = new ResultData();
+        return ResponseEntity.ok(resultData);
     }
 
     /**
@@ -389,20 +377,14 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
         // 所有的主题分类id
         Set<String> typeIdAllSet = map.keySet();
         List<String> typeIdAll = new ArrayList<>(typeIdAllSet);
-        String s1="";
-        for (String s:typeIdAll){ s1=s1+s; }
-        // 主题分类下的主题数量
-        Map<String,Object> map1 = new HashMap<>();
-        map1.put("list",typeIdAll);
-        map1.put("order",s1);
-        List<Integer> list = LauncThemeClassMapper.selectThemeCountByClassId(map1);
+        List<Integer> list = LauncThemeClassMapper.selectThemeCountByClassId(typeIdAll);
         if (typeIdAll.size() != list.size()){
              throw new NullPointerException("根据主题分类查询主题数量异常");
         }
         int i = 0;
         // 要更新得集合
         List<Map> listMap = new ArrayList<>();
-        typeIdAll.forEach(typeId->{
+        for (String typeId:typeIdAll){
             Map<String, Object> upClassSta = new HashMap<>();
             if(status==1){// 添加
                 int type= (Integer)map.get(typeId) + list.get(i);
@@ -418,7 +400,8 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
             }else {
                 throw new NullPointerException("status只能为0或1");
             }
-        });
+            i=i+1;
+        }
         //更新状态
         LauncThemeClassMapper.upClassThemTypeInOrDe(listMap);
         if (status==0){
@@ -452,35 +435,31 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
         // 所有的主题分类id
         Set<String> typeIdAllSet = map.keySet();
         List<String> typeIdAll = new ArrayList<>(typeIdAllSet);
-        String s1="";
-        for (String s:typeIdAll){ s1=s1+s; }
         // 主题分类下的主题数量
-        Map<String,Object> map1 = new HashMap<>();
-        map1.put("list",typeIdAll);
-        map1.put("order",s1);
-        // 主题分类下的主题数量
-        List<Integer> list = LauncThemeClassMapper.selectThemeCountUpByClassId(map1);
+        List<Integer> list = LauncThemeClassMapper.selectThemeCountUpByClassId(typeIdAll);
         if (typeIdAll.size() != list.size()){throw new NullPointerException("根据主题分类查询主题数量异常");}
         int i = 0;
         // 要更新得集合
         List<Map> listMap = new ArrayList<>();
-        typeIdAll.forEach(typeId->{
+        for(String typeId:typeIdAll) {
             Map<String, Object> upClassSta = new HashMap<>();
-            if(status==1){// 上架
-                int type= (Integer)map.get(typeId) + list.get(i);
-                upClassSta.put("typeId",typeId);
-                upClassSta.put("shelfCount",type);
+            if (status == 1) {// 上架
+                int type = (Integer) map.get(typeId) + list.get(i);
+                upClassSta.put("typeId", typeId);
+                upClassSta.put("shelfCount", type);
                 listMap.add(upClassSta);
-            }else if (status==0){ // 下架
-                int type= list.get(i)-(Integer)map.get(typeId);
+                i=i+1;
+            } else if (status == 0) { // 下架
+                int type = list.get(i) - (Integer) map.get(typeId);
                 int type1 = (type < 0) ? 0 : type;
-                upClassSta.put("typeId",typeId);
-                upClassSta.put("shelfCount",type1);
+                upClassSta.put("typeId", typeId);
+                upClassSta.put("shelfCount", type1);
                 listMap.add(upClassSta);
-            }else {
+                i=i+1;
+            } else {
                 throw new NullPointerException("status只能为0或1");
             }
-        });
+        }
         //更新状态
         LauncThemeClassMapper.upClassThemTypeUpOrDown(listMap);
         return "ok";

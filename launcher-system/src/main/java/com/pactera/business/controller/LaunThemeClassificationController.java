@@ -2,6 +2,7 @@ package com.pactera.business.controller;
 import com.pactera.business.service.LauncThemeClassificationV2Service;
 import com.pactera.result.ResultData;
 import io.swagger.annotations.*;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,7 +35,7 @@ public class LaunThemeClassificationController {
             @ApiImplicitParam(name = "themeClassName", value = "主题名称",paramType="query",required = true)    })
     public ResponseEntity<ResultData> addthemeClass(String themeClassName, @ApiParam(name = "coverImage",value="上传文件",required=true) MultipartFile coverImage) {
 
-        if (themeClassName == null){
+        if (StringUtils.isBlank(themeClassName)){
             ResultData resultData = new ResultData(400,"themeClassName不能为空");
             return  ResponseEntity.ok(resultData);
         }
@@ -60,7 +61,7 @@ public class LaunThemeClassificationController {
             @ApiImplicitParam(name = "themeClassName", value = "主题名称",paramType="query",required = true),
             @ApiImplicitParam(name = "id", value = "主题Id",paramType="query",required = true)
     })
-    public ResponseEntity<ResultData> upThemeClass(String themeClassName, String id, @ApiParam(name = "coverImage",value="上传文件",required=true) MultipartFile coverImage) {
+    public ResponseEntity<ResultData> upThemeClass(String themeClassName, String id,  String coverImage) {
         ResponseEntity<ResultData> upThemeClass = launcThemeClassificationService.upThemeClass(themeClassName, id, coverImage);
         return  upThemeClass;
     }

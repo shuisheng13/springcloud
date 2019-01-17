@@ -67,7 +67,7 @@ public interface LaunThemeClassificationV2Mapper extends BaseMapper<LaunThemeCla
      * @Param
      * @return
      **/
-    List<Integer> selectThemeCountByClassId(Map map);
+    List<Integer> selectThemeCountByClassId(@Param("list")List<String> list);
 
     /**
      * 查询主题上架的数量
@@ -76,7 +76,7 @@ public interface LaunThemeClassificationV2Mapper extends BaseMapper<LaunThemeCla
      * @Param
      * @return
      **/
-    List<Integer> selectThemeCountUpByClassId(Map map);
+    List<Integer> selectThemeCountUpByClassId(@Param("list")List<String> list);
 
     /**
      * 批量更新分类下主题数量

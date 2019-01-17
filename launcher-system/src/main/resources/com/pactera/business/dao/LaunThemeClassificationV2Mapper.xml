@@ -152,8 +152,13 @@
             <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
                #{item,jdbcType=VARCHAR}
             </foreach>
-        ORDER BY
-               FIND_IN_SET(id,#{order})
+        order by
+           field(
+           id,
+             <foreach collection="list" index="index" item="item" separator=",">
+               #{item}
+             </foreach>
+        )
     </select>
 
     <select id="selectThemeCountUpByClassId" parameterType="java.util.List" resultType="Integer">
@@ -163,11 +168,16 @@
            laun_theme_classification
         WHERE
            id IN
-        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
-            #{item,jdbcType=VARCHAR}
-        </foreach>
-            ORDER BY
-             FIND_IN_SET( id,FIND_IN_SET(id,#{order}))
+           <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+              #{item,jdbcType=VARCHAR}
+           </foreach>
+        order by
+          field(
+           id,
+             <foreach collection="list" index="index" item="item" separator=",">
+               #{item}
+             </foreach>
+           )
     </select>
 
 

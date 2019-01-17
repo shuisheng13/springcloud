@@ -8,6 +8,7 @@ import java.net.URL;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.pactera.result.ResultData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,9 +33,9 @@ public class LaunFileCrudController {
 	@PostMapping("fileUpload")
 	@ApiOperation("文件上传")
 	@ApiImplicitParam(name = "file", value = "接受文件的参数名")
-	public ResponseEntity<String> fileUpload(MultipartFile file) {
+	public ResponseEntity<ResultData> fileUpload(MultipartFile file) {
 		String fileUploadName = storeFileCrudService.fileUpload(file);
-		return ResponseEntity.ok(fileUploadName);
+		return ResponseEntity.ok(new ResultData(fileUploadName));
 	}
 
 	@ApiOperation("文件下载")

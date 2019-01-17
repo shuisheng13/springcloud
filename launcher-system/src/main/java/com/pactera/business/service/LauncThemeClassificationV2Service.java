@@ -29,7 +29,7 @@ public interface LauncThemeClassificationV2Service {
      * @Param themeClassName,themeClassId,coverImage
      * @return ResponseEntity<ResultData>
      **/
-    ResponseEntity<ResultData> upThemeClass(String themeClassName, String themeClassId,MultipartFile coverImage);
+    ResponseEntity<ResultData> upThemeClass(String themeClassName, String themeClassId,String coverImage);
 
     /**
      * 删除主题
