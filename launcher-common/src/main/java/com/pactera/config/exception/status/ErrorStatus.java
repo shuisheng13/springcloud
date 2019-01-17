@@ -30,6 +30,7 @@ public enum ErrorStatus {
 
 
 	HTTP_REQUEST_METHOD_ERROR(400001,"请求方式错误"),
+	THEMEJSON_ERROR(400002,"themeJson格式有误，转换异常"),
 	NOT_APIKEY(140014,"无效apiKey"),
 
 	UPLOAD_THEME_NO_IMGS(150001,"上传资源包中缺少imgs包"),

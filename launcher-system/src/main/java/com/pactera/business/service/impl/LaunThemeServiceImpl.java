@@ -319,8 +319,10 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 	public String saveTheme(String baseJson, String widgetJson, String themeJson, Integer saveType) {
 
         LaunThemeSaveVo launThemeSaveVo = JsonUtils.jsonToClass(themeJson, LaunThemeSaveVo.class);
+        if(null == launThemeSaveVo) {throw new DataStoreException(ErrorStatus.THEMEJSON_ERROR);}
         this.themeJsonValid(launThemeSaveVo);
         LaunThemeAdministration administration = new LaunThemeAdministration();
+        //TODO 有待调查
         //BeanCopier.create(LaunThemeSaveVo.class, LaunThemeAdministration.class, true)
         //        .copy(launThemeSaveVo, administration, (Object v, Class t, Object c)->v);
 		BeanUtils.copyProperties(launThemeSaveVo, administration);
@@ -331,8 +333,6 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 		 * 当save为0时，只是保存widget。只保存对应json数据 当save为1是，保存整个主题，执行后续结构化数据及打包过程
 		 */
 		if (saveType == 0) {
-
-			log.info("主题管理----------暂存主题----------id:{}----------", themeId);
 
 			administration.setWidgetJson(widgetJson);
 			administration.setBasicJson(baseJson);
