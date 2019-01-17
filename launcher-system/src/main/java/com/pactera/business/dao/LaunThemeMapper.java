@@ -28,7 +28,7 @@ public interface LaunThemeMapper extends BaseMapper<LaunThemeAdministration> {
 	 * @return
 	 */
 	List<LaunThemeAdministration> query(
-	        @Param("tenantId") Long tenantId,
+	        @Param("tenantId") Integer tenantId,
             @Param("typeId") String typeId,
             @Param("title") String title,
             @Param("status") Integer status);

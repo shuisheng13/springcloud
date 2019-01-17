@@ -52,7 +52,7 @@ public class LaunThemeController {
 	public ResultData query(Long tenantId, String type, String title, Integer status,
                             @RequestParam(defaultValue = "1") int pageNum,
 			                @RequestParam(defaultValue = "10") int pageSize) {
-		return new ResultData(launThemeService.query(tenantId, type, title, status, pageNum, pageSize));
+		return new ResultData(launThemeService.query(type, title, status, pageNum, pageSize));
 	}
 
 

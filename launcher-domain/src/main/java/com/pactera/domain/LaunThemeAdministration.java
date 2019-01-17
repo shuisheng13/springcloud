@@ -54,7 +54,7 @@ public class LaunThemeAdministration {
 	private String previewPath;
 	private String urls;
 	private String description;
-    private Long sort;
+    private Integer sort;
     private Integer downloadCount;
     private Integer usedCount;
     private String author;

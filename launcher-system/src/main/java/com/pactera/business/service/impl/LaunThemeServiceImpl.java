@@ -109,10 +109,9 @@ public class LaunThemeServiceImpl implements LaunThemeService {
     private ThemeSaveValidator validator;
 
 	@Override
-	public LaunPage<LaunThemeVo> query(Long tenantId, String typeId, String title, Integer status, int pageNum, int pageSize) {
-
+	public LaunPage<LaunThemeVo> query(String typeId, String title, Integer status, int pageNum, int pageSize) {
         PageInfo<LaunThemeAdministration> pageInfo = PageHelper.startPage(pageNum, pageSize).doSelectPageInfo(
-                () -> launThemeMapper.query(tenantId, typeId, title, status));
+                () -> launThemeMapper.query(SaasHeaderContextV1.getTenantIdInt(), typeId, title, status));
         BeanCopier beanCopier = BeanCopier.create(LaunThemeAdministration.class, LaunThemeVo.class,true);
         List<LaunThemeVo> themes = pageInfo.getList().stream().map(theme->{
             LaunThemeVo themeVo = new LaunThemeVo();
@@ -351,7 +350,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 			themeId = this.id();
 			administration.setPreviewPath(this.saveThemeFile(administration.getFilesJson(), themeId).get("previewPath"))
 					.setId(themeId).setCreateDate(TimeUtils.nowTimeStamp())
-					.setRecommend(false).setRecommendSort(0).setSort(0L)
+					.setRecommend(false).setRecommendSort(0).setSort(0)
 					.setDownloadCount(0).setUsedCount(0).setAddition(0L)
 					.setPrice(null == administration.getPrice()?new BigDecimal(0):administration.getPrice())
 					.setStatus(ConstantUtlis.themeStatus.DOWN_SHELF.getCode());
