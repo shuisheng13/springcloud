@@ -109,7 +109,7 @@ public class LaunThemeController {
 	 * @return ResponseEntity<ResultData>
 	 */
 	@PostMapping("/status")
-	public ResultData modifyStatus(@NotNull(message = ValidMessage.ID_NOT_NULL) String[] ids, @ThemeStatus(message = "{theme.mess}") Integer status) {
+	public ResultData modifyStatus(@NotNull(message = ValidMessage.ID_NOT_NULL) String[] ids, @ThemeStatus Integer status) {
 		return new ResultData(launThemeService.changeStatus(Arrays.asList(ids), status));
 	}
 

@@ -127,7 +127,11 @@ public class LaunThemeServiceImpl implements LaunThemeService {
     @Transactional(rollbackFor = Exception.class)
     public int changeStatus(List<String> ids, Integer status) {
 
-        launcThemeClassificationV2Service.upThemeClassCountUpOrDown(status == ConstantUtlis.themeStatus.ON_SHELF.getCode()? 1:0, ids);
+        if(status == ConstantUtlis.themeStatus.DELETE.getCode()){
+            launcThemeClassificationV2Service.upThemeClassCount(0, ids);
+        }else {
+            launcThemeClassificationV2Service.upThemeClassCountUpOrDown(status == ConstantUtlis.themeStatus.ON_SHELF.getCode()? 1:0, ids);
+        }
 		return launThemeMapper.changeStatus(ids, status);
     }
 
