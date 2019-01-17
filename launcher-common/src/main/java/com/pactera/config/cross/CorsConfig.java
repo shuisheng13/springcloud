@@ -1,12 +1,11 @@
 package com.pactera.config.cross;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-@Configuration
+//@Configuration
 public class CorsConfig {
 	private CorsConfiguration buildConfig() {
 		CorsConfiguration corsConfiguration = new CorsConfiguration();
