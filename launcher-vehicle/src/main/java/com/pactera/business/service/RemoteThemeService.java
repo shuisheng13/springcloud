@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @Version
  */
 
-@FeignClient(url="http://127.0.0.1:9091/", name="system")
+@FeignClient("launcher-service")
 public interface RemoteThemeService {
 
     @RequestMapping(method = RequestMethod.GET, value = "/theme/detail/{id}")
