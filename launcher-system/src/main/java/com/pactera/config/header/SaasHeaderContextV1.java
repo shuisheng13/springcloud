@@ -7,7 +7,7 @@ import com.navinfo.wecloud.common.filter.SaasHeaderContext;
 /**
  *  saas head透传context
  *  @Author zhaodong
- * @Date 2019/1/3 9:11
+ *  @Date 2019/1/3 9:11
  */
 public class SaasHeaderContextV1 {
 
@@ -16,7 +16,7 @@ public class SaasHeaderContextV1 {
         if (tenantId!=null) {
             return tenantId + "";
         }else {
-            throw new NullPointerException("租户id不能为空");
+            throw new NullPointerException("获取租户id失败，租户id为空");
         }
     }
 
@@ -25,7 +25,7 @@ public class SaasHeaderContextV1 {
         if (tenantId != null) {
             return tenantId;
         } else {
-            throw new NullPointerException("租户id不能为空");
+            throw new NullPointerException("获取租户id失败，租户id为空");
         }
     }
 
@@ -53,7 +53,7 @@ public class SaasHeaderContextV1 {
         if(!StringUtils.isBlank(SaasHeaderContext.getUserName()) ){
             return SaasHeaderContext.getUserName();
         }else{
-            throw new NullPointerException("用户名字不能为空");
+            throw new NullPointerException("获取用户名字失败，用户名字为空");
         }
     }
 
@@ -66,7 +66,7 @@ public class SaasHeaderContextV1 {
                 e.printStackTrace();
             }
         }else{
-            throw new NullPointerException("租户名字不能为空");
+            throw new NullPointerException("获取租户名字失败，租户名字为空");
         }
         return null;
     }

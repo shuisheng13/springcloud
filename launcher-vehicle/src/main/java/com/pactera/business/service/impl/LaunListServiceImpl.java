@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.navinfo.wecloud.common.rest.response.CommonResult;
 import com.navinfo.wecloud.saas.api.facade.ApiKeyFacade;
+import com.navinfo.wecloud.saas.api.facade.TenantFacade;
 import com.navinfo.wecloud.saas.api.response.TenantInfo;
 import com.pactera.business.dao.LaunVehicleListMapper;
 import com.pactera.business.service.LaunListService;
@@ -12,10 +13,12 @@ import com.pactera.domain.LaunThemeAdministration;
 import com.pactera.dto.ThemClassDTO;
 import com.pactera.dto.ThemListDTO;
 import com.pactera.result.ResultData;
+import com.pactera.vo.LaunPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
+
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -25,11 +28,12 @@ import java.util.List;
 @Service
 public class LaunListServiceImpl implements LaunListService {
 
-    @Autowired
+    @Resource
     private ApiKeyFacade apiKeyFacade;
 
-    @Autowired
+    @Resource
     private LaunVehicleListMapper launVehicleListMapper;
+
 
     /**
      * 主题分类列表
@@ -64,23 +68,22 @@ public class LaunListServiceImpl implements LaunListService {
     public ResponseEntity<ResultData> themTopAndAll(String apiKey,int status, int pageNum, int pageSize){
         CommonResult<TenantInfo> tenantInfoCommonResult = apiKeyFacade.queryTenantByApiKey(apiKey);
         TenantInfo data = tenantInfoCommonResult.getData();
-
         if (data==null){
             return ResponseEntity.ok().body(new ResultData(ErrorStatus.NOT_APIKEY.status(),ErrorStatus.NOT_APIKEY.message()));
         }
         int tenanId = data.getId();
         PageHelper.startPage(pageNum, pageSize);
-        List<ThemListDTO> themListDTOS=new ArrayList<>();
         LaunThemeAdministration LaunThemeVo = new LaunThemeAdministration();
         LaunThemeVo.setTenantId(tenanId+"");
         if (status==1) LaunThemeVo.setSort(-1);// 全部标记
         else if (status==2) LaunThemeVo.setDownloadCount(-1);// 排行标记
         else if (status==3) LaunThemeVo.setRecommendSort(-1);// 推荐标记
         else return ResponseEntity.ok().body(new ResultData(ErrorStatus.SYS_ERROR.status(),ErrorStatus.SYS_ERROR.message()));// 暂时提供系统错误
-        themListDTOS = launVehicleListMapper.themTopAndByClassId(LaunThemeVo);
+        List<ThemListDTO> themListDTOS = launVehicleListMapper.themTopAndByClassId(LaunThemeVo);
         PageInfo<ThemListDTO> PageInfo = new PageInfo<>(themListDTOS);
         JSONObject json = new JSONObject();
-        json.put("list",PageInfo);
+        json.put("list",new LaunPage(PageInfo, themListDTOS));
+
         ResultData resultData = new ResultData(json);
         return ResponseEntity.ok().body(resultData);
     }
@@ -97,7 +100,6 @@ public class LaunListServiceImpl implements LaunListService {
         PageHelper.startPage(pageNum, pageSize);
         CommonResult<TenantInfo> tenantInfoCommonResult = apiKeyFacade.queryTenantByApiKey(apiKey);
         TenantInfo data = tenantInfoCommonResult.getData();
-
         if (data==null){
             return ResponseEntity.ok().body(new ResultData(ErrorStatus.NOT_APIKEY.status(),ErrorStatus.NOT_APIKEY.message()));
         }
@@ -105,10 +107,11 @@ public class LaunListServiceImpl implements LaunListService {
         LaunThemeAdministration LaunThemeVo = new LaunThemeAdministration();
         LaunThemeVo.setTenantId(tenanId+"");
         LaunThemeVo.setTypeId(id); // id
+        LaunThemeVo.setDownloadCount(-1);//分类的主题列表按照下载量排序
         List<ThemListDTO> themListDTOS = launVehicleListMapper.themTopAndByClassId(LaunThemeVo);
         PageInfo<ThemListDTO> PageInfo = new PageInfo<>(themListDTOS);
         JSONObject json = new JSONObject();
-        json.put("list",PageInfo);
+        json.put("list",new LaunPage(PageInfo, themListDTOS));
         ResultData resultData = new ResultData(json);
         return ResponseEntity.ok().body(resultData);
     }

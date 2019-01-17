@@ -17,5 +17,7 @@ public class ThemListDTO {
 
     private String id;
 
-    private String price;
+    private String price="0";
+
+
 }

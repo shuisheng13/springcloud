@@ -111,4 +111,13 @@ public interface LauncThemeClassificationV2Service {
      * @return
      **/
     ResponseEntity<ResultData> themeClassByTid();
+
+     /**
+      * 单个权重排序
+      * @Author zhaodong
+      * @Date 11:04 2019/1/17
+      * @Param
+      * @return
+      **/
+    ResponseEntity<ResultData> updateThemTypeOrder(String id,int order);
 }

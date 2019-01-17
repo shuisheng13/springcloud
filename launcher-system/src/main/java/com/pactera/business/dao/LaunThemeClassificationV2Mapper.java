@@ -1,10 +1,12 @@
 package com.pactera.business.dao;
 import com.pactera.config.mapper.BaseMapper;
+import com.pactera.domain.LaunThemeAdministration;
 import com.pactera.domain.LaunThemeClassificationV2;
 import com.pactera.vo.LauncThemeClassVo;
 import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *  主题分类管理
@@ -48,5 +50,59 @@ public interface LaunThemeClassificationV2Mapper extends BaseMapper<LaunThemeCla
      * @return
      **/
     int orderThemeClass(@Param("list") List<Map> listMap);
+
+    /**
+     * 根据主题id查询分类id
+     * @Author zhaodong
+     * @Date 9:45 2019/1/16
+     * @Param
+     * @return
+     **/
+    List<LaunThemeAdministration> selectClassIdByThemId(@Param("list") List<String> themId);
+
+    /**
+     * 查询主题的数量
+     * @Author zhaodong
+     * @Date 11:01 2019/1/16
+     * @Param
+     * @return
+     **/
+    List<Integer> selectThemeCountByClassId(Map map);
+
+    /**
+     * 查询主题上架的数量
+     * @Author zhaodong
+     * @Date 11:01 2019/1/16
+     * @Param
+     * @return
+     **/
+    List<Integer> selectThemeCountUpByClassId(Map map);
+
+    /**
+     * 批量更新分类下主题数量
+     * @Author zhaodong
+     * @Date 11:41 2019/1/16
+     * @Param
+     * @return
+     **/
+    void upClassThemTypeInOrDe(@Param("list") List<Map> themId);
+
+    /**
+     * 批量更新分类下主题上架数量
+     * @Author zhaodong
+     * @Date 11:41 2019/1/16
+     * @Param
+     * @return
+     **/
+    void upClassThemTypeUpOrDown(@Param("list") List<Map> themId);
+
+    /**
+     * 单个修改权重
+     * @Author zhaodong
+     * @Date 11:01 2019/1/17
+     * @Param
+     * @return
+     **/
+    void updateThemTypeOrder(int sort,String id);
 
 }

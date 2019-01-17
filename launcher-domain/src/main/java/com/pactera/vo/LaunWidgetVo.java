@@ -26,7 +26,7 @@ public class LaunWidgetVo implements Serializable{
 	private @ApiModelProperty("组合变体的父节点") Long parentId;
 	private @ApiModelProperty("坐标") String lattice;
 	private @ApiModelProperty("根节点") Long rootId;
-	private @ApiModelProperty("创建人id") Long creator;
+	//private @ApiModelProperty("创建人id") Long creator;
 	private @ApiModelProperty("创建类型") Integer createway;
 	private @ApiModelProperty("使用渠道") Integer channelway;
 	private @ApiModelProperty("组合变体，组合基础变体的所属id") Long belongId;
@@ -36,8 +36,11 @@ public class LaunWidgetVo implements Serializable{
 	private @ApiModelProperty("widget类型名称") String widgetTypeName;
 	private @ApiModelProperty("分类名称") String typeName;
 	private @ApiModelProperty("版本名称") String versionName;
-	private @ApiModelProperty("使用渠道名称") String channelName;
-	private @ApiModelProperty("创建渠道名称") String channelUserName;
-	private @ApiModelProperty("创建人渠道") String channelId;
+	//Jump添加
+	private @ApiModelProperty("创建账户名") String author;
+
+	//private @ApiModelProperty("使用渠道名称") String channelName;
+	//private @ApiModelProperty("创建渠道名称") String channelUserName;
+	//private @ApiModelProperty("创建人渠道") String channelId;
 	
 }

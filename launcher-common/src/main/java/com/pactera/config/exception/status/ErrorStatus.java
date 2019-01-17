@@ -30,7 +30,7 @@ public enum ErrorStatus {
 
 
 	HTTP_REQUEST_METHOD_ERROR(400001,"请求方式错误"),
-	NOT_APIKEY(140011,"无效apiKey"),
+	NOT_APIKEY(140014,"无效apiKey"),
 
 	UPLOAD_THEME_NO_IMGS(150001,"上传资源包中缺少imgs包"),
 	UPLOAD_THEME_NO_CONFIG(150002,"上传资源包中缺少config文件"),
@@ -42,7 +42,8 @@ public enum ErrorStatus {
 
     NAME_CLASS_LAUNTHEM_ADD(140011, "添加主题分类重名"),
     NAME_CLASS_LAUNTHEM_REEOR(140012, "添加主题分类字数超过8字符"),
-    NAME_CLASS_LAUNTHEM_UP(140013, "编辑主题分类重名")
+    NAME_CLASS_LAUNTHEM_UP(140013, "编辑主题分类重名"),
+	SERVICE_ERROR_CLIENTEXCEPTION(140014,"连接其他服务异常")
 	;
 	
 	private int status;

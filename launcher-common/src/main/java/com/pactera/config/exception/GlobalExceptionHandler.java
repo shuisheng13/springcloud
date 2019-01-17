@@ -1,5 +1,6 @@
 package com.pactera.config.exception;
 
+import com.netflix.client.ClientException;
 import com.pactera.config.exception.status.ErrorStatus;
 import com.pactera.result.ResultData;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
@@ -26,6 +27,13 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ResultData> NullPointerHandler(Exception exception)  {
         exception.printStackTrace();
 	    return new ResponseEntity<>(new ResultData(exception.getMessage(), ErrorStatus.PARAMETER_ERROR),HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(value = ClientException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ResponseEntity<ResultData> ClientException(Exception exception)  {
+		exception.printStackTrace();
+		return new ResponseEntity<>(new ResultData(exception.getMessage(), ErrorStatus.SERVICE_ERROR_CLIENTEXCEPTION),HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
