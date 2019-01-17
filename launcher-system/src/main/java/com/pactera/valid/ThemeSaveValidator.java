@@ -31,7 +31,7 @@ public class ThemeSaveValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", "描述不能为空");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "author", "作者不能为空");
         ValidationUtils.rejectIfEmpty(errors, "releaseTime", "发布时间不能为空");
-
+        ValidationUtils.rejectIfEmpty(errors, "typeId", "主题分类不能为空");
         LaunThemeSaveVo p = (LaunThemeSaveVo) obj;
         //if (p.getAge() < 0) {
         //    e.rejectValue("age", "negativevalue");
