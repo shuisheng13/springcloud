@@ -58,7 +58,10 @@ public class LaunVersionServiceImpl implements LaunVersionService {
 
     @Override
     public List<LaunVersionsVo> list() {
-        List<LaunVersions> list = versionMapper.select(new LaunVersions().setTenantId(SaasHeaderContextV1.getTenantIdInt()));
+        Example example = new Example(LaunVersions.class);
+        example.or().andEqualTo("tenantId", SaasHeaderContextV1.getTenantIdInt());
+        example.setOrderByClause("version DESC");
+        List<LaunVersions> list = versionMapper.selectByExample(example);
         return this.po2vo(list);
     }
 
