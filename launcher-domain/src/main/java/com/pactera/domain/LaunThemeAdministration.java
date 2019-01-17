@@ -63,7 +63,7 @@ public class LaunThemeAdministration {
 	private Integer recommendSort;
 	private BigDecimal price;
 	private String tenantId;
-	private Long addition;
+	private Integer addition;
 
 	@Transient
 	@JsonProperty("sTime")

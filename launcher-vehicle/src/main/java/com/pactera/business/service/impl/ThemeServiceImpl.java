@@ -38,7 +38,7 @@ public class ThemeServiceImpl implements ThemeService {
 
     @Override
     public List<ThemeListVO> search(String value, String apiKey) {
-        String tenantId = apiKeyFacade.queryTenantByApiKey(apiKey).getData().getId() + "";
+        Integer tenantId = apiKeyFacade.queryTenantByApiKey(apiKey).getData().getId();
         List<LaunThemeAdministration> launThemeAdministrations = launThemeMapper.search(value, tenantId);
         List<ThemeListVO> themeLists = new ArrayList<>();
         BeanCopier beanCopier = BeanCopier.create(LaunThemeAdministration.class ,ThemeListVO.class,true);
@@ -69,7 +69,7 @@ public class ThemeServiceImpl implements ThemeService {
         BeanCopier.create(LaunThemeVo.class ,ThemeVO.class,true)
                 .copy(theme, themeVo, (Object o, Class aClass, Object o1)-> o);
 
-
+        themeVo.setDownloadCount(themeVo.getDownloadCount() + themeVo.getAddition());
         BeanCopier beanCopier = BeanCopier.create(LaunThemeFileVo.class ,ThemeFileVO.class,false);
         List<ThemeFileVO> nfiles = new ArrayList<>();
         files.forEach(f->{

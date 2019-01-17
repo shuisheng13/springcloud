@@ -41,5 +41,5 @@ public class LaunThemeVo implements Serializable {
 	private @ApiModelProperty("价格") BigDecimal price;
 	private Boolean recommend;
 	private Integer recommendSort;
-	private Long addition;
+	private Integer addition;
 }

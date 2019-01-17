@@ -351,7 +351,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 			administration.setPreviewPath(this.saveThemeFile(administration.getFilesJson(), themeId).get("previewPath"))
 					.setId(themeId).setCreateDate(TimeUtils.nowTimeStamp())
 					.setRecommend(false).setRecommendSort(0).setSort(0)
-					.setDownloadCount(0).setUsedCount(0).setAddition(0L)
+					.setDownloadCount(0).setUsedCount(0).setAddition(0)
 					.setPrice(null == administration.getPrice()?new BigDecimal(0):administration.getPrice())
 					.setStatus(ConstantUtlis.themeStatus.DOWN_SHELF.getCode());
 			launThemeMapper.insertSelective(administration);
