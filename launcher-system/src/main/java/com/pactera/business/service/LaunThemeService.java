@@ -32,6 +32,7 @@ public interface LaunThemeService {
 
     /**
      * v2 版本 删除，上下架 禁用启用使用
+	 * 状态类型有：上架/下架（2，3）  删除（-1） 禁用/启用【未上架】（0，1）
      * @param ids
      * @param status
      */
