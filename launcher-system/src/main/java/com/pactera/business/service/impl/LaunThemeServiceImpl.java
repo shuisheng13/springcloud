@@ -3,6 +3,7 @@ package com.pactera.business.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.tobato.fastdfs.service.FastFileStorageClient;
+import com.navinfo.wecloud.saas.api.facade.TenantFacade;
 import com.pactera.business.dao.LaunThemeMapper;
 import com.pactera.business.service.*;
 import com.pactera.config.exception.DataStoreException;
@@ -35,7 +36,6 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -80,6 +80,8 @@ public class LaunThemeServiceImpl implements LaunThemeService {
     @Autowired
     public FastFileStorageClient fastFileStorageClient;
 
+	@Autowired
+	private TenantFacade tenantFacade;
 
     @Autowired
 	private LaunThemeMapper launThemeMapper;
@@ -116,6 +118,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
         List<LaunThemeVo> themes = pageInfo.getList().stream().map(theme->{
             LaunThemeVo themeVo = new LaunThemeVo();
             beanCopier.copy(theme, themeVo, (Object v, Class t, Object c)->v);
+			themeVo.setCreator(tenantFacade.getTenant(theme.getTenantId()).getData().getName());
             return themeVo;
         }).collect(Collectors.toList());
 
@@ -327,7 +330,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
         //        .copy(launThemeSaveVo, administration, (Object v, Class t, Object c)->v);
 		BeanUtils.copyProperties(launThemeSaveVo, administration);
         //Long adminId = 0L;
-        administration.setTenantId(String.valueOf(SaasHeaderContextV1.getTenantId()));
+        administration.setTenantId(SaasHeaderContextV1.getTenantIdInt());
         String themeId = null;
 		/**
 		 * 当save为0时，只是保存widget。只保存对应json数据 当save为1是，保存整个主题，执行后续结构化数据及打包过程

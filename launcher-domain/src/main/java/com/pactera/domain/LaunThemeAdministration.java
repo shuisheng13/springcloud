@@ -62,7 +62,7 @@ public class LaunThemeAdministration {
 	private Boolean recommend;
 	private Integer recommendSort;
 	private BigDecimal price;
-	private String tenantId;
+	private Integer tenantId;
 	private Integer addition;
 
 	@Transient
