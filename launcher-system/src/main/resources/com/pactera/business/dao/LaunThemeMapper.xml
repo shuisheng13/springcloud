@@ -140,7 +140,7 @@
                 AND t1.status = #{status}
             </if>
         </where>
-		ORDER BY t1.create_date
+		ORDER BY t1.create_date DESC
 	</select>
 
 	<select id="selectByCound" resultMap="BaseResultVoMap">
