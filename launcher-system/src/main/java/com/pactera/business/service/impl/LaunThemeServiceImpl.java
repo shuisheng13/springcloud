@@ -1074,8 +1074,8 @@ public class LaunThemeServiceImpl implements LaunThemeService {
     private String parseProp(File file, LaunThemeUploadFileVo launThemeUploadFileVo) {
         Properties prop = FileTool.file2Prop(file);
         log.info("解析properties完成...prop:{}", prop.toString());
-        launThemeUploadFileVo.setLongResolution(Long.getLong(prop.getProperty(upThemeLong)));
-        launThemeUploadFileVo.setWideResolution(Long.getLong(prop.getProperty(upThemeWidth)));
+        launThemeUploadFileVo.setLongResolution(Long.valueOf(prop.getProperty(upThemeLong)));
+        launThemeUploadFileVo.setWideResolution(Long.valueOf(prop.getProperty(upThemeWidth)));
         return prop.getProperty(upThemeImgMain);
     }
 
