@@ -130,9 +130,10 @@ public class LaunThemeServiceImpl implements LaunThemeService {
     @Transactional(rollbackFor = Exception.class)
     public int changeStatus(List<String> ids, Integer status) {
 
+        final int statusValue = status;
         ConstantUtlis.themeStatus statusEnum =
                 Arrays.stream(ConstantUtlis.themeStatus.values())
-                        .filter(t -> t.getCode() == status).findFirst().get();
+                        .filter(t -> t.getCode() == statusValue).findFirst().get();
         switch (statusEnum) {
             case DELETE:
                 launcThemeClassificationV2Service
@@ -148,6 +149,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
                         .upThemeClassCountUpOrDown(0, ids);
                 break;
             case VALID:
+                status = ConstantUtlis.themeStatus.DOWN_SHELF.getCode();
                 break;
             default:
         }
