@@ -1,4 +1,4 @@
-package com.pactera.config.aop;
+package com.pactera.config.mapper.aop;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -23,8 +23,8 @@ public class LoggerAop {
     @Before("loggerReParam()")
     public void before(JoinPoint joinPoint) {
         String targetName = joinPoint.getTarget().getClass().getName();
-        String methodName = joinPoint.getSignature().getName();
         Object[] arguments = joinPoint.getArgs();
+        String methodName = joinPoint.getSignature().getName();
         StringBuilder paramsBuf = new StringBuilder();
         String[] argNames = ((MethodSignature) joinPoint.getSignature()).getParameterNames(); // 参数名
         if (arguments.length != argNames.length) {
