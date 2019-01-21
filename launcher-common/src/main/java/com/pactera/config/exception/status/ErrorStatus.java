@@ -44,7 +44,9 @@ public enum ErrorStatus {
     NAME_CLASS_LAUNTHEM_ADD(140011, "添加主题分类重名"),
     NAME_CLASS_LAUNTHEM_REEOR(140012, "添加主题分类字数超过8字符"),
     NAME_CLASS_LAUNTHEM_UP(140013, "编辑主题分类重名"),
-	SERVICE_ERROR_CLIENTEXCEPTION(140014,"连接其他服务异常")
+	SERVICE_ERROR_CLIENTEXCEPTION(140014,"连接租户服务异常"),
+	SERVICE_ERROR_NOT_TENANT(140015,"不是普通租户")
+
 	;
 	
 	private int status;
