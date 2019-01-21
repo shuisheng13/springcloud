@@ -66,8 +66,8 @@ public class ThemeServiceImpl implements ThemeService {
         List<LaunThemeFileVo> files = themeDTO.getData().getFile();
 
         ThemeVO themeVo = new ThemeVO();
-        BeanCopier.create(LaunThemeVo.class ,ThemeVO.class,true)
-                .copy(theme, themeVo, (Object o, Class aClass, Object o1)-> o);
+        BeanCopier.create(LaunThemeVo.class ,ThemeVO.class,false)
+                .copy(theme, themeVo, null);
 
         themeVo.setDownloadCount(themeVo.getDownloadCount() + themeVo.getAddition());
         BeanCopier beanCopier = BeanCopier.create(LaunThemeFileVo.class ,ThemeFileVO.class,false);
