@@ -2,11 +2,10 @@ package com.pactera.business.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.navinfo.wecloud.saas.api.facade.TenantFacade;
 import com.pactera.business.dao.LaunVersionMapper;
 import com.pactera.business.service.LaunVersionService;
 import com.pactera.config.header.SaasHeaderContextV1;
-import com.pactera.domain.LaunThemeAdministration;
+import com.pactera.config.header.TenantFacadeV1;
 import com.pactera.domain.LaunVersions;
 import com.pactera.utlis.TimeUtils;
 import com.pactera.vo.LaunPage;
@@ -32,7 +31,7 @@ public class LaunVersionServiceImpl implements LaunVersionService {
     @Autowired
     private LaunVersionMapper versionMapper;
     @Autowired
-    private TenantFacade tenantFacade;
+    private TenantFacadeV1 tenantFacade;
 
     @Override
     public LaunPage<LaunVersionsVo> query(int pageNum, int pageSize) {
@@ -70,7 +69,7 @@ public class LaunVersionServiceImpl implements LaunVersionService {
         return source.stream().map(ver -> {
             LaunVersionsVo launVersionsVo = new LaunVersionsVo();
             beanCopier.copy(ver, launVersionsVo, null);
-            launVersionsVo.setTenantName(tenantFacade.getTenant(ver.getTenantId()).getData().getName());
+            launVersionsVo.setTenantName(tenantFacade.tenantInfoName(ver.getTenantId()));
             return launVersionsVo;
         }).collect(Collectors.toList());
     }
