@@ -18,7 +18,6 @@ import java.util.Map;
 @Data
 @Accessors(chain = true)
 public class LaunThemeAdministration {
-	private static final long serialVersionUID = -2054946094353463347L;
 
 	@Id
 	private String id;
