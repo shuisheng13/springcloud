@@ -30,9 +30,6 @@ public class LaunThemeClassificationController {
      * @return ResponseEntity<ResultData>
      **/
     @PostMapping("addthemeclass")
-    @ApiOperation("添加主题分类")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "themeClassName", value = "主题名称",paramType="query",required = true)    })
     public ResponseEntity<ResultData> addthemeClass(String themeClassName, @ApiParam(name = "coverImage",value="上传文件",required=true) MultipartFile coverImage) {
 
         if (StringUtils.isBlank(themeClassName)){
@@ -56,11 +53,6 @@ public class LaunThemeClassificationController {
      * @return ResponseEntity<ResultData>
      **/
     @PostMapping("upThemeClass")
-    @ApiOperation("编辑主题分类")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "themeClassName", value = "主题名称",paramType="query",required = true),
-            @ApiImplicitParam(name = "id", value = "主题Id",paramType="query",required = true)
-    })
     public ResponseEntity<ResultData> upThemeClass(String themeClassName, String id,  String coverImage) {
         ResponseEntity<ResultData> upThemeClass = launcThemeClassificationService.upThemeClass(themeClassName, id, coverImage);
         return  upThemeClass;
@@ -74,10 +66,6 @@ public class LaunThemeClassificationController {
      * @return
      **/
     @PostMapping("deThemeClass")
-    @ApiOperation("删除主题分类")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "主题Id",paramType="query",required = true)
-    })
     public ResponseEntity<ResultData> deThemeClass(String id) {
         ResponseEntity<ResultData> launcThemeClass = launcThemeClassificationService.deThemeClass(id);
         return  launcThemeClass;
@@ -91,12 +79,6 @@ public class LaunThemeClassificationController {
      * @return
      **/
     @GetMapping("seThemeClass")
-    @ApiOperation("查看主题分类")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "主题Id",paramType="query",required = true),
-            @ApiImplicitParam(name = "pageNum", value = "当前页",paramType="query"),
-            @ApiImplicitParam(name = "pageSize", value = "每页大小",paramType="query")
-    })
     public ResponseEntity<ResultData> seThemeClass(String id, @RequestParam(defaultValue = "1") int pageNum,@RequestParam(defaultValue = "4") int pageSize) {
         ResponseEntity<ResultData> launcThemeClass = launcThemeClassificationService.seThemeClass(id, pageNum, pageSize);
         return  launcThemeClass;
@@ -110,15 +92,7 @@ public class LaunThemeClassificationController {
      * @return
      **/
     @GetMapping("seThemeClassList")
-    @ApiOperation("查看主题分类列表")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "shelfStatus", value = "是否上架，(1-上架，0-下架)",paramType="query"),
-            @ApiImplicitParam(name = "classificationName", value = "查询主题名",paramType="query"),
-            @ApiImplicitParam(name = "pageNum", value = "当前页",paramType="query"),
-            @ApiImplicitParam(name = "pageSize", value = "每页大小",paramType="query")
-    })
     public ResponseEntity<ResultData> seThemeClassList(String shelfStatus,String classificationName,@RequestParam(defaultValue = "1") int pageNum,@RequestParam(defaultValue = "4") int pageSize) {
-
         ResponseEntity<ResultData> launcThemeClass = launcThemeClassificationService.seThemeClassList(shelfStatus,classificationName,pageNum,pageSize);
         return  launcThemeClass;
     }
@@ -131,11 +105,6 @@ public class LaunThemeClassificationController {
       * @return
       **/
     @PostMapping("themeClassUpOrDown")
-    @ApiOperation("主题上架或下架")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "shelfStatus", value = "是否上架，(1-上架，0-下架)",paramType="query",required = true),
-            @ApiImplicitParam(name = "id", value = "id",paramType="query",required = true)
-    })
     public ResponseEntity<ResultData> themeClassUpOrDown(String shelfStatus,String id) {
         ResponseEntity<ResultData> launcThemeClass = launcThemeClassificationService.themeClassUpOrDown(shelfStatus,id);
         return  launcThemeClass;
@@ -149,11 +118,6 @@ public class LaunThemeClassificationController {
      * @return
      **/
     @PostMapping("orderThemeClass")
-    @ApiOperation("排序单个")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "分类id",paramType="query",required = true),
-            @ApiImplicitParam(name = "num", value = "权重号",paramType="query",required = true)
-    })
     public ResponseEntity<ResultData> orderThemeClass(String id,int num) {
         ResponseEntity<ResultData> resultDataResponseEntity = launcThemeClassificationService.updateThemTypeOrder(id,num);
         return  resultDataResponseEntity;
@@ -167,10 +131,6 @@ public class LaunThemeClassificationController {
      * @return
      **/
     @PostMapping("orderThemeClassNum")
-    @ApiOperation("排序")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "sortOrder", value = "排序Json",paramType="query",required = true)
-    })
     public ResponseEntity<ResultData> orderThemeClassNum(String sortOrder) {
         ResponseEntity<ResultData> resultDataResponseEntity = launcThemeClassificationService.orderThemeClass(sortOrder);
         return  resultDataResponseEntity;
@@ -184,10 +144,6 @@ public class LaunThemeClassificationController {
      * @return
      **/
     @GetMapping("themeClassIsUpOrDown")
-    @ApiOperation("主题是否有上架的")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "id",paramType="query",required = true)
-    })
     public ResponseEntity<ResultData> themeClassIsUpOrDown(String id) {
         ResponseEntity<ResultData> launcThemeClass = launcThemeClassificationService.themeClassIsUpOrDown(id);
         return  launcThemeClass;
@@ -201,11 +157,6 @@ public class LaunThemeClassificationController {
      * @return
      **/
     @PostMapping("upThemeClassCount")
-    @ApiOperation("更新分类下的主题总数(仅内部开发使用)")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "status", value = "操作主题状态，(1-添加，0-删除)",paramType="query",required = true),
-            //@ApiImplicitParam(name = "id", value = "id",paramType="query",required = true),
-    })
     public ResponseEntity<ResultData> upThemeClassCount(int status, @RequestParam(value = "idList")List<String> id) {
         String s = launcThemeClassificationService.upThemeClassCount(status, id);
         ResultData date = new ResultData();
@@ -221,11 +172,6 @@ public class LaunThemeClassificationController {
      * @return
      **/
     @PostMapping("upThemeClassCountUpOrDown")
-    @ApiOperation("更新分类下的以上架的主题数(仅内部开发使用)")
-    /*@ApiImplicitParams({
-            @ApiImplicitParam(name = "status", value = "操作主题状态，(1-上架，0-下架)",paramType="query",required = true),
-            @ApiImplicitParam(name = "id", value = "id",paramType="query",required = true),
-    })*/
     public ResponseEntity<ResultData> upThemeClassCountUpOrDown(int status, @RequestParam(value = "idList") @ApiParam(value = "id列表") List<String> id) {
         String s = launcThemeClassificationService.upThemeClassCountUpOrDown(status, id);
         ResultData date = new ResultData();
