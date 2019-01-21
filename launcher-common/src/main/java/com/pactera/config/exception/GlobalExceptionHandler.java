@@ -1,6 +1,4 @@
 package com.pactera.config.exception;
-
-import com.netflix.client.ClientException;
 import com.pactera.config.exception.status.ErrorStatus;
 import com.pactera.result.ResultData;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
@@ -12,7 +10,6 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 import java.io.*;
