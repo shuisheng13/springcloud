@@ -29,13 +29,6 @@ public class GlobalExceptionHandler {
 	    return new ResponseEntity<>(new ResultData(exception.getMessage(), ErrorStatus.PARAMETER_ERROR),HttpStatus.BAD_REQUEST);
 	}
 
-	@ExceptionHandler(value = ClientException.class)
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ResponseEntity<ResultData> ClientException(Exception exception)  {
-		exception.printStackTrace();
-		return new ResponseEntity<>(new ResultData(exception.getMessage(), ErrorStatus.SERVICE_ERROR_CLIENTEXCEPTION),HttpStatus.BAD_REQUEST);
-	}
-
 	@ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ResponseEntity<ResultData> HttpRequestMethodNotSupportedHandler(Exception exception)  {
