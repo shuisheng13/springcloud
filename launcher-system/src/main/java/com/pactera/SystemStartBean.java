@@ -33,7 +33,7 @@ import java.util.List;
 @Configuration
 @EnableConfigurationProperties
 @EnableFeignClients({"com.navinfo.wecloud.saas.api.facade"})
-public class SystemStartBean implements CommandLineRunner {
+public class SystemStartBean  {
     public static void main(String[] args) {
         SpringApplication.run(SystemStartBean.class, args);
     }
@@ -61,15 +61,6 @@ public class SystemStartBean implements CommandLineRunner {
         /// 设置总上传数据总大小
         factory.setMaxRequestSize("100MB");
         return factory.createMultipartConfig();
-    }
-
-    @Override
-    public void run(String... args) throws Exception {
-        List<ServiceInstance> serviceInstanceList = consulDiscoveryClient.getInstances("launcher-service");
-        ServiceInstance serviceInstance = serviceInstanceList.get(0);
-        System.out.println("服务地址：" + serviceInstance.getUri());
-        System.out.println("服务名称：" +serviceInstance.getServiceId());
-
     }
 
 
