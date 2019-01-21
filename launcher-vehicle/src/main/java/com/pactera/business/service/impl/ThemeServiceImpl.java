@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName ThemeServiceImpl
@@ -40,13 +41,12 @@ public class ThemeServiceImpl implements ThemeService {
     public List<ThemeListVO> search(String value, String apiKey) {
         Integer tenantId = apiKeyFacade.queryTenantByApiKey(apiKey).getData().getId();
         List<LaunThemeAdministration> launThemeAdministrations = launThemeMapper.search(value, tenantId);
-        List<ThemeListVO> themeLists = new ArrayList<>();
-        BeanCopier beanCopier = BeanCopier.create(LaunThemeAdministration.class ,ThemeListVO.class,true);
-        launThemeAdministrations.forEach(a->{
+        BeanCopier beanCopier = BeanCopier.create(LaunThemeAdministration.class ,ThemeListVO.class,false);
+        List<ThemeListVO> themeLists = launThemeAdministrations.stream().map(a->{
             ThemeListVO themeListVO = new ThemeListVO();
-            beanCopier.copy(a, themeListVO, (Object v, Class t, Object c)->v);
-            themeLists.add(themeListVO);
-        });
+            beanCopier.copy(a, themeListVO, null);
+            return themeListVO;
+        }).collect(Collectors.toList());
         return themeLists;
     }
 
@@ -71,12 +71,11 @@ public class ThemeServiceImpl implements ThemeService {
 
         themeVo.setDownloadCount(themeVo.getDownloadCount() + themeVo.getAddition());
         BeanCopier beanCopier = BeanCopier.create(LaunThemeFileVo.class ,ThemeFileVO.class,false);
-        List<ThemeFileVO> nfiles = new ArrayList<>();
-        files.forEach(f->{
+        List<ThemeFileVO> nfiles = files.stream().map(f->{
             ThemeFileVO file = new ThemeFileVO();
             beanCopier.copy(f,file,null);
-            nfiles.add(file);
-        });
+            return file;
+        }).collect(Collectors.toList());
 
         ThemeDetailVO themeDetailVO = new ThemeDetailVO();
         themeDetailVO.setFile(nfiles).setTheme(themeVo);
