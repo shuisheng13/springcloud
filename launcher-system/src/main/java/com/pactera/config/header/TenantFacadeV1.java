@@ -37,7 +37,7 @@ public class TenantFacadeV1 {
             throw new DataStoreException(ErrorStatus.SERVICE_ERROR_CLIENTEXCEPTION.status(),ErrorStatus.SERVICE_ERROR_CLIENTEXCEPTION.message());
         }
         if (tenant.getData()==null){
-            throw new NullPointerException("连接saas成功,但是查询租户id为空、根据租户id查询租户信息不存在");
+            throw new DataStoreException(ErrorStatus.SERVICE_ERROR_NOT_TENANTINFO.status(),ErrorStatus.SERVICE_ERROR_NOT_TENANTINFO.message());
         }else{
             return tenant.getData();
         }
@@ -56,7 +56,7 @@ public class TenantFacadeV1 {
         if (!StringUtils.isBlank(tenantInfo.getName())){
             return tenantInfo.getName();
         }else{
-            throw new NullPointerException("租户名字为空");
+            throw new DataStoreException(ErrorStatus.SERVICE_ERROR_NOT_TENANTINFONAME.status(),ErrorStatus.SERVICE_ERROR_NOT_TENANTINFONAME.message());
         }
     }
 
@@ -73,7 +73,7 @@ public class TenantFacadeV1 {
         if (!StringUtils.isBlank(tenantInfo.getApiKey())){
             return tenantInfo.getApiKey();
         }else{
-            throw new NullPointerException("租户apiKey为空");
+            throw new DataStoreException(ErrorStatus.SERVICE_ERROR_NOT_TENANTINFOAPIKEY.status(),ErrorStatus.SERVICE_ERROR_NOT_TENANTINFOAPIKEY.message());
         }
     }
     /**
@@ -89,7 +89,7 @@ public class TenantFacadeV1 {
         if (!StringUtils.isBlank(tenantInfo.getNameEn())){
             return tenantInfo.getNameEn();
         }else{
-            throw new NullPointerException("租户英文名字为空");
+            throw new DataStoreException(ErrorStatus.SERVICE_ERROR_NOT_TENANTINFOENNAME.status(),ErrorStatus.SERVICE_ERROR_NOT_TENANTINFOENNAME.message());
         }
     }
 }
