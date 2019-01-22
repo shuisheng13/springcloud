@@ -2,11 +2,10 @@ package com.pactera.business.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.navinfo.wecloud.saas.api.facade.TenantFacade;
 import com.pactera.business.dao.LaunVersionMapper;
 import com.pactera.business.service.LaunVersionService;
 import com.pactera.config.header.SaasHeaderContextV1;
-import com.pactera.domain.LaunThemeAdministration;
+import com.pactera.config.header.TenantFacadeV1;
 import com.pactera.domain.LaunVersions;
 import com.pactera.utlis.TimeUtils;
 import com.pactera.vo.LaunPage;
@@ -32,19 +31,13 @@ public class LaunVersionServiceImpl implements LaunVersionService {
     @Autowired
     private LaunVersionMapper versionMapper;
     @Autowired
-    private TenantFacade tenantFacade;
+    private TenantFacadeV1 tenantFacade;
 
     @Override
     public LaunPage<LaunVersionsVo> query(int pageNum, int pageSize) {
-        Integer tenantId = SaasHeaderContextV1.getTenantIdInt();
-        PageInfo<LaunVersions> pageInfo = PageHelper.startPage(pageNum, pageSize).doSelectPageInfo(
-                () -> {
-                    Example example = new Example(LaunVersions.class);
-                    example.createCriteria().andEqualTo("tenantId", tenantId);
-                    versionMapper.selectByExample(example);
-                });
-        List<LaunVersionsVo> value = this.po2vo(pageInfo.getList());
-        return new LaunPage(pageInfo, value);
+        PageInfo<LaunVersionsVo> pageInfo = PageHelper.startPage(pageNum, pageSize)
+                .doSelectPageInfo(() -> list());
+        return new LaunPage(pageInfo, pageInfo.getList());
     }
 
     @Override
@@ -59,7 +52,7 @@ public class LaunVersionServiceImpl implements LaunVersionService {
     @Override
     public List<LaunVersionsVo> list() {
         Example example = new Example(LaunVersions.class);
-        example.or().andEqualTo("tenantId", SaasHeaderContextV1.getTenantIdInt());
+        example.createCriteria().andEqualTo("tenantId", SaasHeaderContextV1.getTenantIdInt());
         example.setOrderByClause("version DESC");
         List<LaunVersions> list = versionMapper.selectByExample(example);
         return this.po2vo(list);
@@ -70,7 +63,7 @@ public class LaunVersionServiceImpl implements LaunVersionService {
         return source.stream().map(ver -> {
             LaunVersionsVo launVersionsVo = new LaunVersionsVo();
             beanCopier.copy(ver, launVersionsVo, null);
-            launVersionsVo.setTenantName(tenantFacade.getTenant(ver.getTenantId()).getData().getName());
+            launVersionsVo.setTenantName(tenantFacade.tenantInfoName(ver.getTenantId()));
             return launVersionsVo;
         }).collect(Collectors.toList());
     }

@@ -3,13 +3,13 @@ package com.pactera.business.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.tobato.fastdfs.service.FastFileStorageClient;
-import com.navinfo.wecloud.saas.api.facade.TenantFacade;
 import com.pactera.business.dao.LaunThemeMapper;
 import com.pactera.business.service.*;
 import com.pactera.config.exception.DataStoreException;
 import com.pactera.config.exception.IORuntimeException;
 import com.pactera.config.exception.status.ErrorStatus;
 import com.pactera.config.header.SaasHeaderContextV1;
+import com.pactera.config.header.TenantFacadeV1;
 import com.pactera.constant.ConstantUtlis;
 import com.pactera.domain.*;
 import com.pactera.util.ThemeWidgetDetail;
@@ -81,7 +81,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
     public FastFileStorageClient fastFileStorageClient;
 
     @Autowired
-    private TenantFacade tenantFacade;
+    private TenantFacadeV1 tenantFacade;
 
     @Autowired
     private LaunThemeMapper launThemeMapper;
@@ -112,16 +112,17 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 
     @Override
     public LaunPage<LaunThemeVo> query(String typeId, String title, Integer status, int pageNum, int pageSize) {
+        //TODO 救急方案
+        Integer tenantId = SaasHeaderContextV1.getUserType()==0?null:SaasHeaderContextV1.getTenantIdInt();
         PageInfo<LaunThemeAdministration> pageInfo = PageHelper.startPage(pageNum, pageSize).doSelectPageInfo(
-                () -> launThemeMapper.query(SaasHeaderContextV1.getTenantIdInt(), typeId, title, status));
-        BeanCopier beanCopier = BeanCopier.create(LaunThemeAdministration.class, LaunThemeVo.class, true);
+                () -> launThemeMapper.query(tenantId, typeId, title, status));
+        BeanCopier beanCopier = BeanCopier.create(LaunThemeAdministration.class, LaunThemeVo.class, false);
         List<LaunThemeVo> themes = pageInfo.getList().stream().map(theme -> {
             LaunThemeVo themeVo = new LaunThemeVo();
-            beanCopier.copy(theme, themeVo, (Object v, Class t, Object c) -> v);
-            themeVo.setCreator(tenantFacade.getTenant(theme.getTenantId()).getData().getName());
+            beanCopier.copy(theme, themeVo, null);
+            themeVo.setCreator(tenantFacade.tenantInfoName(theme.getTenantId()));
             return themeVo;
         }).collect(Collectors.toList());
-
         return new LaunPage(pageInfo, themes);
     }
 
@@ -318,7 +319,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
     }
 
     private void themeJsonValid(LaunThemeSaveVo launThemeSaveVo) {
-
+        if (null == launThemeSaveVo) { throw new DataStoreException(ErrorStatus.THEMEJSON_ERROR); }
         BeanPropertyBindingResult beanPropertyBindingResult =
                 new BeanPropertyBindingResult(launThemeSaveVo, "launThemeSaveVo");
         validator.validate(launThemeSaveVo, beanPropertyBindingResult);
@@ -343,15 +344,23 @@ public class LaunThemeServiceImpl implements LaunThemeService {
     public String saveTheme(String baseJson, String widgetJson, String themeJson, Integer saveType) {
 
         LaunThemeSaveVo launThemeSaveVo = JsonUtils.jsonToClass(themeJson, LaunThemeSaveVo.class);
-        if (null == launThemeSaveVo) {
-            throw new DataStoreException(ErrorStatus.THEMEJSON_ERROR);
-        }
         this.themeJsonValid(launThemeSaveVo);
-        LaunThemeAdministration administration = new LaunThemeAdministration();
-        //TODO 有待调查
-        //BeanCopier.create(LaunThemeSaveVo.class, LaunThemeAdministration.class, true)
-        //        .copy(launThemeSaveVo, administration, (Object v, Class t, Object c)->v);
-        BeanUtils.copyProperties(launThemeSaveVo, administration);
+        LaunThemeAdministration administration = new LaunThemeAdministration()
+                .setId(launThemeSaveVo.getId())
+                .setLongResolution(launThemeSaveVo.getLongResolution())
+                .setWideResolution(launThemeSaveVo.getWideResolution())
+                .setVersion(launThemeSaveVo.getVersion())
+                .setTypeId(launThemeSaveVo.getTypeId())
+                .setFilesJson(launThemeSaveVo.getFilesJson())
+                .setTitle(launThemeSaveVo.getTitle())
+                .setZipUrl(launThemeSaveVo.getZipUrl())
+                .setDescription(launThemeSaveVo.getDescription())
+                .setAddition(launThemeSaveVo.getAddition())
+                .setAuthor(launThemeSaveVo.getAuthor())
+                .setReleaseTime(launThemeSaveVo.getReleaseTime())
+                .setPrice(launThemeSaveVo.getPrice())
+                .setFileSize(launThemeSaveVo.getFileSize());
+
         //Long adminId = 0L;
         administration.setTenantId(SaasHeaderContextV1.getTenantIdInt());
         String themeId = null;
