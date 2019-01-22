@@ -36,11 +36,11 @@ public class TenantFacadeV1 {
         } catch (Exception e) {
             throw new DataStoreException(ErrorStatus.SERVICE_ERROR_CLIENTEXCEPTION.status(),ErrorStatus.SERVICE_ERROR_CLIENTEXCEPTION.message());
         }
-        if (tenant.getData()==null){
+       /* if (tenant.getData()==null){
             throw new DataStoreException(ErrorStatus.SERVICE_ERROR_NOT_TENANTINFO.status(),ErrorStatus.SERVICE_ERROR_NOT_TENANTINFO.message());
-        }else{
+        }else{*/
             return tenant.getData();
-        }
+       // }
     }
 
     /**
@@ -56,7 +56,8 @@ public class TenantFacadeV1 {
         if (!StringUtils.isBlank(tenantInfo.getName())){
             return tenantInfo.getName();
         }else{
-            throw new DataStoreException(ErrorStatus.SERVICE_ERROR_NOT_TENANTINFONAME.status(),ErrorStatus.SERVICE_ERROR_NOT_TENANTINFONAME.message());
+            //throw new DataStoreException(ErrorStatus.SERVICE_ERROR_NOT_TENANTINFONAME.status(),ErrorStatus.SERVICE_ERROR_NOT_TENANTINFONAME.message());
+            return "系统用户";
         }
     }
 

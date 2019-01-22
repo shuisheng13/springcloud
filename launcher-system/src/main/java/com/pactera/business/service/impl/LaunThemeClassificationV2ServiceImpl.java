@@ -78,7 +78,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
         LauncThemeClassVo themeClassVo = new LauncThemeClassVo();
         themeClassVo.setDisable(1);
         String tenantId2 = SaasHeaderContextV1.getTenantId();
-        themeClassVo.setTenantId(tenantId2);
+        //themeClassVo.setTenantId(tenantId2); //现在处理成一个租户，重名问题为查询所有租户
         List<LauncThemeClassVo> launcThemeClass = LauncThemeClassMapper.selectLauncThemeClassVo(themeClassVo);
         for (LauncThemeClassVo laun : launcThemeClass) {
             if (themeClassName.equals(laun.getClassificationName())) {
@@ -91,7 +91,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
         themeClass.setId(ThemeClassId());
         themeClass.setClassificationName(themeClassName);
         themeClass.setCreator(SaasHeaderContextV1.getUserName());
-        themeClass.setTenantId(tenantId2 + "");
+        themeClass.setTenantId(tenantId2 + "");// 存租户id，如今并没有什么卵用，就是处理成租户和管理员是一个，也就是说是租户
         themeClass.setDisable(1);
         themeClass.setQuantity(0);
         themeClass.setShelfCount(0);
@@ -143,7 +143,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
             themeClassVo.setTenantId(tenantId2 + "");
         }*/
         String tenantId2 = SaasHeaderContextV1.getTenantId();
-        themeClassVo.setTenantId(tenantId2);
+        //themeClassVo.setTenantId(tenantId2); // 你懂得，为啥不带了
         themeClassVo.setDisable(1);
         List<LauncThemeClassVo> launcThemeClass = LauncThemeClassMapper.selectLauncThemeClassVo(themeClassVo);
         for (LauncThemeClassVo laun : launcThemeClass) {
@@ -238,7 +238,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
        /* if (SaasHeaderContextV1.getUserType() == 1) {// 为1的时候为普通租户
             themeClass.setTenantId(tenantId + "");
         }*/
-        themeClass.setTenantId(tenantId);
+        //themeClass.setTenantId(tenantId); //这版为所有租户都能看到
         themeClass.setClassificationName(classificationName);
         themeClass.setDisable(1);
         themeClass.setShelfStatus(shelfStatus);
@@ -271,7 +271,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
             themeClassVo.setUpdateDate(new Date());
             themeClassVo.setShelfCount(-2);
             themeClassVo.setQuantity(-2);
-            themeClassVo.setTenantId(tenantId);
+           //themeClassVo.setTenantId(tenantId); //限制条件去掉，就因为没有租户，只有管理员
             themeClassVo.setId(id);
             themeClassVo.setShelfStatus(shelfStatus);
             int i = LauncThemeClassMapper.updateByThemClassId(themeClassVo);
@@ -476,7 +476,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
     public ResponseEntity<ResultData> themeClassByTid(){
         LauncThemeClassVo vo = new LauncThemeClassVo();
         vo.setDisable(1);
-        vo.setTenantId(SaasHeaderContextV1.getTenantId()+"");
+        //vo.setTenantId(SaasHeaderContextV1.getTenantId()+""); //都能查询到，没有租户的概念
         List<LauncThemeClassVo> launcThemeClassVos = LauncThemeClassMapper.selectLauncThemeClassVo(vo);
         List<JSONObject> list = new ArrayList<>();
         for (LauncThemeClassVo laun:launcThemeClassVos){
