@@ -128,7 +128,7 @@
         <where>
 			t1.status != -1
             <if test="tenantId != null and tenantId != '' ">
-                AND t1.tenant_id = #{tenantId}
+                AND (t1.tenant_id = #{tenantId} OR t1.tenant_id = -1)
             </if>
             <if test="typeId != null and typeId != '' ">
                 AND t1.type_id = #{typeId}
