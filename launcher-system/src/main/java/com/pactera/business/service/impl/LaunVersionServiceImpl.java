@@ -35,8 +35,8 @@ public class LaunVersionServiceImpl implements LaunVersionService {
 
     @Override
     public LaunPage<LaunVersionsVo> query(int pageNum, int pageSize) {
-        PageInfo<LaunVersionsVo> pageInfo = PageHelper.startPage(pageNum, pageSize).doSelectPageInfo(
-                () -> list());
+        PageInfo<LaunVersionsVo> pageInfo = PageHelper.startPage(pageNum, pageSize)
+                .doSelectPageInfo(() -> list());
         return new LaunPage(pageInfo, pageInfo.getList());
     }
 
