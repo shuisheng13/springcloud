@@ -35,15 +35,9 @@ public class LaunVersionServiceImpl implements LaunVersionService {
 
     @Override
     public LaunPage<LaunVersionsVo> query(int pageNum, int pageSize) {
-        Integer tenantId = SaasHeaderContextV1.getTenantIdInt();
-        PageInfo<LaunVersions> pageInfo = PageHelper.startPage(pageNum, pageSize).doSelectPageInfo(
-                () -> {
-                    Example example = new Example(LaunVersions.class);
-                    example.createCriteria().andEqualTo("tenantId", tenantId);
-                    versionMapper.selectByExample(example);
-                });
-        List<LaunVersionsVo> value = this.po2vo(pageInfo.getList());
-        return new LaunPage(pageInfo, value);
+        PageInfo<LaunVersionsVo> pageInfo = PageHelper.startPage(pageNum, pageSize).doSelectPageInfo(
+                () -> list());
+        return new LaunPage(pageInfo, pageInfo.getList());
     }
 
     @Override
@@ -58,7 +52,7 @@ public class LaunVersionServiceImpl implements LaunVersionService {
     @Override
     public List<LaunVersionsVo> list() {
         Example example = new Example(LaunVersions.class);
-        example.or().andEqualTo("tenantId", SaasHeaderContextV1.getTenantIdInt());
+        example.createCriteria().andEqualTo("tenantId", SaasHeaderContextV1.getTenantIdInt());
         example.setOrderByClause("version DESC");
         List<LaunVersions> list = versionMapper.selectByExample(example);
         return this.po2vo(list);
