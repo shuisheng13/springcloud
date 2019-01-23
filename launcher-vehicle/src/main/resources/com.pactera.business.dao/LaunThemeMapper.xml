@@ -118,7 +118,7 @@
         FROM
         <include refid="themeAdmin"></include> as t4
         <where>
-            t4.status = 2 AND (t4.tenant_id = #{tenantId} OR t4.tenantId = -1)
+            t4.status = 2 AND (t4.tenant_id = #{tenantId} OR t4.tenant_id = -1)
             <if test="value != null">AND t4.author LIKE CONCAT(CONCAT('%', #{value}), '%') </if></where>
 	</select>
 
