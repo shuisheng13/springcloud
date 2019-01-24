@@ -327,10 +327,8 @@ public class LaunThemeServiceImpl implements LaunThemeService {
                 new BeanPropertyBindingResult(launThemeSavePo, LaunThemeSavePo.class.getName());
         validator.validate(launThemeSavePo, beanPropertyBindingResult);
         if (beanPropertyBindingResult.hasErrors()) {
-            List<String> message = beanPropertyBindingResult.getAllErrors().stream().map(e -> {
-                System.out.println(e.getCodes()[3]);
-                return e.getCodes()[3];
-            }).collect(Collectors.toList());
+            List<String> message = beanPropertyBindingResult.getAllErrors().stream().map(e ->
+                    e.getDefaultMessage()).collect(Collectors.toList());
             log.error("保存主题themeJson有误{}", message.toString());
             throw new DataStoreException(ErrorStatus.PARAMETER_ERROR);
         }
@@ -362,7 +360,8 @@ public class LaunThemeServiceImpl implements LaunThemeService {
                 .setAuthor(launThemeSavePo.getAuthor())
                 .setReleaseTime(launThemeSavePo.getReleaseTime())
                 .setPrice(launThemeSavePo.getPrice())
-                .setFileSize(launThemeSavePo.getFileSize());
+                .setFileSize(launThemeSavePo.getFileSize())
+                .setCreator(SaasHeaderContextV1.getUserName());
 
         //Long adminId = 0L;
         administration.setTenantId(SaasHeaderContextV1.getTenantIdInt());
@@ -375,11 +374,11 @@ public class LaunThemeServiceImpl implements LaunThemeService {
             administration.setWidgetJson(widgetJson);
             administration.setBasicJson(baseJson);
             administration.setThemeJson(themeJson);
-            if (HStringUtlis.isNotBlank(launThemeSaveVo.getStartTime())) {
-                administration.setStartTime(TimeUtils.millis2Date(Long.parseLong(launThemeSaveVo.getStartTime())));
+            if (HStringUtlis.isNotBlank(launThemeSavePo.getStartTime())) {
+                administration.setStartTime(TimeUtils.millis2Date(Long.parseLong(launThemeSavePo.getStartTime())));
             }
-            if (HStringUtlis.isNotBlank(launThemeSaveVo.getEndTime())) {
-                administration.setEndTime(TimeUtils.millis2Date(Long.parseLong(launThemeSaveVo.getEndTime())));
+            if (HStringUtlis.isNotBlank(launThemeSavePo.getEndTime())) {
+                administration.setEndTime(TimeUtils.millis2Date(Long.parseLong(launThemeSavePo.getEndTime())));
             }
             //2019/1/4 xukj add start
             if (StringUtils.isNotBlank(administration.getId())) {
