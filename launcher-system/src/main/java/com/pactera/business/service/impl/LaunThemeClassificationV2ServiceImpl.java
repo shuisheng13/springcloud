@@ -188,7 +188,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
         } else {
             LauncThemeClassMapper.deleteByThemClassId(id, SaasHeaderContextV1.getTenantId() + "");
         }*/
-        LauncThemeClassMapper.deleteByThemClassId(id, SaasHeaderContextV1.getTenantId() + "");
+        LauncThemeClassMapper.deleteByThemClassId(id);
         ResultData resultData = new ResultData();
         return ResponseEntity.ok(resultData);
     }
@@ -501,7 +501,6 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
        }else{
             return this.ThemeClassId();
        }
-
     }
 
 }
