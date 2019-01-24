@@ -330,7 +330,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
             List<String> message = beanPropertyBindingResult.getAllErrors().stream().map(e ->
                     e.getDefaultMessage()).collect(Collectors.toList());
             log.error("保存主题themeJson有误{}", message.toString());
-            throw new DataStoreException(ErrorStatus.PARAMETER_ERROR);
+            throw new DataStoreException(message.toString());
         }
     }
 
