@@ -1,6 +1,8 @@
 package com.pactera.valid;
 
 import com.pactera.po.LaunThemeSavePo;
+import com.pactera.utlis.HStringUtlis;
+import com.pactera.utlis.TimeUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -34,10 +36,12 @@ public class ThemeSaveValidator implements Validator {
         ValidationUtils.rejectIfEmpty(errors, "typeId", "typeId.empty","主题分类不能为空");
         ValidationUtils.rejectIfEmpty(errors, "fileSize", "fileSize.empty","文件大小不能为空");
         LaunThemeSavePo launThemeSavePo = (LaunThemeSavePo) obj;
-        //if (p.getAge() < 0) {
-        //    e.rejectValue("age", "negativevalue");
-        //} else if (p.getAge() > 110) {
-        //    e.rejectValue("age", "too.darn.old");
-        //}
+
+        if(HStringUtlis.isBlank(launThemeSavePo.getStartTime()) && HStringUtlis.isBlank(launThemeSavePo.getEndTime())) {
+            int result =TimeUtils.compareDate(TimeUtils.string2Date(launThemeSavePo.getStartTime()),
+                    TimeUtils.string2Date(launThemeSavePo.getEndTime()));
+            if(result != -1) {
+                errors.reject("endTime","结束时间有误");}
+        }
     }
 }
