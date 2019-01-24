@@ -34,7 +34,6 @@ public class LaunThemeAdministration {
 	private Long level;
 	private String version;
 	private Long creatorChannelId;
-	private Long createId;
 	private  String typeId;
 	private String title;
 	private Integer status;
@@ -63,7 +62,7 @@ public class LaunThemeAdministration {
 	private BigDecimal price;
 	private Integer tenantId;
 	private Integer addition;
-
+	private String creator;
 	@Transient
 	@JsonProperty("sTime")
 	private @ApiModelProperty("页面传值用的起止时间") String sTime;
@@ -78,8 +77,6 @@ public class LaunThemeAdministration {
 	private @ApiModelProperty("页面传值用的版本名称") String versionName;
 	@Transient
 	private @ApiModelProperty("页面传值用的预览图数组") Map<String, String> filesJson;
-	@Transient
-	private @ApiModelProperty("页面传值用的渠道数组") String creator;
 	@Transient
 	private @ApiModelProperty("页面传值用的字体路径") String fonts;
 

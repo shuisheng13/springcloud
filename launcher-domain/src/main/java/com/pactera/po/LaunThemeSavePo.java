@@ -1,4 +1,4 @@
-package com.pactera.vo;
+package com.pactera.po;
 
 import lombok.Data;
 
@@ -14,7 +14,7 @@ import java.util.Map;
  * @Version
  */
 @Data
-public class LaunThemeSaveVo {
+public class LaunThemeSavePo {
 
     private String id;
     private Long longResolution;
@@ -22,11 +22,9 @@ public class LaunThemeSaveVo {
     private String version;
     private String typeId;
     private Map<String, String> filesJson;
-
     private String title;
     private String zipUrl;
     private String description;
-    //附加量
     private Integer addition;
     private String author;
     private Date releaseTime;

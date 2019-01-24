@@ -12,10 +12,14 @@ import com.pactera.config.header.SaasHeaderContextV1;
 import com.pactera.config.header.TenantFacadeV1;
 import com.pactera.constant.ConstantUtlis;
 import com.pactera.domain.*;
+import com.pactera.po.LaunThemeSavePo;
 import com.pactera.util.ThemeWidgetDetail;
 import com.pactera.utlis.*;
 import com.pactera.valid.ThemeSaveValidator;
-import com.pactera.vo.*;
+import com.pactera.vo.LaunPage;
+import com.pactera.vo.LaunThemeFileVo;
+import com.pactera.vo.LaunThemeUploadFileVo;
+import com.pactera.vo.LaunThemeVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -120,7 +124,6 @@ public class LaunThemeServiceImpl implements LaunThemeService {
         List<LaunThemeVo> themes = pageInfo.getList().stream().map(theme -> {
             LaunThemeVo themeVo = new LaunThemeVo();
             beanCopier.copy(theme, themeVo, null);
-            themeVo.setCreator(tenantFacade.tenantInfoName(theme.getTenantId()));
             return themeVo;
         }).collect(Collectors.toList());
         return new LaunPage(pageInfo, themes);
@@ -318,11 +321,11 @@ public class LaunThemeServiceImpl implements LaunThemeService {
         return 0;
     }
 
-    private void themeJsonValid(LaunThemeSaveVo launThemeSaveVo) {
-        if (null == launThemeSaveVo) { throw new DataStoreException(ErrorStatus.THEMEJSON_ERROR); }
+    private void themeJsonValid(LaunThemeSavePo launThemeSavePo) {
+        if (null == launThemeSavePo) { throw new DataStoreException(ErrorStatus.THEMEJSON_ERROR); }
         BeanPropertyBindingResult beanPropertyBindingResult =
-                new BeanPropertyBindingResult(launThemeSaveVo, "launThemeSaveVo");
-        validator.validate(launThemeSaveVo, beanPropertyBindingResult);
+                new BeanPropertyBindingResult(launThemeSavePo, LaunThemeSavePo.class.getName());
+        validator.validate(launThemeSavePo, beanPropertyBindingResult);
         if (beanPropertyBindingResult.hasErrors()) {
             List<String> message = beanPropertyBindingResult.getAllErrors().stream().map(e -> {
                 System.out.println(e.getCodes()[3]);
@@ -343,23 +346,23 @@ public class LaunThemeServiceImpl implements LaunThemeService {
     @Transactional
     public String saveTheme(String baseJson, String widgetJson, String themeJson, Integer saveType) {
 
-        LaunThemeSaveVo launThemeSaveVo = JsonUtils.jsonToClass(themeJson, LaunThemeSaveVo.class);
-        this.themeJsonValid(launThemeSaveVo);
+        LaunThemeSavePo launThemeSavePo = JsonUtils.jsonToClass(themeJson, LaunThemeSavePo.class);
+        this.themeJsonValid(launThemeSavePo);
         LaunThemeAdministration administration = new LaunThemeAdministration()
-                .setId(launThemeSaveVo.getId())
-                .setLongResolution(launThemeSaveVo.getLongResolution())
-                .setWideResolution(launThemeSaveVo.getWideResolution())
-                .setVersion(launThemeSaveVo.getVersion())
-                .setTypeId(launThemeSaveVo.getTypeId())
-                .setFilesJson(launThemeSaveVo.getFilesJson())
-                .setTitle(launThemeSaveVo.getTitle())
-                .setZipUrl(launThemeSaveVo.getZipUrl())
-                .setDescription(launThemeSaveVo.getDescription())
-                .setAddition(launThemeSaveVo.getAddition())
-                .setAuthor(launThemeSaveVo.getAuthor())
-                .setReleaseTime(launThemeSaveVo.getReleaseTime())
-                .setPrice(launThemeSaveVo.getPrice())
-                .setFileSize(launThemeSaveVo.getFileSize());
+                .setId(launThemeSavePo.getId())
+                .setLongResolution(launThemeSavePo.getLongResolution())
+                .setWideResolution(launThemeSavePo.getWideResolution())
+                .setVersion(launThemeSavePo.getVersion())
+                .setTypeId(launThemeSavePo.getTypeId())
+                .setFilesJson(launThemeSavePo.getFilesJson())
+                .setTitle(launThemeSavePo.getTitle())
+                .setZipUrl(launThemeSavePo.getZipUrl())
+                .setDescription(launThemeSavePo.getDescription())
+                .setAddition(launThemeSavePo.getAddition())
+                .setAuthor(launThemeSavePo.getAuthor())
+                .setReleaseTime(launThemeSavePo.getReleaseTime())
+                .setPrice(launThemeSavePo.getPrice())
+                .setFileSize(launThemeSavePo.getFileSize());
 
         //Long adminId = 0L;
         administration.setTenantId(SaasHeaderContextV1.getTenantIdInt());
