@@ -33,6 +33,7 @@ public enum ErrorStatus {
 	THEMEJSON_ERROR(400002,"themeJson格式有误，转换异常"),
 	NOT_APIKEY(140014,"无效apiKey"),
 
+	UPLOAD_THEME_ILLEGAL_FILE(150000,"主题资源包有误"),
 	UPLOAD_THEME_NO_IMGS(150001,"上传资源包中缺少imgs包"),
 	UPLOAD_THEME_NO_CONFIG(150002,"上传资源包中缺少config文件"),
 	UPLOAD_THEME_NO_ZIP(150003,"上传资源包中缺少zip包"),

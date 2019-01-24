@@ -1,6 +1,8 @@
 package com.pactera.utlis;
 
+import com.pactera.config.exception.DataStoreException;
 import com.pactera.config.exception.IORuntimeException;
+import com.pactera.config.exception.status.ErrorStatus;
 import com.pactera.constant.ConstantUtlis;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -1023,9 +1025,18 @@ public class FileTool {
         return true;
     }
 
-    public static void main(String[] args) {
-
-        List<String > l = listFilename("C:\\4SLOG");
-        l.forEach(System.out::println);
-    }
+	/**
+	 * v2
+	 * 判断是否是某类型文件
+	 * @param fileName
+	 * @param type
+	 */
+	public static boolean checkFileType(String fileName, String type) {
+		boolean isFile = false;
+		if(fileName.indexOf(ConstantUtlis.file.DOT) != -1 &&
+				fileName.substring(fileName.indexOf(ConstantUtlis.file.DOT),fileName.length()-1).equals(type)) {
+			isFile = !isFile;
+		}
+		return isFile;
+	}
 }

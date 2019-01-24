@@ -1071,8 +1071,10 @@ public class LaunThemeServiceImpl implements LaunThemeService {
     @Override
     public LaunThemeUploadFileVo upload(MultipartFile upload) {
 
-        LaunThemeUploadFileVo launThemeUploadFileVo = new LaunThemeUploadFileVo();
+        if(!FileTool.checkFileType(upload.getOriginalFilename(),ConstantUtlis.file.ZIP))
+        {throw new DataStoreException(ErrorStatus.UPLOAD_THEME_ILLEGAL_FILE);}
 
+        LaunThemeUploadFileVo launThemeUploadFileVo = new LaunThemeUploadFileVo();
         Path path = FileTool.createTempFile(upThemePreix, ConstantUtlis.file.ZIP,
                 FileTool.getBytes(upload));
         FileTool.unZipFile(path.toFile().getAbsolutePath(), tempPath);
