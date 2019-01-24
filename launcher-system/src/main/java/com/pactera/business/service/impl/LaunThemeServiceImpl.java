@@ -1109,6 +1109,30 @@ public class LaunThemeServiceImpl implements LaunThemeService {
                 new LaunThemeAdministration().setRecommend(value).setId(id));
     }
 
+    @Override
+    public void themeAutoUpDown() {
+        log.info("执行定时上下架任务 start");
+        List<LaunThemeAdministration> list = launThemeMapper.selectAll();
+        for(LaunThemeAdministration launThemeAdministration : list) {
+            if(TimeUtils.isBetweenDate(launThemeAdministration.getStartTime(),
+                    launThemeAdministration.getEndTime(),
+                    TimeUtils.nowTimeStamp())) {
+                launThemeAdministration.setStatus(ConstantUtlis.themeStatus.ON_SHELF.getCode());
+                log.info("主题id:{},开始时间：{},结束时间:{} 执行上架",
+                        launThemeAdministration.getId(),
+                        launThemeAdministration.getStartTime(),
+                        launThemeAdministration.getEndTime());
+            }else {
+                launThemeAdministration.setStatus(ConstantUtlis.themeStatus.DOWN_SHELF.getCode());
+                log.info("主题id:{},开始时间：{},结束时间:{} 执行下架",
+                        launThemeAdministration.getId(),
+                        launThemeAdministration.getStartTime(),
+                        launThemeAdministration.getEndTime());
+            }
+        }
+        log.info("执行定时上下架任务 end");
+    }
+
     private String parseProp(File file, LaunThemeUploadFileVo launThemeUploadFileVo) {
         Properties prop = FileTool.file2Prop(file);
         log.info("解析properties完成...prop:{}", prop.toString());
@@ -1191,5 +1215,8 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 
         return imgFlag && propFlag && zipFlag && imgCountFlag;
     }
+
+
+
 
 }

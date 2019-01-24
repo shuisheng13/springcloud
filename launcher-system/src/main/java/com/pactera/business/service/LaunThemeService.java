@@ -156,4 +156,9 @@ public interface LaunThemeService {
 	 * @param value 0:不推荐  1：推荐
 	 */
 	int recommend (String id, boolean value);
+
+	/**
+	 * 定时上下架
+	 */
+	void themeAutoUpDown();
 }
