@@ -63,7 +63,7 @@ public class LaunVersionServiceImpl implements LaunVersionService {
         return source.stream().map(ver -> {
             LaunVersionsVo launVersionsVo = new LaunVersionsVo();
             beanCopier.copy(ver, launVersionsVo, null);
-            launVersionsVo.setTenantName(tenantFacade.tenantInfoName(ver.getTenantId()));
+            //launVersionsVo.setTenantName(tenantFacade.tenantInfoName(ver.getTenantId()));
             return launVersionsVo;
         }).collect(Collectors.toList());
     }
