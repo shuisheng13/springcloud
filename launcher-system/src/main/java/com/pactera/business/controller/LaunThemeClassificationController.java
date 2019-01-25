@@ -172,36 +172,6 @@ public class LaunThemeClassificationController {
     }
 
     /**
-     * 更新分类下的主题总数(供删除(批量删除)主题，添加主题等接口调用)
-     * @Author zhaodong
-     * @Date 15:31 2018/12/21
-     * @Param
-     * @return
-     **/
-    @PostMapping("upThemeClassCount")
-    public ResponseEntity<ResultData> upThemeClassCount(int status, @RequestParam(value = "idList")List<String> id) {
-        String s = launcThemeClassificationService.upThemeClassCount(status, id);
-        ResultData date = new ResultData();
-        date.setData(s);
-        return  ResponseEntity.ok(date);
-    }
-
-    /**
-     * 更新该分类下的以上架的主题数(供下架(批量下架)主题，上架(批量上架主题)主题等接口调用)
-     * @Author zhaodong
-     * @Date 15:31 2018/12/21
-     * @Param
-     * @return
-     **/
-    @PostMapping("upThemeClassCountUpOrDown")
-    public ResponseEntity<ResultData> upThemeClassCountUpOrDown(int status, @RequestParam(value = "idList") @ApiParam(value = "id列表") List<String> id) {
-        String s = launcThemeClassificationService.upThemeClassCountUpOrDown(status, id);
-        ResultData date = new ResultData();
-        date.setData(s);
-        return  ResponseEntity.ok(date);
-    }
-
-    /**
      * 主题应用的下拉主题分类列表
      * @Author zhaodong
      * @Date 17:13 2019/1/14
