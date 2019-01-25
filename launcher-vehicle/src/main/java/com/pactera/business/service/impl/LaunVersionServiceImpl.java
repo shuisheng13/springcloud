@@ -34,7 +34,8 @@ public class LaunVersionServiceImpl implements LaunVersionService {
         if(null == tenantId){return 0;}
         LaunVersions launVersions = new LaunVersions();
 
-        launVersions.setTenantId(tenantId).setVersion(version);
+        //launVersions.setTenantId(tenantId).setVersion(version);
+        launVersions.setVersion(version);
         List<LaunVersions> list = versionMapper.select(launVersions);
         if (!list.isEmpty()) { return 0; }
         launVersions.setVersionName(versionName);
