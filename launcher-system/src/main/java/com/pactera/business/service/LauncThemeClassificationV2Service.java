@@ -77,24 +77,6 @@ public interface LauncThemeClassificationV2Service {
     ResponseEntity<ResultData> themeClassIsUpOrDown(String id);
 
     /**
-     * 更新分类下的主题总数(供删除(批量删除)主题，添加主题等接口调用(1-添加,0-删除))
-     * @Author zhaodong
-     * @Date 15:31 2018/12/21
-     * @Param
-     * @return
-     **/
-    String upThemeClassCount(int status,List<String> id);
-
-    /**
-     * 更新该分类下的以上架的主题数(供下架(批量下架)主题，上架(批量上架主题)主题等接口调用,(1-上架,0-下架))
-     * @Author zhaodong
-     * @Date 15:31 2018/12/21
-     * @Param
-     * @return
-     **/
-    String upThemeClassCountUpOrDown(int status, List<String> id);
-
-    /**
      * 权重进行排序
      * @Author zhaodong
      * @Date 16:34 2018/12/26

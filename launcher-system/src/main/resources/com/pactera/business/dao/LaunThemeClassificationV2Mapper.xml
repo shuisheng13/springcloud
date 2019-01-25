@@ -19,7 +19,7 @@
         <result column="disable" jdbcType="INTEGER" property="disable" />
     </resultMap>
     <sql id="Base_Column_List">
-        id, classification_name, sort, quantity, shelf_count, cover_image, cover_image, shelf_status, disable, create_date, update_date, creator, tenant_id
+        id, classification_name, sort, cover_image, cover_image, shelf_status, disable, create_date, update_date, creator, tenant_id
     </sql>
     <update id="updateByThemClassId" parameterType="com.pactera.vo.LauncThemeClassVo">
         UPDATE
@@ -57,7 +57,7 @@
         SET
           disable=0,update_date = NOW()
         WHERE
-          id = #{0} AND tenant_id = #{1}
+          id = #{0}
 
     </update>
 
@@ -71,7 +71,7 @@
                   AND id = #{id}
               </if>
               <if test="classificationName!=null">
-                  AND classification_name like #{classificationName}
+                  AND classification_name regexp(#{classificationName})
               </if>
               <if test="sort>0">
                   AND sort = #{sort}
@@ -128,99 +128,6 @@
           </foreach>
     </update>
 
-    <select id="selectClassIdByThemId" parameterType="java.util.List" resultType="com.pactera.domain.LaunThemeAdministration">
-         SELECT
-           id,
-           type_id as typeId,
-           status
-         FROM
-           laun_theme_administration
-         WHERE
-           id IN
-           <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
-                #{item}
-           </foreach>
-    </select>
-
-    <select id="selectThemeCountByClassId" parameterType="java.util.Map" resultType="Integer">
-        SELECT
-          quantity
-        FROM
-          laun_theme_classification
-        WHERE
-          id IN
-            <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
-               #{item,jdbcType=VARCHAR}
-            </foreach>
-        order by
-           field(
-           id,
-             <foreach collection="list" index="index" item="item" separator=",">
-               #{item}
-             </foreach>
-        )
-    </select>
-
-    <select id="selectThemeCountUpByClassId" parameterType="java.util.List" resultType="Integer">
-        SELECT
-           shelf_count
-        FROM
-           laun_theme_classification
-        WHERE
-           id IN
-           <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
-              #{item,jdbcType=VARCHAR}
-           </foreach>
-        order by
-          field(
-           id,
-             <foreach collection="list" index="index" item="item" separator=",">
-               #{item}
-             </foreach>
-           )
-    </select>
-
-
-    <update id="upClassThemTypeInOrDe" parameterType="java.util.List">
-        UPDATE
-           laun_theme_classification
-        SET
-           quantity =
-        <foreach collection="list" item="item" index="index" separator=" " open="case id" close="end,">
-            when #{item.typeId} then #{item.quantity}
-        </foreach>
-        update_date =
-        <foreach collection="list" item="item" index="index" separator=" " open="case id" close="end">
-            when #{item.typeId} then NOW()
-        </foreach>
-            WHERE
-              id IN
-            <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
-               #{item.typeId,jdbcType=VARCHAR}
-            </foreach>
-    </update>
-
-
-
-    <update id="upClassThemTypeUpOrDown" parameterType="java.util.List">
-        UPDATE
-        laun_theme_classification
-        SET
-        shelf_count =
-        <foreach collection="list" item="item" index="index" separator=" " open="case id" close="end,">
-            when #{item.typeId} then #{item.shelfCount}
-        </foreach>
-        update_date =
-        <foreach collection="list" item="item" index="index" separator=" " open="case id" close="end">
-            when #{item.typeId} then NOW()
-        </foreach>
-        WHERE
-        id IN
-        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
-            #{item.typeId,jdbcType=VARCHAR}
-        </foreach>
-    </update>
-
     <update id="updateThemTypeOrder">
         UPDATE
            laun_theme_classification
@@ -229,5 +136,35 @@
         WHERE
            id = #{1}
      </update>
+
+
+    <select id="seQuantityTheme" resultType="java.util.Map" parameterType="java.util.List">
+         SELECT
+           count(*) as quantity,
+           type_id
+         FROM
+           laun_theme_administration
+         WHERE
+           type_id IN
+           <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+               #{item,jdbcType=VARCHAR}
+           </foreach>
+         GROUP BY type_id;
+    </select>
+
+    <select id="seQuantityThemeUp" resultType="java.util.Map" parameterType="java.util.List">
+        SELECT
+        count(*) as shelfCount,
+        type_id
+        FROM
+        laun_theme_administration
+        WHERE
+        type_id IN
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+        AND status = 2
+        GROUP BY type_id;
+    </select>
 
 </mapper>
