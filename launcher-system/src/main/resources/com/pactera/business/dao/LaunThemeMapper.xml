@@ -134,7 +134,7 @@
                 AND t1.type_id = #{typeId}
             </if>
             <if test="title != null ">
-                AND t1.title like CONCAT(CONCAT('%', #{title}), '%')
+                AND t1.title regexp(#{title})
             </if>
             <if test="status != null">
                 AND t1.status = #{status}
