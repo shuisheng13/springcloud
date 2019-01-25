@@ -243,9 +243,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
         if(!launcThemeClass.isEmpty()) {
             //主题分类id给我组合
             List<String> listId = new ArrayList<>();
-            launcThemeClass.forEach(la -> {
-                listId.add(la.getId());
-            });
+            launcThemeClass.forEach(la -> { listId.add(la.getId()); });
             //查询一下分类下面有多少的主题，有多少上架的，多少下架的。
             List<Map> maps = LauncThemeClassMapper.seQuantityTheme(listId);
             // 查询分类下面有多少上架的主题
