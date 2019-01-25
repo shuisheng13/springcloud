@@ -32,7 +32,7 @@ public class LaunVersionServiceImpl implements LaunVersionService {
         LaunVersions launVersions = new LaunVersions();
 
         launVersions.setTenantId(tenantId).setVersion(version);
-        if (versionMapper.selectOne(launVersions) != null) { return 0; }
+        if (versionMapper.select(launVersions) != null) { return 0; }
 
         launVersions.setId(IdUtlis.Id()).setCreateDate(TimeUtils.nowTimeStamp());
         return versionMapper.insert(launVersions);
