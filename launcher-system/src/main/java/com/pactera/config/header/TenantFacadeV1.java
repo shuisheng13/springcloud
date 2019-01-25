@@ -29,17 +29,14 @@ public class TenantFacadeV1 {
      * @return
      **/
     public TenantInfo tenantInfo(int tenantId){
-        log.info("根据租户id获取租户的信息开始>>>>>>>>>>>>>>>>>>  "+new Date());
+        log.info("根据租户id获取租户的信息开始>>>>>>>>>>>>>>>>>> tenantId = " + tenantId + new Date());
         CommonResult<TenantInfo> tenant = null;
-        try {
-            tenant = tenantFacade.getTenant(tenantId);
-        } catch (Exception e) {
-            throw new DataStoreException(ErrorStatus.SERVICE_ERROR_CLIENTEXCEPTION.status(),ErrorStatus.SERVICE_ERROR_CLIENTEXCEPTION.message());
-        }
-       /* if (tenant.getData()==null){
+        tenant = tenantFacade.getTenant(tenantId);
+        log.info("根据租户id获取租户的信息进行>>>>>>>>>>>>>>>>>>  " + tenant.getData() + new Date());
+        /* if (tenant.getData()==null){
             throw new DataStoreException(ErrorStatus.SERVICE_ERROR_NOT_TENANTINFO.status(),ErrorStatus.SERVICE_ERROR_NOT_TENANTINFO.message());
         }else{*/
-            return tenant.getData();
+        return tenant.getData();
        // }
     }
 
@@ -51,13 +48,17 @@ public class TenantFacadeV1 {
      * @return
      **/
     public String tenantInfoName(int tenantId){
-        log.info("根据租户id获取租户的名字开始>>>>>>>>>>>>>>>>>>  "+new Date());
         TenantInfo tenantInfo = this.tenantInfo(tenantId);
+        if (tenantInfo==null){
+            log.info("根据tanlentId反查租户为空>>>>>>>>因为此时为系统管理员tanlentId临时存的-1，查询不到>>>>>>>> "+new Date());
+            return "系统用户";
+        }
         if (!StringUtils.isBlank(tenantInfo.getName())){
+            log.info("根据租户id获取租户的名字开始>>>>>>>>>>>>>>>>>>  "+ tenantInfo.getName() +new Date());
             return tenantInfo.getName();
         }else{
-            //throw new DataStoreException(ErrorStatus.SERVICE_ERROR_NOT_TENANTINFONAME.status(),ErrorStatus.SERVICE_ERROR_NOT_TENANTINFONAME.message());
-            return "系统用户";
+            log.info("根据tanlentId反查租户存在>>>>>>>>但是getName()为空或空字符串>>>>>>>> "+new Date());
+            throw new DataStoreException(ErrorStatus.SERVICE_ERROR_NOT_TENANTINFONAME.status(),ErrorStatus.SERVICE_ERROR_NOT_TENANTINFONAME.message());
         }
     }
 
