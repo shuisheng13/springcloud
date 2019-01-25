@@ -101,7 +101,7 @@
         FROM
           <include refid="themeAdmin"/> as t1
         <where>
-             t1.status = 2 AND (t1.tenant_id = #{tenantId} OR t1.tenant_id = -1)
+             t1.status = 2
              <if test="value != null"> AND t1.title regexp(#{value}) </if></where>
         UNION
 	    SELECT
@@ -109,7 +109,7 @@
         FROM <include refid="themeAdmin"></include> as t2
         LEFT JOIN <include refid="themeClass"></include> as t3 ON t2.type_id = t3.id
         <where>
-            t2.status = 2 AND (t2.tenant_id = #{tenantId} OR t2.tenant_id = -1)
+            t2.status = 2
             <if test="value != null"> AND t3.classification_name regexp(#{value}) </if></where>
 
         UNION
@@ -118,7 +118,7 @@
         FROM
         <include refid="themeAdmin"></include> as t4
         <where>
-            t4.status = 2 AND (t4.tenant_id = #{tenantId} OR t4.tenant_id = -1)
+            t4.status = 2
             <if test="value != null">AND t4.author regexp(#{value}) </if></where>
 	</select>
 
