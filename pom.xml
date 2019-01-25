@@ -80,6 +80,7 @@
 		<module>launcher-sso</module>
 		<module>launcher-system</module>
 		<module>launcher-logs</module>
+		<module>launcher-task</module>
 		<module>launcher-confserver</module>
 		<module>launcher-auth</module>
     	<module>launcher-client</module>
