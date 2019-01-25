@@ -114,10 +114,9 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 
     @Override
     public LaunPage<LaunThemeVo> query(String typeId, String title, Integer status, int pageNum, int pageSize) {
-        //TODO 救急方案
-        Integer tenantId = SaasHeaderContextV1.getUserType()==0?null:SaasHeaderContextV1.getTenantIdInt();
+        //Integer tenantId = SaasHeaderContextV1.getUserType()==0?null:SaasHeaderContextV1.getTenantIdInt();
         PageInfo<LaunThemeAdministration> pageInfo = PageHelper.startPage(pageNum, pageSize).doSelectPageInfo(
-                () -> launThemeMapper.query(tenantId, typeId, title, status));
+                () -> launThemeMapper.query(null, typeId, title, status));
         BeanCopier beanCopier = BeanCopier.create(LaunThemeAdministration.class, LaunThemeVo.class, false);
         List<LaunThemeVo> themes = pageInfo.getList().stream().map(theme -> {
             LaunThemeVo themeVo = new LaunThemeVo();
