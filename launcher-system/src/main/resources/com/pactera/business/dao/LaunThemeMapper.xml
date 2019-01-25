@@ -96,6 +96,7 @@
         ${alias}.font,
         ${alias}.config_json,
         ${alias}.creator_channel_id,
+        ${alias}.creator,
         ${alias}.basic_json,
         ${alias}.widget_json,
         ${alias}.theme_json,
