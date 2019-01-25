@@ -37,7 +37,7 @@ public class ThemeSaveValidator implements Validator {
         ValidationUtils.rejectIfEmpty(errors, "fileSize", "fileSize.empty","文件大小不能为空");
         LaunThemeSavePo launThemeSavePo = (LaunThemeSavePo) obj;
 
-        if(HStringUtlis.isBlank(launThemeSavePo.getStartTime()) && HStringUtlis.isBlank(launThemeSavePo.getEndTime())) {
+        if(!HStringUtlis.isBlank(launThemeSavePo.getStartTime()) && !HStringUtlis.isBlank(launThemeSavePo.getEndTime())) {
             int result =TimeUtils.compareDate(TimeUtils.string2Date(launThemeSavePo.getStartTime()),
                     TimeUtils.string2Date(launThemeSavePo.getEndTime()));
             if(result != -1) {
