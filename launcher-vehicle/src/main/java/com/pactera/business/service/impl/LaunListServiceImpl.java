@@ -13,6 +13,7 @@ import com.pactera.dto.ThemClassDTO;
 import com.pactera.dto.ThemListDTO;
 import com.pactera.result.ResultData;
 import com.pactera.vo.LaunPage;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
@@ -31,6 +32,9 @@ public class LaunListServiceImpl implements LaunListService {
     @Resource
     private LaunVehicleListMapper launVehicleListMapper;
 
+    @Value("${fast.url}")
+    private String fastUrl;
+
 
     /**
      * 主题分类列表
@@ -48,6 +52,12 @@ public class LaunListServiceImpl implements LaunListService {
         }
         int tenanId = data.getId();
         List<ThemClassDTO> themListDTOS = launVehicleListMapper.themeclasslist2(tenanId + "");
+        for (ThemClassDTO th:themListDTOS){
+            //TODO 暂时方案
+            if (!th.getCoverImage().contains(fastUrl)){
+                th.setCoverImage("http://"+fastUrl+"/"+th.getCoverImage());
+            }
+        }
         JSONObject json = new JSONObject();
         json.put("list",themListDTOS);
         ResultData resultData = new ResultData(json);
