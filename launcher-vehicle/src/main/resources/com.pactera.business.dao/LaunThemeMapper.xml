@@ -76,7 +76,6 @@
         ${alias}.basic_json,
         ${alias}.widget_json,
         ${alias}.theme_json,
-        ${alias}.create_id,
         ${alias}.zip_url,
         ${alias}.isPush,
         ${alias}.status,
