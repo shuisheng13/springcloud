@@ -1151,7 +1151,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 
         boolean imgFlag = false;
         boolean propFlag = false;
-        boolean zipFlag = false;
+        boolean skinFlag = false;
         boolean imgCountFlag = false;
 
         for (String fileName : FileTool.listFilename(tempPath)) {
@@ -1161,8 +1161,8 @@ public class LaunThemeServiceImpl implements LaunThemeService {
             if (fileName.equals(upThemeProp)) {
                 propFlag = !propFlag;
             }
-            if (fileName.contains(ConstantUtlis.file.DOT_ZIP)) {
-                zipFlag = !zipFlag;
+            if (fileName.contains(ConstantUtlis.file.DOT_SKIN)) {
+                skinFlag = !skinFlag;
             }
         }
 
@@ -1173,7 +1173,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
             }
         }
 
-        if (!imgFlag || !propFlag || !zipFlag || !imgCountFlag) {
+        if (!imgFlag || !propFlag || !skinFlag || !imgCountFlag) {
             FileTool.del(new File(tempPath));
             log.info("删除本地临时文件夹...");
         }
@@ -1184,15 +1184,15 @@ public class LaunThemeServiceImpl implements LaunThemeService {
         if (!propFlag) {
             throw new DataStoreException(ErrorStatus.UPLOAD_THEME_NO_CONFIG);
         }
-        if (!zipFlag) {
-            throw new DataStoreException(ErrorStatus.UPLOAD_THEME_NO_ZIP);
+        if (!skinFlag) {
+            throw new DataStoreException(ErrorStatus.UPLOAD_THEME_NO_SKIN);
         }
         if (!imgCountFlag) {
             throw new DataStoreException(ErrorStatus.UPLOAD_THEME_TOO_MANY_IMG);
         }
 
 
-        return imgFlag && propFlag && zipFlag && imgCountFlag;
+        return imgFlag && propFlag && skinFlag && imgCountFlag;
     }
 
 

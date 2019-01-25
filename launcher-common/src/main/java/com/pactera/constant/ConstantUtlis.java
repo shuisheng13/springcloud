@@ -85,6 +85,8 @@ public interface ConstantUtlis {
 	interface file {
 		String DOT = ".";
         String ZIP = "zip";
+		String SKIN = "skin";
+		String DOT_SKIN = DOT + SKIN;
         String DOT_ZIP = DOT + ZIP;
 	}
 
