@@ -297,18 +297,6 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
             themeClassVo.setShelfStatus(shelfStatus);
             int i = LauncThemeClassMapper.updateByThemClassId(themeClassVo);
             log.info("租户上下架主题分类>>>>>>>>>>>>>>>>租户添加" + i + ">>>>" + new Date());
-           /*if (i==0) {
-                 themeClassVo = new LauncThemeClassVo();
-                 themeClassVo.setTenantId(tenantId+"");
-                 themeClassVo.setDisable(1);
-                 themeClassVo.setId(id);
-                 List<LauncThemeClassVo> launcThemeClass = LauncThemeClassMapper.selectLauncThemeClassVo(themeClassVo);
-                 if (launcThemeClass.isEmpty()){
-                     ResultData resultData = new ResultData(400,"该租户无权操作此分类");
-                     return ResponseEntity.ok(resultData);
-                 }
-             }*/
-        //}
         ResultData resultData = new ResultData();
         return ResponseEntity.ok(resultData);
     }
