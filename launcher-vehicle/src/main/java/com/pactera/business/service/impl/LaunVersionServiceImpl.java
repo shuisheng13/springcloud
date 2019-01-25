@@ -9,6 +9,9 @@ import com.pactera.utlis.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * @ClassName LaunVersionServiceImpl
  * @Description
@@ -32,7 +35,8 @@ public class LaunVersionServiceImpl implements LaunVersionService {
         LaunVersions launVersions = new LaunVersions();
 
         launVersions.setTenantId(tenantId).setVersion(version);
-        if (versionMapper.select(launVersions) != null) { return 0; }
+        List<LaunVersions> list = versionMapper.select(launVersions);
+        if (!list.isEmpty()) { return 0; }
 
         launVersions.setId(IdUtlis.Id()).setCreateDate(TimeUtils.nowTimeStamp());
         return versionMapper.insert(launVersions);
