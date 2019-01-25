@@ -213,9 +213,9 @@ public class DataStatisticsTask {
 	 * @date 2019年1月24日
 	 * @return void
 	 */
-	@Async
-	@Scheduled(cron = "${task.cron.theme.auto.updown}")
-	public void autoUpDown() {
-        launThemeService.themeAutoUpDown();
-	}
+	//@Async
+	//@Scheduled(cron = "${task.cron.theme.auto.updown}")
+	//public void autoUpDown() {
+    //    launThemeService.themeAutoUpDown();
+	//}
 }

@@ -23,7 +23,7 @@
 		<result column="widget_json" jdbcType="VARCHAR" property="widgetJson" />
 		<result column="theme_json" jdbcType="VARCHAR" property="themeJson" />
 		<result column="type_id" jdbcType="BIGINT" property="typeId" />
-		<result column="create_id" jdbcType="BIGINT" property="createId" />
+		<result column="creator" jdbcType="BIGINT" property="creator" />
 		<result column="version" jdbcType="VARCHAR" property="version" />
 		<result column="zip_url" jdbcType="VARCHAR" property="zipUrl" />
 		<result column="preview_path" jdbcType="VARCHAR" property="previewPath" />
@@ -96,6 +96,7 @@
         ${alias}.font,
         ${alias}.config_json,
         ${alias}.creator_channel_id,
+        ${alias}.creator,
         ${alias}.basic_json,
         ${alias}.widget_json,
         ${alias}.theme_json,
@@ -134,7 +135,7 @@
                 AND t1.type_id = #{typeId}
             </if>
             <if test="title != null ">
-                AND t1.title like CONCAT(CONCAT('%', #{title}), '%')
+                AND t1.title regexp(#{title})
             </if>
             <if test="status != null">
                 AND t1.status = #{status}

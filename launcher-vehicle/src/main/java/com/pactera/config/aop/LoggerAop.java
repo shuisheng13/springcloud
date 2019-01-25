@@ -1,4 +1,4 @@
-package com.pactera.config.mapper.aop;
+package com.pactera.config.aop;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
