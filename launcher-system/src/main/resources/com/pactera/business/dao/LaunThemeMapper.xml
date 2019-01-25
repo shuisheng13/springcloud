@@ -23,7 +23,7 @@
 		<result column="widget_json" jdbcType="VARCHAR" property="widgetJson" />
 		<result column="theme_json" jdbcType="VARCHAR" property="themeJson" />
 		<result column="type_id" jdbcType="BIGINT" property="typeId" />
-		<result column="create_id" jdbcType="BIGINT" property="createId" />
+		<result column="creator" jdbcType="BIGINT" property="creator" />
 		<result column="version" jdbcType="VARCHAR" property="version" />
 		<result column="zip_url" jdbcType="VARCHAR" property="zipUrl" />
 		<result column="preview_path" jdbcType="VARCHAR" property="previewPath" />

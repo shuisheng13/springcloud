@@ -200,4 +200,9 @@ public class LaunThemeController {
 		return ResponseEntity.ok(new ResultData(i));
 	}
 
+	@GetMapping("/autoUpDown")
+    public void autoUpDown(){
+        launThemeService.themeAutoUpDown();
+    }
+
 }

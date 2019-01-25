@@ -33,6 +33,7 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Example;
 
+import java.beans.Transient;
 import java.io.*;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
@@ -109,9 +110,6 @@ public class LaunThemeServiceImpl implements LaunThemeService {
     private LaunFontService launFontService;
 
     @Autowired
-    private LauncThemeClassificationV2Service launcThemeClassificationV2Service;
-
-    @Autowired
     private ThemeSaveValidator validator;
 
     @Override
@@ -133,31 +131,6 @@ public class LaunThemeServiceImpl implements LaunThemeService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int changeStatus(List<String> ids, Integer status) {
-
-        final int statusValue = status;
-        ConstantUtlis.themeStatus statusEnum =
-                Arrays.stream(ConstantUtlis.themeStatus.values())
-                        .filter(t -> t.getCode() == statusValue).findFirst().get();
-        switch (statusEnum) {
-            case DELETE:
-                launcThemeClassificationV2Service
-                        .upThemeClassCount(0, ids);
-                break;
-            case ON_SHELF:
-                launcThemeClassificationV2Service
-                        .upThemeClassCountUpOrDown(1, ids);
-                break;
-            case DOWN_SHELF:
-            case FORBIDDEN:
-                launcThemeClassificationV2Service
-                        .upThemeClassCountUpOrDown(0, ids);
-                break;
-            case VALID:
-                status = ConstantUtlis.themeStatus.DOWN_SHELF.getCode();
-                break;
-            default:
-        }
-
         return launThemeMapper.changeStatus(ids, status);
     }
 
@@ -396,7 +369,6 @@ public class LaunThemeServiceImpl implements LaunThemeService {
                     .setPrice(null == administration.getPrice() ? new BigDecimal(0) : administration.getPrice())
                     .setStatus(ConstantUtlis.themeStatus.DOWN_SHELF.getCode());
             launThemeMapper.insertSelective(administration);
-            launcThemeClassificationV2Service.upThemeClassCount(1, Arrays.asList(new String[]{themeId}));
 
             //2019/1/4 xukj del start
             //if (administration.getId() != null) {
@@ -1112,24 +1084,32 @@ public class LaunThemeServiceImpl implements LaunThemeService {
     @Override
     public void themeAutoUpDown() {
         log.info("执行定时上下架任务 start");
-        List<LaunThemeAdministration> list = launThemeMapper.selectAll();
+        Example example = new Example(LaunThemeAdministration.class);
+        example.createCriteria().andEqualTo("status", ConstantUtlis.themeStatus.ON_SHELF.getCode());
+        example.or().andEqualTo("status", ConstantUtlis.themeStatus.DOWN_SHELF.getCode());
+        List<LaunThemeAdministration> list = launThemeMapper.selectByExample(example);
+        List<String> upList = new ArrayList<>();
+        List<String> downList = new ArrayList<>();
         for(LaunThemeAdministration launThemeAdministration : list) {
             if(TimeUtils.isBetweenDate(launThemeAdministration.getStartTime(),
                     launThemeAdministration.getEndTime(),
                     TimeUtils.nowTimeStamp())) {
-                launThemeAdministration.setStatus(ConstantUtlis.themeStatus.ON_SHELF.getCode());
+                upList.add(launThemeAdministration.getId());
                 log.info("主题id:{},开始时间：{},结束时间:{} 执行上架",
                         launThemeAdministration.getId(),
-                        launThemeAdministration.getStartTime(),
-                        launThemeAdministration.getEndTime());
+                        TimeUtils.date2String(launThemeAdministration.getStartTime()),
+                        TimeUtils.date2String(launThemeAdministration.getEndTime()));
             }else {
                 launThemeAdministration.setStatus(ConstantUtlis.themeStatus.DOWN_SHELF.getCode());
+                downList.add(launThemeAdministration.getId());
                 log.info("主题id:{},开始时间：{},结束时间:{} 执行下架",
                         launThemeAdministration.getId(),
-                        launThemeAdministration.getStartTime(),
-                        launThemeAdministration.getEndTime());
+                        TimeUtils.date2String(launThemeAdministration.getStartTime()),
+                        TimeUtils.date2String(launThemeAdministration.getEndTime()));
             }
         }
+        if(upList.size() > 0) {this.changeStatus(upList,ConstantUtlis.themeStatus.ON_SHELF.getCode());}
+        if(downList.size() > 0) {this.changeStatus(downList,ConstantUtlis.themeStatus.DOWN_SHELF.getCode());}
         log.info("执行定时上下架任务 end");
     }
 
