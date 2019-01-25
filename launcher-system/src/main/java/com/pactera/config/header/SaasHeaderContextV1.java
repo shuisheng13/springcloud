@@ -77,7 +77,7 @@ public class SaasHeaderContextV1 {
             }
         }else{
             int exception = SaasHeaderContextV1.exception();
-            if (exception==1){
+            if (exception==-1){
                 return "XTYH";
             }
         }
