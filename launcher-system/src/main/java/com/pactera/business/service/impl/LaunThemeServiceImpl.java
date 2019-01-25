@@ -332,8 +332,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
                 .setAuthor(launThemeSavePo.getAuthor())
                 .setReleaseTime(launThemeSavePo.getReleaseTime())
                 .setPrice(launThemeSavePo.getPrice())
-                .setFileSize(launThemeSavePo.getFileSize())
-                .setCreator(SaasHeaderContextV1.getUserName());
+                .setFileSize(launThemeSavePo.getFileSize());
 
         //Long adminId = 0L;
         administration.setTenantId(SaasHeaderContextV1.getTenantIdInt());
@@ -362,6 +361,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 
             themeId = this.id();
             administration.setPreviewPath(this.saveThemeFile(administration.getFilesJson(), themeId).get("previewPath"))
+                    .setCreator(SaasHeaderContextV1.getUserName())
                     .setId(themeId).setCreateDate(TimeUtils.nowTimeStamp())
                     .setRecommend(false).setRecommendSort(1).setSort(1)
                     .setDownloadCount(0).setUsedCount(0).setAddition(0)
