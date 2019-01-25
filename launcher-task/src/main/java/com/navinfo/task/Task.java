@@ -22,9 +22,14 @@ public class Task {
     private RemoteService remoteService;
 
     @Scheduled(cron = "${task.cron.theme.auto.updown}")
-    public void task() {
+    public void themeAutoUpDownTask() {
         log.info("定时执行上下架 start...");
         remoteService.autoUpDown();
         log.info("定时执行上下架 end...");
+    }
+
+    @Scheduled(cron = "${task.cron.heart.test}")
+    public void testHeart() {
+        log.info("测试launcher-task定时任务存活 ...");
     }
 }
