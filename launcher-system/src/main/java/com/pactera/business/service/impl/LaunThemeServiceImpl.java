@@ -21,6 +21,7 @@ import com.pactera.vo.LaunThemeFileVo;
 import com.pactera.vo.LaunThemeUploadFileVo;
 import com.pactera.vo.LaunThemeVo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1061,7 +1062,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
                 continue;
             }
             launThemeUploadFileVo.setFileSize(file.length());
-            String zipPath = this.upload2fastFDS(file, ConstantUtlis.file.ZIP);
+            String zipPath = this.upload2fastFDS(file, FileTool.getExtentionWithoutPoint(file.getAbsolutePath()));
             launThemeUploadFileVo.setZipUrl(zipPath);
         }
 
@@ -1161,7 +1162,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
             if (fileName.equals(upThemeProp)) {
                 propFlag = !propFlag;
             }
-            if (fileName.contains(ConstantUtlis.file.DOT_SKIN)) {
+            if (FileTool.getExtentionWithoutPoint(fileName).equals(ConstantUtlis.file.SKIN)) {
                 skinFlag = !skinFlag;
             }
         }

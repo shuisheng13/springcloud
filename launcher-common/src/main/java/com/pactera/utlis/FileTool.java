@@ -1034,7 +1034,7 @@ public class FileTool {
 	public static boolean checkFileType(String fileName, String type) {
 		boolean isFile = false;
 		if(fileName.indexOf(ConstantUtlis.file.DOT) != -1 &&
-				fileName.substring(fileName.indexOf(ConstantUtlis.file.DOT)+1).equals(type)) {
+				getExtentionWithoutPoint(fileName).equals(type)) {
 			isFile = !isFile;
 		}
 		return isFile;
