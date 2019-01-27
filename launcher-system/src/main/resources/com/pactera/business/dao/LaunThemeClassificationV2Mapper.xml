@@ -51,15 +51,13 @@
         </if>
     </update>
 
-    <update id="deleteByThemClassId" parameterType="String">
-        UPDATE
+    <delete id="deleteByThemClassId" parameterType="String">
+        DELETE
+        FROM
           laun_theme_classification
-        SET
-          disable=0,update_date = NOW()
         WHERE
           id = #{0}
-
-    </update>
+    </delete>
 
     <select id="selectLauncThemeClassVo" resultMap="BaseResultMap" parameterType="com.pactera.vo.LauncThemeClassVo">
         SELECT
@@ -149,6 +147,7 @@
            <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
                #{item,jdbcType=VARCHAR}
            </foreach>
+         AND status != -1
          GROUP BY type_id;
     </select>
 
