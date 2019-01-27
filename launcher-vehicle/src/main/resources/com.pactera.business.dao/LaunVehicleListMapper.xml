@@ -23,8 +23,6 @@
           FROM
               laun_theme_administration
           WHERE
-              tenant_id in (#{tenantId} , -1)
-            AND
               status = 2
               <if test="recommendSort==-1">
                  AND recommend = 1
