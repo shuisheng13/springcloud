@@ -38,8 +38,9 @@ public class ThemeSaveValidator implements Validator {
         LaunThemeSavePo launThemeSavePo = (LaunThemeSavePo) obj;
 
         if(!HStringUtlis.isBlank(launThemeSavePo.getStartTime()) && !HStringUtlis.isBlank(launThemeSavePo.getEndTime())) {
-            int result =TimeUtils.compareDate(TimeUtils.string2Date(launThemeSavePo.getStartTime()),
-                    TimeUtils.string2Date(launThemeSavePo.getEndTime()));
+
+            int result = TimeUtils.compareDate(Long.valueOf(launThemeSavePo.getStartTime()), Long.valueOf(launThemeSavePo.getEndTime()));
+
             if(result != -1) {
                 errors.reject("endTime","结束时间有误");}
         }
