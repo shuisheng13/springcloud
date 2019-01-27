@@ -2,9 +2,9 @@ package com.pactera.business.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.navinfo.wecloud.common.rest.response.CommonResult;
 import com.navinfo.wecloud.saas.api.facade.ApiKeyFacade;
 import com.navinfo.wecloud.saas.api.response.TenantInfo;
+import com.navinfo.wecloud.solar.common.rest.response.CommonResult;
 import com.pactera.business.dao.LaunVehicleListMapper;
 import com.pactera.business.service.LaunListService;
 import com.pactera.config.exception.status.ErrorStatus;
@@ -35,7 +35,6 @@ public class LaunListServiceImpl implements LaunListService {
     @Value("${fast.url}")
     private String fastUrl;
 
-
     /**
      * 主题分类列表
      * @Author zhaodong
@@ -55,7 +54,7 @@ public class LaunListServiceImpl implements LaunListService {
         for (ThemClassDTO th:themListDTOS){
             //TODO 暂时方案
             if (!th.getCoverImage().contains(fastUrl)){
-                th.setCoverImage("http://"+fastUrl+"/"+th.getCoverImage());
+                th.setCoverImage(fastUrl+th.getCoverImage());
             }
         }
         JSONObject json = new JSONObject();
