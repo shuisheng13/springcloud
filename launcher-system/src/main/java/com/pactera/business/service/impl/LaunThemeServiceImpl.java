@@ -131,6 +131,14 @@ public class LaunThemeServiceImpl implements LaunThemeService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int changeStatus(List<String> ids, Integer status) {
+        final int statusValue = status;
+        ConstantUtlis.themeStatus statusEnum =
+                Arrays.stream(ConstantUtlis.themeStatus.values())
+                        .filter(t -> t.getCode() == statusValue).findFirst().get();
+
+        if(status == ConstantUtlis.themeStatus.VALID.getCode()) {
+                status = ConstantUtlis.themeStatus.DOWN_SHELF.getCode();
+        }
         return launThemeMapper.changeStatus(ids, status);
     }
 
