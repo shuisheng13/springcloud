@@ -1,7 +1,7 @@
 package com.pactera.config.header;
-import com.navinfo.wecloud.common.rest.response.CommonResult;
 import com.navinfo.wecloud.saas.api.facade.TenantFacade;
 import com.navinfo.wecloud.saas.api.response.TenantInfo;
+import com.navinfo.wecloud.solar.common.rest.response.CommonResult;
 import com.pactera.config.exception.DataStoreException;
 import com.pactera.config.exception.status.ErrorStatus;
 import lombok.extern.slf4j.Slf4j;
@@ -30,8 +30,8 @@ public class TenantFacadeV1 {
      **/
     public TenantInfo tenantInfo(int tenantId){
         log.info("根据租户id获取租户的信息开始>>>>>>>>>>>>>>>>>> tenantId = " + tenantId + new Date());
-        CommonResult<TenantInfo> tenant = null;
-        tenant = tenantFacade.getTenant(tenantId);
+
+        CommonResult<TenantInfo> tenant = tenantFacade.getTenant(tenantId);
         log.info("根据租户id获取租户的信息进行>>>>>>>>>>>>>>>>>>  " + tenant.getData() + new Date());
         /* if (tenant.getData()==null){
             throw new DataStoreException(ErrorStatus.SERVICE_ERROR_NOT_TENANTINFO.status(),ErrorStatus.SERVICE_ERROR_NOT_TENANTINFO.message());
