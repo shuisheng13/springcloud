@@ -11,10 +11,10 @@ import com.pactera.dto.ThemeDTO;
 import com.pactera.result.ResultData;
 import com.pactera.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +37,9 @@ public class ThemeServiceImpl implements ThemeService {
     @Autowired
     private ApiKeyFacade apiKeyFacade;
 
+    @Value("${fast.url}")
+    private String fastUrl;
+
     @Override
     public List<ThemeListVO> search(String value, String apiKey) {
         Integer tenantId = apiKeyFacade.queryTenantByApiKey(apiKey).getData().getId();
@@ -45,6 +48,7 @@ public class ThemeServiceImpl implements ThemeService {
         List<ThemeListVO> themeLists = launThemeAdministrations.stream().map(a->{
             ThemeListVO themeListVO = new ThemeListVO();
             beanCopier.copy(a, themeListVO, null);
+            themeListVO.setPreviewPath(fastUrl + themeListVO.getPreviewPath());
             return themeListVO;
         }).collect(Collectors.toList());
         return themeLists;
@@ -68,12 +72,13 @@ public class ThemeServiceImpl implements ThemeService {
         ThemeVO themeVo = new ThemeVO();
         BeanCopier.create(LaunThemeVo.class ,ThemeVO.class,false)
                 .copy(theme, themeVo, null);
-
+        themeVo.setZipUrl(fastUrl + themeVo.getZipUrl());
         themeVo.setDownloadCount(themeVo.getDownloadCount() + themeVo.getAddition());
         BeanCopier beanCopier = BeanCopier.create(LaunThemeFileVo.class ,ThemeFileVO.class,false);
         List<ThemeFileVO> nfiles = files.stream().map(f->{
             ThemeFileVO file = new ThemeFileVO();
             beanCopier.copy(f,file,null);
+            file.setFilePath(fastUrl + file.getFilePath());
             return file;
         }).collect(Collectors.toList());
 
