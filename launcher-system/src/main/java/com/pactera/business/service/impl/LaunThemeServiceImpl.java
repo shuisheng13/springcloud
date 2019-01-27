@@ -337,7 +337,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
                 .setTitle(launThemeSavePo.getTitle())
                 .setZipUrl(launThemeSavePo.getZipUrl())
                 .setDescription(launThemeSavePo.getDescription())
-                .setAddition(launThemeSavePo.getAddition())
+                .setAddition(launThemeSavePo.getAddition()==null?0:launThemeSavePo.getAddition())
                 .setAuthor(launThemeSavePo.getAuthor())
                 .setReleaseTime(launThemeSavePo.getReleaseTime())
                 .setPrice(launThemeSavePo.getPrice())
@@ -373,7 +373,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
                     .setCreator(SaasHeaderContextV1.getUserName())
                     .setId(themeId).setCreateDate(TimeUtils.nowTimeStamp())
                     .setRecommend(false).setRecommendSort(1).setSort(1)
-                    .setDownloadCount(0).setUsedCount(0).setAddition(0)
+                    .setDownloadCount(0).setUsedCount(0)
                     .setPrice(null == administration.getPrice() ? new BigDecimal(0) : administration.getPrice())
                     .setStatus(ConstantUtlis.themeStatus.DOWN_SHELF.getCode());
             launThemeMapper.insertSelective(administration);
