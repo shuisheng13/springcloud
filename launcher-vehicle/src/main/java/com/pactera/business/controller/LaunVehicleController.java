@@ -23,7 +23,7 @@ public class LaunVehicleController {
     private ThemeService themeService;
 
     @GetMapping("/detail")
-    ResultData theme(String id) {
+    ResultData detail(String id) {
         return new ResultData(themeService.detail(id));
     }
 

@@ -68,22 +68,27 @@ public class ThemeServiceImpl implements ThemeService {
         ResultData<ThemeDTO> themeDTO = remoteThemeService.detail(id);
         LaunThemeVo theme = themeDTO.getData().getTheme();
         List<LaunThemeFileVo> files = themeDTO.getData().getFile();
-
-        ThemeVO themeVo = new ThemeVO();
-        BeanCopier.create(LaunThemeVo.class ,ThemeVO.class,false)
-                .copy(theme, themeVo, null);
-        themeVo.setZipUrl(fastUrl + themeVo.getZipUrl());
-        themeVo.setDownloadCount(themeVo.getDownloadCount() + themeVo.getAddition());
-        BeanCopier beanCopier = BeanCopier.create(LaunThemeFileVo.class ,ThemeFileVO.class,false);
-        List<ThemeFileVO> nfiles = files.stream().map(f->{
-            ThemeFileVO file = new ThemeFileVO();
-            beanCopier.copy(f,file,null);
-            file.setFilePath(fastUrl + file.getFilePath());
-            return file;
-        }).collect(Collectors.toList());
-
         ThemeDetailVO themeDetailVO = new ThemeDetailVO();
-        themeDetailVO.setFile(nfiles).setTheme(themeVo);
+
+        if(null != theme) {
+            ThemeVO themeVo = new ThemeVO();
+            BeanCopier.create(LaunThemeVo.class ,ThemeVO.class,false)
+                    .copy(theme, themeVo, null);
+            themeVo.setZipUrl(fastUrl + themeVo.getZipUrl());
+            themeVo.setDownloadCount(themeVo.getDownloadCount() + themeVo.getAddition());
+            themeDetailVO.setTheme(themeVo);
+        }
+
+        if(null != files) {
+            BeanCopier beanCopier = BeanCopier.create(LaunThemeFileVo.class ,ThemeFileVO.class,false);
+            List<ThemeFileVO> nfiles = files.stream().map(f->{
+                ThemeFileVO file = new ThemeFileVO();
+                beanCopier.copy(f,file,null);
+                file.setFilePath(fastUrl + file.getFilePath());
+                return file;
+            }).collect(Collectors.toList());
+            themeDetailVO.setFile(nfiles);
+        }
         return themeDetailVO;
     }
 }
