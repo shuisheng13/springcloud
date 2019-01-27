@@ -30,6 +30,10 @@ public class LaunPage<T> {
      */
     private int pages;
     /**
+     * 是否为最后一页
+     */
+    private boolean isLastPage;
+    /**
      * 数据集合
      */
     private List<T> list;
@@ -50,6 +54,7 @@ public class LaunPage<T> {
         this.size = pageInfo.getSize();
         this.total = pageInfo.getTotal();
         this.pages = pageInfo.getPages();
+        this.isLastPage = pageInfo.isIsLastPage();
         this.list = list;
     }
 }
