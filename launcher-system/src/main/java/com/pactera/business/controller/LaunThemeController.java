@@ -201,8 +201,8 @@ public class LaunThemeController {
 	}
 
 	@GetMapping("/autoUpDown")
-    public void autoUpDown(){
-        launThemeService.themeAutoUpDown();
+    public void autoUpDown(long timeStamp){
+        launThemeService.themeAutoUpDown(timeStamp);
     }
 
 }

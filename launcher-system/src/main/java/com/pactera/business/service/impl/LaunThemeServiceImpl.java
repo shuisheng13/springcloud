@@ -1090,7 +1090,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
     }
 
     @Override
-    public void themeAutoUpDown() {
+    public void themeAutoUpDown(long timestamp) {
         log.info("执行定时上下架任务 start");
         Example example = new Example(LaunThemeAdministration.class);
         example.createCriteria().andEqualTo("status", ConstantUtlis.themeStatus.ON_SHELF.getCode());
@@ -1099,22 +1099,39 @@ public class LaunThemeServiceImpl implements LaunThemeService {
         List<String> upList = new ArrayList<>();
         List<String> downList = new ArrayList<>();
         for(LaunThemeAdministration launThemeAdministration : list) {
-            if(TimeUtils.isBetweenDate(launThemeAdministration.getStartTime(),
-                    launThemeAdministration.getEndTime(),
-                    TimeUtils.nowTimeStamp())) {
+
+            //if(TimeUtils.isBetweenDate(launThemeAdministration.getStartTime(),
+            //        launThemeAdministration.getEndTime(),
+            //        TimeUtils.nowTimeStamp())) {
+            //    upList.add(launThemeAdministration.getId());
+            //    log.info("主题id:{},开始时间：{},结束时间:{} 执行上架",
+            //            launThemeAdministration.getId(),
+            //            TimeUtils.date2String(launThemeAdministration.getStartTime()),
+            //            TimeUtils.date2String(launThemeAdministration.getEndTime()));
+            //}else {
+            //    launThemeAdministration.setStatus(ConstantUtlis.themeStatus.DOWN_SHELF.getCode());
+            //    downList.add(launThemeAdministration.getId());
+            //    log.info("主题id:{},开始时间：{},结束时间:{} 执行下架",
+            //            launThemeAdministration.getId(),
+            //            TimeUtils.date2String(launThemeAdministration.getStartTime()),
+            //            TimeUtils.date2String(launThemeAdministration.getEndTime()));
+            //}
+            if(0 == TimeUtils.compareDate(timestamp, launThemeAdministration.getStartTime().getTime())) {
                 upList.add(launThemeAdministration.getId());
-                log.info("主题id:{},开始时间：{},结束时间:{} 执行上架",
-                        launThemeAdministration.getId(),
-                        TimeUtils.date2String(launThemeAdministration.getStartTime()),
-                        TimeUtils.date2String(launThemeAdministration.getEndTime()));
-            }else {
-                launThemeAdministration.setStatus(ConstantUtlis.themeStatus.DOWN_SHELF.getCode());
-                downList.add(launThemeAdministration.getId());
-                log.info("主题id:{},开始时间：{},结束时间:{} 执行下架",
-                        launThemeAdministration.getId(),
-                        TimeUtils.date2String(launThemeAdministration.getStartTime()),
-                        TimeUtils.date2String(launThemeAdministration.getEndTime()));
+                    log.info("主题id:{},开始时间：{},结束时间:{} 执行上架",
+                            launThemeAdministration.getId(),
+                            TimeUtils.date2String(launThemeAdministration.getStartTime()),
+                            TimeUtils.date2String(launThemeAdministration.getEndTime()));
             }
+
+            if(0 == TimeUtils.compareDate(timestamp, launThemeAdministration.getEndTime().getTime())) {
+                downList.add(launThemeAdministration.getId());
+                    log.info("主题id:{},开始时间：{},结束时间:{} 执行下架",
+                            launThemeAdministration.getId(),
+                            TimeUtils.date2String(launThemeAdministration.getStartTime()),
+                            TimeUtils.date2String(launThemeAdministration.getEndTime()));
+            }
+
         }
         if(upList.size() > 0) {this.changeStatus(upList,ConstantUtlis.themeStatus.ON_SHELF.getCode());}
         if(downList.size() > 0) {this.changeStatus(downList,ConstantUtlis.themeStatus.DOWN_SHELF.getCode());}
