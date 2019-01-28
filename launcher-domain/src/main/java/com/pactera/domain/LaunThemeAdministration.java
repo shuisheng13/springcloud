@@ -79,5 +79,4 @@ public class LaunThemeAdministration {
 	private @ApiModelProperty("页面传值用的预览图数组") Map<String, String> filesJson;
 	@Transient
 	private @ApiModelProperty("页面传值用的字体路径") String fonts;
-
 }

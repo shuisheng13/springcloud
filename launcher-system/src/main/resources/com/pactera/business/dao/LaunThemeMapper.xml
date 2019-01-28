@@ -72,6 +72,7 @@
 
     <sql id="themeAdmin">laun_theme_administration</sql>
     <sql id="themeClass">laun_theme_classification</sql>
+	<sql id="versions">laun_versions</sql>
     <sql id="themeColumns">
         ${alias}.id,
         ${alias}.create_date,
@@ -121,10 +122,13 @@
 	<select id="query" resultMap="BaseResultMap">
         SELECT
         <include refid="themeColumns"><property name="alias" value="t1"/></include>,
-        t2.classification_name as typeName
-        FROM <include refid="themeAdmin"></include> as t1
-        LEFT JOIN <include refid="themeClass"></include> as t2
+        t2.classification_name as typeName,
+        t3.version_name as versionName
+        FROM <include refid="themeAdmin"/> as t1
+        LEFT JOIN <include refid="themeClass"/> as t2
         ON t1.type_id = t2.id
+        LEFT JOIN <include refid="versions"/> as t3
+        ON t1.version = t3.version
         <where>
 			t1.status != -1
             <if test="tenantId != null and tenantId != '' ">
