@@ -22,7 +22,7 @@ public class Task {
     @Autowired
     private RemoteService remoteService;
 
-    @Value("${task.cron.theme.auto.updown.test2}")
+    @Value("${task.cron.theme.auto.updown}")
     private String autoAuDownTime;
 
     @Scheduled(cron = "${task.cron.theme.auto.updown}")
