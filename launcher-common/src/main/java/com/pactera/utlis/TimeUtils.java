@@ -942,4 +942,13 @@ public class TimeUtils {
 		}
 		return false;
 	}
+
+	public static void main(String[] args) {
+        //static final String DEFAULT_TIME = "yyyy-MM-dd HH:mm:ss";
+	    Date start = string2Date("2019-01-28 00:00:00");
+        Date end = string2Date("2019-01-28 23:59:00");
+        Date now = string2Date("2019-01-28 23:59:00");
+		boolean i = isBetweenDate(start, end , now);
+        System.out.println(i);
+	}
 }
