@@ -34,6 +34,7 @@ public class LaunThemeVo implements Serializable {
 	private @ApiModelProperty("主题信息组件json") String widgetJson;
 	private @ApiModelProperty("主题信息组件json") String themeJson;
 	//private @ApiModelProperty("页面传值用的渠道名称") String channelName;
+    private String typeId;
 	private @ApiModelProperty("分类名称") String typeName;
 	//private @ApiModelProperty("页面传值用的版本名称") String versionName;
 	private @ApiModelProperty("主题包地址") String zipUrl;
