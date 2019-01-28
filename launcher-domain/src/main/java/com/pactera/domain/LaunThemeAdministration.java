@@ -32,7 +32,7 @@ public class LaunThemeAdministration {
 	private String widthOrHigthRatio;
 	private String folatPoint;
 	private Long level;
-	private String version;
+	private double version;
 	private Long creatorChannelId;
 	private  String typeId;
 	private String title;
