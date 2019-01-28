@@ -189,6 +189,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
             LauncThemeClassMapper.deleteByThemClassId(id, SaasHeaderContextV1.getTenantId() + "");
         }*/
         LauncThemeClassMapper.deleteByThemClassId(id);
+        launThemeService.cleanThemeClassification(id);
         ResultData resultData = new ResultData();
         return ResponseEntity.ok(resultData);
     }
