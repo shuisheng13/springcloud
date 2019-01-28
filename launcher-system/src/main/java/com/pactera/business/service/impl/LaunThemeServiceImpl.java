@@ -1121,6 +1121,11 @@ public class LaunThemeServiceImpl implements LaunThemeService {
         log.info("执行定时上下架任务 end");
     }
 
+    @Override
+    public int cleanThemeClassification(String id) {
+        return launThemeMapper.cleanClassification(id);
+    }
+
     private String parseProp(File file, LaunThemeUploadFileVo launThemeUploadFileVo) {
         Properties prop = FileTool.file2Prop(file);
         log.info("解析properties完成...prop:{}", prop.toString());

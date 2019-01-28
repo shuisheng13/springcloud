@@ -161,4 +161,9 @@ public interface LaunThemeService {
 	 * 定时上下架
 	 */
 	void themeAutoUpDown();
+
+	/**
+	 * 删除主题分类时，更新主题
+	 */
+	int cleanThemeClassification(String id);
 }

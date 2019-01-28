@@ -308,4 +308,9 @@
 		update <include refid="themeAdmin"></include> as t1 set t1.sort = #{sort}
 		where id = #{id}
 	</update>
+
+	<update id="cleanClassification" parameterType="java.lang.String">
+		update <include refid="themeAdmin"></include> as t1 set t1.type_id = null
+		where t1.type_id = #{id}
+	</update>
 </mapper>
