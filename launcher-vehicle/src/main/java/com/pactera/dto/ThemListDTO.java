@@ -19,5 +19,7 @@ public class ThemListDTO {
 
     private String price="0";
 
+    private double version;
+
 
 }
