@@ -33,7 +33,6 @@ public class ThemeSaveValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", "description.empty","描述不能为空");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "author", "author.empty","作者不能为空");
         ValidationUtils.rejectIfEmpty(errors, "releaseTime", "releaseTime.empty","发布时间不能为空");
-        ValidationUtils.rejectIfEmpty(errors, "typeId", "typeId.empty","主题分类不能为空");
         ValidationUtils.rejectIfEmpty(errors, "fileSize", "fileSize.empty","文件大小不能为空");
         LaunThemeSavePo launThemeSavePo = (LaunThemeSavePo) obj;
 
