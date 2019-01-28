@@ -25,7 +25,7 @@ public interface LaunListService {
      * @Param
      * @return
      **/
-    ResponseEntity<ResultData> themTopAndAll(String apiKey,int status, int pageNum, int pageSize);
+    ResponseEntity<ResultData> themTopAndAll(String apiKey,int status, int pageNum, int pageSize,double version);
 
     /**
      * 分类下的主题列表
@@ -34,6 +34,6 @@ public interface LaunListService {
      * @Param
      * @return
      **/
-    ResponseEntity<ResultData> themTopAndByClassId(String apiKey, String id, int pageNum, int pageSize);
+    ResponseEntity<ResultData> themTopAndByClassId(String apiKey, String id, int pageNum, int pageSize,double version);
 
 }

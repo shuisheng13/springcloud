@@ -7,9 +7,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -54,10 +52,11 @@ public class LaunVehicleListController {
             @ApiImplicitParam(name = "apiKey", value = "apiKey",paramType="query",required = true),
             @ApiImplicitParam(name = "status", value = "1-全部主题，2-主题排行，3-推荐主题",paramType="query",required = true),
             @ApiImplicitParam(name = "pageNum", value = "当前页",paramType="query"),
-            @ApiImplicitParam(name = "pageSize", value = "页码大小",paramType="query")
+            @ApiImplicitParam(name = "pageSize", value = "页码大小",paramType="query"),
+            //@ApiImplicitParam(name = "version", value = "主题商店版本号",paramType="query" )
     })
-    public ResponseEntity<ResultData> themTopAndAll(String apiKey, int status, @RequestParam(defaultValue = "1")int pageNum, @RequestParam(defaultValue = "10")int pageSize){
-        ResponseEntity<ResultData> resultDataResponse = launListService.themTopAndAll(apiKey, status, pageNum, pageSize);
+    public ResponseEntity<ResultData> themTopAndAll(String apiKey, int status, @RequestParam(defaultValue = "1")int pageNum, @RequestParam(defaultValue = "10")int pageSize,double version){
+        ResponseEntity<ResultData> resultDataResponse = launListService.themTopAndAll(apiKey, status, pageNum, pageSize,version);
         return resultDataResponse;
     }
 
@@ -74,11 +73,13 @@ public class LaunVehicleListController {
             @ApiImplicitParam(name = "apiKey", value = "apiKey",paramType="query",required = true),
             @ApiImplicitParam(name = "id", value = "分类id",paramType="query",required = true),
             @ApiImplicitParam(name = "pageNum", value = "当前页",paramType="query"),
-            @ApiImplicitParam(name = "pageSize", value = "页码大小",paramType="query")
+            @ApiImplicitParam(name = "pageSize", value = "页码大小",paramType="query"),
+            @ApiImplicitParam(name = "version", value = "主题商店版本号",paramType="query")
     })
-    public ResponseEntity<ResultData> themTopAndByClassId(String apiKey, String id, @RequestParam(defaultValue = "1")int pageNum, @RequestParam(defaultValue = "10")int pageSize){
-        ResponseEntity<ResultData> responseEntity = launListService.themTopAndByClassId(apiKey, id, pageNum, pageSize);
+    public ResponseEntity<ResultData> themTopAndByClassId(String apiKey, String id, @RequestParam(defaultValue = "1")int pageNum, @RequestParam(defaultValue = "10")int pageSize,double version){
+        ResponseEntity<ResultData> responseEntity = launListService.themTopAndByClassId(apiKey, id, pageNum, pageSize,version);
         return responseEntity;
     }
+
 
 }

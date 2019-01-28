@@ -102,7 +102,9 @@
           <include refid="themeAdmin"/> as t1
         <where>
              t1.status = 2
-             <if test="value != null"> AND t1.title LIKE CONCAT(CONCAT('%/', #{value}), '%') escape '/' </if></where>
+             <if test="value != null"> AND t1.title LIKE CONCAT(CONCAT('%/', #{value}), '%') escape '/' </if>
+             <if test="version>-1"> AND #{version}>t1.version </if>
+        </where>
         UNION
 	    SELECT
           <include refid="themeColumns"><property name="alias" value="t2"/></include>
@@ -110,7 +112,9 @@
         LEFT JOIN <include refid="themeClass"></include> as t3 ON t2.type_id = t3.id
         <where>
             t2.status = 2
-            <if test="value != null"> AND t3.classification_name LIKE CONCAT(CONCAT('%/', #{value}), '%') escape '/' </if></where>
+            <if test="value != null"> AND t3.classification_name LIKE CONCAT(CONCAT('%/', #{value}), '%') escape '/' </if>
+            <if test="version>-1"> AND #{version}>t2.version </if>
+        </where>
 
         UNION
         SELECT
@@ -119,7 +123,9 @@
         <include refid="themeAdmin"></include> as t4
         <where>
             t4.status = 2
-            <if test="value != null">AND t4.author LIKE CONCAT(CONCAT('%/', #{value}), '%') escape '/'</if></where>
+            <if test="value != null">AND t4.author LIKE CONCAT(CONCAT('%/', #{value}), '%') escape '/'</if>
+            <if test="version>-1"> AND #{version}>t4.version </if>
+        </where>
 	</select>
 
     <update id="count" flushCache="true">

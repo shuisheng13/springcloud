@@ -56,6 +56,7 @@ public class LaunListServiceImpl implements LaunListService {
             if (!th.getCoverImage().contains(fastUrl)){
                 th.setCoverImage(fastUrl+th.getCoverImage());
             }
+
         }
         JSONObject json = new JSONObject();
         json.put("list",themListDTOS);
@@ -71,7 +72,7 @@ public class LaunListServiceImpl implements LaunListService {
      * @return
      **/
     @Override
-    public ResponseEntity<ResultData> themTopAndAll(String apiKey,int status, int pageNum, int pageSize){
+    public ResponseEntity<ResultData> themTopAndAll(String apiKey,int status, int pageNum, int pageSize,double version){
         CommonResult<TenantInfo> tenantInfoCommonResult = apiKeyFacade.queryTenantByApiKey(apiKey);
         TenantInfo data = tenantInfoCommonResult.getData();
         if (data==null){
@@ -81,6 +82,7 @@ public class LaunListServiceImpl implements LaunListService {
         PageHelper.startPage(pageNum, pageSize);
         LaunThemeAdministration LaunThemeVo = new LaunThemeAdministration();
         LaunThemeVo.setTenantId(tenanId);
+        LaunThemeVo.setVersion(version);
         if (status==1) LaunThemeVo.setSort(-1);// 全部标记
         else if (status==2) LaunThemeVo.setDownloadCount(-1);// 排行标记
         else if (status==3) LaunThemeVo.setRecommendSort(-1);// 推荐标记
@@ -101,7 +103,7 @@ public class LaunListServiceImpl implements LaunListService {
      * @return
      **/
     @Override
-    public ResponseEntity<ResultData> themTopAndByClassId(String apiKey, String id, int pageNum, int pageSize){
+    public ResponseEntity<ResultData> themTopAndByClassId(String apiKey, String id, int pageNum, int pageSize,double version){
         PageHelper.startPage(pageNum, pageSize);
         CommonResult<TenantInfo> tenantInfoCommonResult = apiKeyFacade.queryTenantByApiKey(apiKey);
         TenantInfo data = tenantInfoCommonResult.getData();
@@ -113,6 +115,7 @@ public class LaunListServiceImpl implements LaunListService {
         LaunThemeVo.setTenantId(tenanId);
         LaunThemeVo.setTypeId(id); // id
         LaunThemeVo.setDownloadCount(-1);//分类的主题列表按照下载量排序
+        LaunThemeVo.setVersion(version);
         List<ThemListDTO> themListDTOS = launVehicleListMapper.themTopAndByClassId(LaunThemeVo);
         PageInfo<ThemListDTO> PageInfo = new PageInfo<>(themListDTOS);
         JSONObject json = new JSONObject();

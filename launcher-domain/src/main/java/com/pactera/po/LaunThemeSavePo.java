@@ -19,7 +19,7 @@ public class LaunThemeSavePo {
     private String id;
     private Long longResolution;
     private Long wideResolution;
-    private String version;
+    private double version;
     private String typeId;
     private Map<String, String> filesJson;
     private String title;
