@@ -8,5 +8,5 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public interface RemoteService {
 
     @RequestMapping(method = RequestMethod.GET, value = "/theme/autoUpDown")
-    void autoUpDown();
+    void autoUpDown(long timestamp);
 }
