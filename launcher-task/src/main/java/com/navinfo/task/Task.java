@@ -1,3 +1,4 @@
+/*
 package com.navinfo.task;
 
 import com.navinfo.service.RemoteService;
@@ -7,13 +8,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+*/
 /**
  * @ClassName Task
  * @Description
  * @Author xukj
  * @Date 2019/1/24 20:00
  * @Version
- */
+ *//*
+
 @Component
 @Slf4j
 public class Task {
@@ -38,3 +41,4 @@ public class Task {
         log.info("任务：{},执行时间：{}","主题自动上下架",autoAuDownTime);
     }
 }
+*/
