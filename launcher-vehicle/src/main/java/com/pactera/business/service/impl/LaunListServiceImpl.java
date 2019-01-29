@@ -115,6 +115,9 @@ public class LaunListServiceImpl implements LaunListService {
         if (data==null){
             return ResponseEntity.ok().body(new ResultData(ErrorStatus.NOT_APIKEY.status(),ErrorStatus.NOT_APIKEY.message()));
         }
+        if (id==null){
+            return ResponseEntity.ok().body(new ResultData("id不为空"));
+        }
         int tenanId = data.getId();
         LaunThemeAdministration LaunThemeVo = new LaunThemeAdministration();
         LaunThemeVo.setTenantId(tenanId);
