@@ -32,7 +32,7 @@ public class TaskApplication {
      * @throws SchedulerException
      */
     @Bean
-    public Scheduler scheduler(SchedulerFactoryBean schedulerFactoryBean) throws SchedulerException {
+    public Scheduler scheduler(SchedulerFactoryBean schedulerFactoryBean) {
         return schedulerFactoryBean.getScheduler();
     }
     @Bean
@@ -40,7 +40,7 @@ public class TaskApplication {
         return new MyJobFactory();
     }
     @Bean
-    public SchedulerFactoryBean schedulerFactoryBean(MyJobFactory jobFactory){
+    public SchedulerFactoryBean schedulerFactoryBean(MyJobFactory jobFactory) {
         SchedulerFactoryBean schedulerFactoryBean = new SchedulerFactoryBean();
         schedulerFactoryBean.setJobFactory(jobFactory);
         return schedulerFactoryBean;
