@@ -15,7 +15,7 @@ public class ThemListDTO {
 
     private String title;
 
-    private int downCount;
+    private int downloadCount;
 
     private String id;
 
