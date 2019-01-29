@@ -88,6 +88,11 @@ public class LaunListServiceImpl implements LaunListService {
         else if (status==3) LaunThemeVo.setRecommendSort(-1);// 推荐标记
         else return ResponseEntity.ok().body(new ResultData(ErrorStatus.SYS_ERROR.status(),ErrorStatus.SYS_ERROR.message()));// 暂时提供系统错误
         List<ThemListDTO> themListDTOS = launVehicleListMapper.themTopAndByClassId(LaunThemeVo);
+        for (ThemListDTO th:themListDTOS){
+            if (!th.getPreviewPath().contains(fastUrl)){
+                th.setPreviewPath(fastUrl+th.getPreviewPath());
+            }
+        }
         PageInfo<ThemListDTO> PageInfo = new PageInfo<>(themListDTOS);
         JSONObject json = new JSONObject();
         json.put("list",new LaunPage(PageInfo, themListDTOS));
@@ -117,6 +122,11 @@ public class LaunListServiceImpl implements LaunListService {
         LaunThemeVo.setDownloadCount(-1);//分类的主题列表按照下载量排序
         LaunThemeVo.setVersion(version);
         List<ThemListDTO> themListDTOS = launVehicleListMapper.themTopAndByClassId(LaunThemeVo);
+        for (ThemListDTO th:themListDTOS){
+            if (!th.getPreviewPath().contains(fastUrl)){
+                th.setPreviewPath(fastUrl+th.getPreviewPath());
+            }
+        }
         PageInfo<ThemListDTO> PageInfo = new PageInfo<>(themListDTOS);
         JSONObject json = new JSONObject();
         json.put("list",new LaunPage(PageInfo, themListDTOS));

@@ -2,6 +2,8 @@ package com.pactera.dto;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * @Author zhaodong
  * @Date 10:21 2019/1/7
@@ -17,7 +19,7 @@ public class ThemListDTO {
 
     private String id;
 
-    private String price="0";
+    private BigDecimal price;
 
     private double version;
 
