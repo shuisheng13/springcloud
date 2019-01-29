@@ -21,7 +21,6 @@ import com.pactera.vo.LaunThemeFileVo;
 import com.pactera.vo.LaunThemeUploadFileVo;
 import com.pactera.vo.LaunThemeVo;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,12 +33,12 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Example;
 
-import java.beans.Transient;
 import java.io.*;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -1090,7 +1089,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
     }
 
     @Override
-    public void themeAutoUpDown(long timestamp) {
+    public void themeAutoUpDown(String timestamp) {
         log.info("执行定时上下架任务 start");
         Example example = new Example(LaunThemeAdministration.class);
         example.createCriteria().andEqualTo("status", ConstantUtlis.themeStatus.ON_SHELF.getCode());
@@ -1098,38 +1097,32 @@ public class LaunThemeServiceImpl implements LaunThemeService {
         List<LaunThemeAdministration> list = launThemeMapper.selectByExample(example);
         List<String> upList = new ArrayList<>();
         List<String> downList = new ArrayList<>();
+
         for(LaunThemeAdministration launThemeAdministration : list) {
 
-            //if(TimeUtils.isBetweenDate(launThemeAdministration.getStartTime(),
-            //        launThemeAdministration.getEndTime(),
-            //        TimeUtils.nowTimeStamp())) {
-            //    upList.add(launThemeAdministration.getId());
-            //    log.info("主题id:{},开始时间：{},结束时间:{} 执行上架",
-            //            launThemeAdministration.getId(),
-            //            TimeUtils.date2String(launThemeAdministration.getStartTime()),
-            //            TimeUtils.date2String(launThemeAdministration.getEndTime()));
-            //}else {
-            //    launThemeAdministration.setStatus(ConstantUtlis.themeStatus.DOWN_SHELF.getCode());
-            //    downList.add(launThemeAdministration.getId());
-            //    log.info("主题id:{},开始时间：{},结束时间:{} 执行下架",
-            //            launThemeAdministration.getId(),
-            //            TimeUtils.date2String(launThemeAdministration.getStartTime()),
-            //            TimeUtils.date2String(launThemeAdministration.getEndTime()));
-            //}
-            if(0 == TimeUtils.compareDate(timestamp, launThemeAdministration.getStartTime().getTime())) {
-                upList.add(launThemeAdministration.getId());
-                    log.info("主题id:{},开始时间：{},结束时间:{} 执行上架",
-                            launThemeAdministration.getId(),
-                            TimeUtils.date2String(launThemeAdministration.getStartTime()),
-                            TimeUtils.date2String(launThemeAdministration.getEndTime()));
+            Date startTime = launThemeAdministration.getStartTime();
+            Date endTime = launThemeAdministration.getEndTime();
+            String startTimeStr = null;
+            String endTimeStr = null;
+            log.info("主题id:{},开始时间：{},结束时间:{}, 判断时间：{}",
+                    launThemeAdministration.getId(),
+                    startTime,
+                    endTime,
+                    timestamp);
+            if(null != startTime) {
+                startTimeStr = TimeUtils.date2String(startTime, TimeUtils.DEFAULT_SIMPLE_TIME);
+                if(startTimeStr.equals(timestamp)) {
+                    upList.add(launThemeAdministration.getId());
+                    log.info("主题：{}，上架");
+                }
             }
 
-            if(0 == TimeUtils.compareDate(timestamp, launThemeAdministration.getEndTime().getTime())) {
-                downList.add(launThemeAdministration.getId());
-                    log.info("主题id:{},开始时间：{},结束时间:{} 执行下架",
-                            launThemeAdministration.getId(),
-                            TimeUtils.date2String(launThemeAdministration.getStartTime()),
-                            TimeUtils.date2String(launThemeAdministration.getEndTime()));
+            if(null != endTime) {
+                endTimeStr = TimeUtils.date2String(endTime, TimeUtils.DEFAULT_SIMPLE_TIME);
+                if(endTimeStr.equals(timestamp)) {
+                    downList.add(launThemeAdministration.getId());
+                    log.info("主题：{}，下架");
+                }
             }
 
         }
