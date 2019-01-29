@@ -19,7 +19,7 @@
 
     <select id="themTopAndByClassId" resultType="com.pactera.dto.ThemListDTO" parameterType="com.pactera.domain.LaunThemeAdministration">
           SELECT
-              id , preview_path as previewPath, title, download_count as downCount, version
+              id , preview_path as previewPath, title, download_count as downloadCount, version, price
           FROM
               laun_theme_administration
           WHERE
@@ -27,7 +27,7 @@
               <if test="recommendSort==-1">
                  AND recommend = 1
               </if>
-              <if test="version>-1">
+              <if test="version>0">
                 AND  #{version} >version
               </if>
               <if test="typeId!=null">
