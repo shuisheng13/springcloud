@@ -43,7 +43,7 @@ public class TimeUtils {
 
 	static final String DEFAULT_TIME = "yyyy-MM-dd HH:mm:ss";
 
-	static final String DEFAULT_SIMPLE_TIME = "yyyy-MM-dd";
+	public static final String DEFAULT_SIMPLE_TIME = "yyyy-MM-dd";
 
 	static final long DAY = 1000 * 60 * 60 * 24;
 
@@ -944,11 +944,6 @@ public class TimeUtils {
 	}
 
 	public static void main(String[] args) {
-        //static final String DEFAULT_TIME = "yyyy-MM-dd HH:mm:ss";
-	    Date start = string2Date("2019-01-28 00:00:00");
-        Date end = string2Date("2019-01-28 23:59:00");
-        Date now = string2Date("2019-01-28 23:59:00");
-		boolean i = isBetweenDate(start, end , now);
-        System.out.println(i);
+
 	}
 }
