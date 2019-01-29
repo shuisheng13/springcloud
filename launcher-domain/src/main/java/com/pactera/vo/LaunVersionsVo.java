@@ -13,7 +13,7 @@ import lombok.Data;
 public class LaunVersionsVo {
 
     private Long id;
-    private String version;
+    private double version;
     private String versionName;
     private Integer tenantId;
     private String tenantName;
