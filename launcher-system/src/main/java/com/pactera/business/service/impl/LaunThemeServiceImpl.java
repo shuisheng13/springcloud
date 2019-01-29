@@ -1102,15 +1102,13 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 
             Date startTime = launThemeAdministration.getStartTime();
             Date endTime = launThemeAdministration.getEndTime();
-            String startTimeStr = null;
-            String endTimeStr = null;
             log.info("主题id:{},开始时间：{},结束时间:{}, 判断时间：{}",
                     launThemeAdministration.getId(),
                     startTime,
                     endTime,
                     timestamp);
             if(null != startTime) {
-                startTimeStr = TimeUtils.date2String(startTime, TimeUtils.DEFAULT_SIMPLE_TIME);
+                String startTimeStr = TimeUtils.date2String(startTime, TimeUtils.DEFAULT_SIMPLE_TIME);
                 if(startTimeStr.equals(timestamp)) {
                     upList.add(launThemeAdministration.getId());
                     log.info("主题：{}，上架");
@@ -1118,7 +1116,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
             }
 
             if(null != endTime) {
-                endTimeStr = TimeUtils.date2String(endTime, TimeUtils.DEFAULT_SIMPLE_TIME);
+                String endTimeStr = TimeUtils.date2String(endTime, TimeUtils.DEFAULT_SIMPLE_TIME);
                 if(endTimeStr.equals(timestamp)) {
                     downList.add(launThemeAdministration.getId());
                     log.info("主题：{}，下架");
