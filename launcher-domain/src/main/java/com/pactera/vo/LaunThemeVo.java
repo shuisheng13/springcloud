@@ -14,7 +14,7 @@ public class LaunThemeVo implements Serializable {
 
 	private @ApiModelProperty("主键id") String id;
 	private @ApiModelProperty("排序权重") Integer sort;
-	private @ApiModelProperty("最低试用版本") String version;
+	private @ApiModelProperty("最低试用版本") double version;
 	private @ApiModelProperty("分辨率长") Long longResolution;
 	private @ApiModelProperty("分辨率宽") Long wideResolution;
 	private @ApiModelProperty("主题名称") String title;
