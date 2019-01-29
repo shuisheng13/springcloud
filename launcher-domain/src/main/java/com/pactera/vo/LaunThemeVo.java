@@ -14,7 +14,7 @@ public class LaunThemeVo implements Serializable {
 
 	private @ApiModelProperty("主键id") String id;
 	private @ApiModelProperty("排序权重") Integer sort;
-	private @ApiModelProperty("最低试用版本") String version;
+	private @ApiModelProperty("最低试用版本") double version;
 	private @ApiModelProperty("分辨率长") Long longResolution;
 	private @ApiModelProperty("分辨率宽") Long wideResolution;
 	private @ApiModelProperty("主题名称") String title;
@@ -34,6 +34,7 @@ public class LaunThemeVo implements Serializable {
 	private @ApiModelProperty("主题信息组件json") String widgetJson;
 	private @ApiModelProperty("主题信息组件json") String themeJson;
 	//private @ApiModelProperty("页面传值用的渠道名称") String channelName;
+    private String typeId;
 	private @ApiModelProperty("分类名称") String typeName;
 	//private @ApiModelProperty("页面传值用的版本名称") String versionName;
 	private @ApiModelProperty("主题包地址") String zipUrl;
@@ -42,4 +43,5 @@ public class LaunThemeVo implements Serializable {
 	private Boolean recommend;
 	private Integer recommendSort;
 	private Integer addition;
+	private String versionName;
 }

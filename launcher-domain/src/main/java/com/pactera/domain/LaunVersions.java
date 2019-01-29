@@ -17,7 +17,7 @@ public class LaunVersions extends LaunBase {
     /**
      * 版本号
      */
-    private String version;
+    private double version;
     /**
      * 版本名称
      */

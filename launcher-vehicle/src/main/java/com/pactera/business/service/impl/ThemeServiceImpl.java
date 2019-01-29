@@ -11,11 +11,12 @@ import com.pactera.dto.ThemeDTO;
 import com.pactera.result.ResultData;
 import com.pactera.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName ThemeServiceImpl
@@ -36,17 +37,20 @@ public class ThemeServiceImpl implements ThemeService {
     @Autowired
     private ApiKeyFacade apiKeyFacade;
 
+    @Value("${fast.url}")
+    private String fastUrl;
+
     @Override
-    public List<ThemeListVO> search(String value, String apiKey) {
-        Integer tenantId = apiKeyFacade.queryTenantByApiKey(apiKey).getData().getId();
-        List<LaunThemeAdministration> launThemeAdministrations = launThemeMapper.search(value, tenantId);
-        List<ThemeListVO> themeLists = new ArrayList<>();
-        BeanCopier beanCopier = BeanCopier.create(LaunThemeAdministration.class ,ThemeListVO.class,true);
-        launThemeAdministrations.forEach(a->{
+    public List<ThemeListVO> search(String value, String apiKey, double version) {
+        //Integer tenantId = apiKeyFacade.queryTenantByApiKey(apiKey).getData().getId();
+        List<LaunThemeAdministration> launThemeAdministrations = launThemeMapper.search(value, version);
+        BeanCopier beanCopier = BeanCopier.create(LaunThemeAdministration.class ,ThemeListVO.class,false);
+        List<ThemeListVO> themeLists = launThemeAdministrations.stream().map(a->{
             ThemeListVO themeListVO = new ThemeListVO();
-            beanCopier.copy(a, themeListVO, (Object v, Class t, Object c)->v);
-            themeLists.add(themeListVO);
-        });
+            beanCopier.copy(a, themeListVO, null);
+            themeListVO.setPreviewPath(fastUrl + themeListVO.getPreviewPath());
+            return themeListVO;
+        }).collect(Collectors.toList());
         return themeLists;
     }
 
@@ -64,22 +68,27 @@ public class ThemeServiceImpl implements ThemeService {
         ResultData<ThemeDTO> themeDTO = remoteThemeService.detail(id);
         LaunThemeVo theme = themeDTO.getData().getTheme();
         List<LaunThemeFileVo> files = themeDTO.getData().getFile();
-
-        ThemeVO themeVo = new ThemeVO();
-        BeanCopier.create(LaunThemeVo.class ,ThemeVO.class,true)
-                .copy(theme, themeVo, (Object o, Class aClass, Object o1)-> o);
-
-        themeVo.setDownloadCount(themeVo.getDownloadCount() + themeVo.getAddition());
-        BeanCopier beanCopier = BeanCopier.create(LaunThemeFileVo.class ,ThemeFileVO.class,false);
-        List<ThemeFileVO> nfiles = new ArrayList<>();
-        files.forEach(f->{
-            ThemeFileVO file = new ThemeFileVO();
-            beanCopier.copy(f,file,null);
-            nfiles.add(file);
-        });
-
         ThemeDetailVO themeDetailVO = new ThemeDetailVO();
-        themeDetailVO.setFile(nfiles).setTheme(themeVo);
+
+        if(null != theme) {
+            ThemeVO themeVo = new ThemeVO();
+            BeanCopier.create(LaunThemeVo.class ,ThemeVO.class,false)
+                    .copy(theme, themeVo, null);
+            themeVo.setZipUrl(fastUrl + themeVo.getZipUrl());
+            themeVo.setDownloadCount(themeVo.getDownloadCount() + themeVo.getAddition());
+            themeDetailVO.setTheme(themeVo);
+        }
+
+        if(null != files) {
+            BeanCopier beanCopier = BeanCopier.create(LaunThemeFileVo.class ,ThemeFileVO.class,false);
+            List<ThemeFileVO> nfiles = files.stream().map(f->{
+                ThemeFileVO file = new ThemeFileVO();
+                beanCopier.copy(f,file,null);
+                file.setFilePath(fastUrl + file.getFilePath());
+                return file;
+            }).collect(Collectors.toList());
+            themeDetailVO.setFile(nfiles);
+        }
         return themeDetailVO;
     }
 }

@@ -43,7 +43,7 @@ public class TimeUtils {
 
 	static final String DEFAULT_TIME = "yyyy-MM-dd HH:mm:ss";
 
-	static final String DEFAULT_SIMPLE_TIME = "yyyy-MM-dd";
+	public static final String DEFAULT_SIMPLE_TIME = "yyyy-MM-dd";
 
 	static final long DAY = 1000 * 60 * 60 * 24;
 
@@ -941,5 +941,9 @@ public class TimeUtils {
 			return true;
 		}
 		return false;
+	}
+
+	public static void main(String[] args) {
+
 	}
 }

@@ -23,8 +23,8 @@ public class SaasHeaderContextV1 {
         if (tenantId!=null) {
             return tenantId + "";
         }else {
-            SaasHeaderContextV1.exception();
-            return null;
+            int exception = SaasHeaderContextV1.exception();
+            return exception + "";
         }
     }
 
@@ -34,8 +34,8 @@ public class SaasHeaderContextV1 {
         if (tenantId != null) {
             return tenantId;
         } else {
-            SaasHeaderContextV1.exception();
-            return -1;
+            int exception = SaasHeaderContextV1.exception();
+            return exception;
         }
     }
 
@@ -61,12 +61,10 @@ public class SaasHeaderContextV1 {
 
     public static String getUserName() {
         log.info("userType为>>>>>>>>>>>>>>>>>  "+SaasHeaderContextV1.getUserType());
-        if(!StringUtils.isBlank(SaasHeaderContext.getUserName()) ){
+        if(!StringUtils.isBlank(SaasHeaderContext.getUserName())){
             return SaasHeaderContext.getUserName();
-        }else{
-            SaasHeaderContextV1.exception();
-            return null;
         }
+        return null;
     }
 
     public static String getTenantName() {
@@ -78,15 +76,18 @@ public class SaasHeaderContextV1 {
                 e.printStackTrace();
             }
         }else{
-            SaasHeaderContextV1.exception();
+            int exception = SaasHeaderContextV1.exception();
+            if (exception==-1){
+                return "XTYH";
+            }
         }
         return null;
     }
 
-    private static void exception(){
+    private static int exception(){
         if (SaasHeaderContextV1.getUserType()==0){
             log.error("该系统管理员为最高管理员，不是普通租户,userType= >>>>>>>>"+SaasHeaderContextV1.getUserType()+" >>>>>>>>"+new Date());
-            throw new DataStoreException(ErrorStatus.SERVICE_ERROR_CLIENTEXCEPTION.status(),ErrorStatus.SERVICE_ERROR_CLIENTEXCEPTION.message());
+            return -1;
         }else{
             throw new DataStoreException(ErrorStatus.SERVICE_ERROR_NOT_TENANT.status(),ErrorStatus.SERVICE_ERROR_NOT_TENANT.message());
         }

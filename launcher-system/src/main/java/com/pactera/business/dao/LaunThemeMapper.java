@@ -104,4 +104,6 @@ public interface LaunThemeMapper extends BaseMapper<LaunThemeAdministration> {
 
 	int changeStatus(@Param("ids") List<String> ids, @Param("status")Integer status);
 
+	int cleanClassification(@Param("id") String id);
+
 }

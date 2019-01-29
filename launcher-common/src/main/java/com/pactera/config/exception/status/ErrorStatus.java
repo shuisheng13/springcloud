@@ -33,9 +33,10 @@ public enum ErrorStatus {
 	THEMEJSON_ERROR(400002,"themeJson格式有误，转换异常"),
 	NOT_APIKEY(140014,"无效apiKey"),
 
+	UPLOAD_THEME_ILLEGAL_FILE(150000,"主题资源包有误"),
 	UPLOAD_THEME_NO_IMGS(150001,"上传资源包中缺少imgs包"),
 	UPLOAD_THEME_NO_CONFIG(150002,"上传资源包中缺少config文件"),
-	UPLOAD_THEME_NO_ZIP(150003,"上传资源包中缺少zip包"),
+	UPLOAD_THEME_NO_SKIN(150003,"上传资源包中缺少skin文件"),
 	UPLOAD_THEME_TOO_MANY_IMG(150004,"上传资源包中图片数量过多"),
 
 
@@ -44,8 +45,15 @@ public enum ErrorStatus {
     NAME_CLASS_LAUNTHEM_ADD(140011, "添加主题分类重名"),
     NAME_CLASS_LAUNTHEM_REEOR(140012, "添加主题分类字数超过8字符"),
     NAME_CLASS_LAUNTHEM_UP(140013, "编辑主题分类重名"),
-	SERVICE_ERROR_CLIENTEXCEPTION(140014,"连接其他服务异常")
-	;
+	SERVICE_ERROR_CLIENTEXCEPTION(140014,"连接租户服务异常"),
+	SERVICE_ERROR_NOT_TENANT(140015,"不是普通租户"),
+
+	SERVICE_ERROR_NOT_TENANTINFO(140016,"连接saas成功,但是查询租户id为空、根据租户id查询租户信息不存在"),
+	SERVICE_ERROR_NOT_TENANTINFONAME(140017,"租户名字为空"),
+	SERVICE_ERROR_NOT_TENANTINFOAPIKEY(140018,"租户apiKey为空"),
+	SERVICE_ERROR_NOT_TENANTINFOENNAME(140019,"租户英文名字为空");
+
+
 	
 	private int status;
 

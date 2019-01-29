@@ -31,7 +31,7 @@ public interface LaunThemeClassificationV2Mapper extends BaseMapper<LaunThemeCla
      * @Param classificationId
      * @return
      **/
-    int deleteByThemClassId(String id,String tenantId);
+    int deleteByThemClassId(String id);
 
     /**
      * 查询主题列表
@@ -52,51 +52,6 @@ public interface LaunThemeClassificationV2Mapper extends BaseMapper<LaunThemeCla
     int orderThemeClass(@Param("list") List<Map> listMap);
 
     /**
-     * 根据主题id查询分类id
-     * @Author zhaodong
-     * @Date 9:45 2019/1/16
-     * @Param
-     * @return
-     **/
-    List<LaunThemeAdministration> selectClassIdByThemId(@Param("list") List<String> themId);
-
-    /**
-     * 查询主题的数量
-     * @Author zhaodong
-     * @Date 11:01 2019/1/16
-     * @Param
-     * @return
-     **/
-    List<Integer> selectThemeCountByClassId(@Param("list")List<String> list);
-
-    /**
-     * 查询主题上架的数量
-     * @Author zhaodong
-     * @Date 11:01 2019/1/16
-     * @Param
-     * @return
-     **/
-    List<Integer> selectThemeCountUpByClassId(@Param("list")List<String> list);
-
-    /**
-     * 批量更新分类下主题数量
-     * @Author zhaodong
-     * @Date 11:41 2019/1/16
-     * @Param
-     * @return
-     **/
-    void upClassThemTypeInOrDe(@Param("list") List<Map> themId);
-
-    /**
-     * 批量更新分类下主题上架数量
-     * @Author zhaodong
-     * @Date 11:41 2019/1/16
-     * @Param
-     * @return
-     **/
-    void upClassThemTypeUpOrDown(@Param("list") List<Map> themId);
-
-    /**
      * 单个修改权重
      * @Author zhaodong
      * @Date 11:01 2019/1/17
@@ -105,4 +60,21 @@ public interface LaunThemeClassificationV2Mapper extends BaseMapper<LaunThemeCla
      **/
     void updateThemTypeOrder(int sort,String id);
 
+    /**
+     * 统计分类下的主题数量
+     * @Author zhaodong
+     * @Date 20:48 2019/1/24
+     * @Param
+     * @return
+     **/
+    List<Map> seQuantityTheme(@Param("list") List<String> list);
+
+    /**
+     * 统计分类下上架主题数量
+     * @Author zhaodong
+     * @Date 20:59 2019/1/24
+     * @Param
+     * @return
+     **/
+    List<Map> seQuantityThemeUp(@Param("list") List<String> list);
 }

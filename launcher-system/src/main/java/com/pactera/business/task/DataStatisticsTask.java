@@ -204,4 +204,18 @@ public class DataStatisticsTask {
 		}
 
 	}
+
+
+	/**
+	 * v2 定时上下架
+	 *
+	 * @author xukj
+	 * @date 2019年1月24日
+	 * @return void
+	 */
+	//@Async
+	//@Scheduled(cron = "${task.cron.theme.auto.updown}")
+	//public void autoUpDown() {
+    //    launThemeService.themeAutoUpDown();
+	//}
 }

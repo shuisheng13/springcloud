@@ -73,16 +73,10 @@
 	<!--</repositories>-->
 
 	<modules>
-		<module>launcher-eureka</module>
-		<module>launcher-zuul</module>
 		<module>launcher-domain</module>
 		<module>launcher-common</module>
-		<module>launcher-sso</module>
 		<module>launcher-system</module>
-		<module>launcher-logs</module>
-		<module>launcher-confserver</module>
-		<module>launcher-auth</module>
-    	<module>launcher-client</module>
+		<module>launcher-task</module>
 		<module>launcher-vehicle</module>
   </modules>
 </project>

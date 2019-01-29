@@ -18,7 +18,6 @@ import java.util.Map;
 @Data
 @Accessors(chain = true)
 public class LaunThemeAdministration {
-	private static final long serialVersionUID = -2054946094353463347L;
 
 	@Id
 	private String id;
@@ -33,9 +32,8 @@ public class LaunThemeAdministration {
 	private String widthOrHigthRatio;
 	private String folatPoint;
 	private Long level;
-	private String version;
+	private double version;
 	private Long creatorChannelId;
-	private Long createId;
 	private  String typeId;
 	private String title;
 	private Integer status;
@@ -64,7 +62,7 @@ public class LaunThemeAdministration {
 	private BigDecimal price;
 	private Integer tenantId;
 	private Integer addition;
-
+	private String creator;
 	@Transient
 	@JsonProperty("sTime")
 	private @ApiModelProperty("页面传值用的起止时间") String sTime;
@@ -80,8 +78,5 @@ public class LaunThemeAdministration {
 	@Transient
 	private @ApiModelProperty("页面传值用的预览图数组") Map<String, String> filesJson;
 	@Transient
-	private @ApiModelProperty("页面传值用的渠道数组") String creator;
-	@Transient
 	private @ApiModelProperty("页面传值用的字体路径") String fonts;
-
 }

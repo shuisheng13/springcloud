@@ -23,7 +23,7 @@ public class LaunVehicleController {
     private ThemeService themeService;
 
     @GetMapping("/detail")
-    ResultData theme(String id) {
+    ResultData detail(String id) {
         return new ResultData(themeService.detail(id));
     }
 
@@ -33,8 +33,8 @@ public class LaunVehicleController {
      * @return 主题列表
      */
     @GetMapping("/search")
-    ResultData search(String value, String apiKey) {
-        return new ResultData(themeService.search(value, apiKey));
+    ResultData search(String value, String apiKey,double version) {
+        return new ResultData(themeService.search(value, apiKey,version));
     }
 
     /**

@@ -23,7 +23,7 @@
 		<result column="widget_json" jdbcType="VARCHAR" property="widgetJson" />
 		<result column="theme_json" jdbcType="VARCHAR" property="themeJson" />
 		<result column="type_id" jdbcType="BIGINT" property="typeId" />
-		<result column="create_id" jdbcType="BIGINT" property="createId" />
+		<result column="creator" jdbcType="BIGINT" property="creator" />
 		<result column="version" jdbcType="VARCHAR" property="version" />
 		<result column="zip_url" jdbcType="VARCHAR" property="zipUrl" />
 		<result column="preview_path" jdbcType="VARCHAR" property="previewPath" />
@@ -72,10 +72,10 @@
         ${alias}.font,
         ${alias}.config_json,
         ${alias}.creator_channel_id,
+        ${alias}.creator,
         ${alias}.basic_json,
         ${alias}.widget_json,
         ${alias}.theme_json,
-        ${alias}.create_id,
         ${alias}.zip_url,
         ${alias}.isPush,
         ${alias}.status,
@@ -101,16 +101,20 @@
         FROM
           <include refid="themeAdmin"/> as t1
         <where>
-             t1.status = 2 AND t1.tenant_id = #{tenantId}
-             <if test="value != null"> AND t1.title LIKE CONCAT(CONCAT('%', #{value}), '%') </if></where>
+             t1.status = 2
+             <if test="value != null"> AND t1.title LIKE CONCAT(CONCAT('%/', #{value}), '%') escape '/' </if>
+             <if test="version>0"> AND #{version}>t1.version </if>
+        </where>
         UNION
 	    SELECT
           <include refid="themeColumns"><property name="alias" value="t2"/></include>
         FROM <include refid="themeAdmin"></include> as t2
         LEFT JOIN <include refid="themeClass"></include> as t3 ON t2.type_id = t3.id
         <where>
-            t2.status = 2 AND t2.tenant_id = #{tenantId}
-            <if test="value != null"> AND t3.classification_name LIKE CONCAT(CONCAT('%', #{value}), '%') </if></where>
+            t2.status = 2
+            <if test="value != null"> AND t3.classification_name LIKE CONCAT(CONCAT('%/', #{value}), '%') escape '/' </if>
+            <if test="version>0"> AND #{version}>t2.version </if>
+        </where>
 
         UNION
         SELECT
@@ -118,8 +122,10 @@
         FROM
         <include refid="themeAdmin"></include> as t4
         <where>
-            t4.status = 2 AND t4.tenant_id = #{tenantId}
-            <if test="value != null">AND t4.author LIKE CONCAT(CONCAT('%', #{value}), '%') </if></where>
+            t4.status = 2
+            <if test="value != null">AND t4.author LIKE CONCAT(CONCAT('%/', #{value}), '%') escape '/'</if>
+            <if test="version>0"> AND #{version}>t4.version </if>
+        </where>
 	</select>
 
     <update id="count" flushCache="true">
