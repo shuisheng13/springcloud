@@ -15,6 +15,6 @@ public interface LaunVersionService {
      * @Param apiKey
      * @return
      **/
-    int add(String version, String versionName, String apiKey);
+    int add(double version, String versionName, String apiKey);
 
 }
