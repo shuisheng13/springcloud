@@ -160,7 +160,7 @@ public interface LaunThemeService {
 	/**
 	 * 定时上下架
 	 */
-	void themeAutoUpDown(long timeStamp);
+	void themeAutoUpDown(String timeStamp);
 
 	/**
 	 * 删除主题分类时，更新主题
