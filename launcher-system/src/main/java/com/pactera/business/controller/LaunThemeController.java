@@ -201,7 +201,7 @@ public class LaunThemeController {
 	}
 
 	@PostMapping("/autoUpDown")
-    public void autoUpDown(Long timestamp){
+    public void autoUpDown(String timestamp){
         launThemeService.themeAutoUpDown(timestamp);
     }
 
