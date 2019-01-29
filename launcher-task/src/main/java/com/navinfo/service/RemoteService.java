@@ -9,5 +9,5 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface RemoteService {
 
     @RequestMapping(method = RequestMethod.POST, value = "/theme/autoUpDown")
-    void autoUpDown(@RequestParam("timestamp") long timestamp);
+    void autoUpDown(@RequestParam("timestamp") String timestamp);
 }
