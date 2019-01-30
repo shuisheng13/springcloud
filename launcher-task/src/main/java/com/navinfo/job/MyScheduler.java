@@ -28,10 +28,14 @@ public class MyScheduler {
         startJob1();
     }
 
-    public void startJob1() throws SchedulerException {
-        JobDetail jobDetail = JobBuilder.newJob(ScheduledJob.class).withIdentity("job1", "group1").build();
+    public void startJob1() {
+        JobDetail jobDetail = JobBuilder.newJob(ScheduledJob.class).withIdentity("job2", "group2").build();
         CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(autoAuDownTime);
         CronTrigger cronTrigger = TriggerBuilder.newTrigger().withIdentity("trigger1", "group1").withSchedule(scheduleBuilder).build();
-        scheduler.scheduleJob(jobDetail, cronTrigger);
+        try {
+            scheduler.scheduleJob(jobDetail, cronTrigger);
+        } catch (SchedulerException e) {
+
+        }
     }
 }
