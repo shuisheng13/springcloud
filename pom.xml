@@ -32,7 +32,6 @@
 		<generated.asciidoc.directory>${project.build.directory}/asciidoc</generated.asciidoc.directory>
 		<asciidoctor.html.output.directory>${project.build.directory}/asciidoc/html</asciidoctor.html.output.directory>
 		<asciidoctor.pdf.output.directory>${project.build.directory}/asciidoc/pdf</asciidoctor.pdf.output.directory>
-
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -50,14 +49,10 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-
-
 		</dependencies>
-
-
 	</dependencyManagement>
 
-	<repositories>
+	<!--<repositories>
 		<repository>
 			<id>maven-ali</id>
 			<url>http://maven.aliyun.com/nexus/content/groups/public//</url>
@@ -70,7 +65,7 @@
 				<checksumPolicy>fail</checksumPolicy>
 			</snapshots>
 		</repository>
-	</repositories>
+	</repositories>-->
 
 	<!--<repositories>-->
 		<!--<repository>-->
