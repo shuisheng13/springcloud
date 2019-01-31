@@ -44,12 +44,13 @@ public class LaunListServiceImpl implements LaunListService {
      **/
     @Override
     public ResponseEntity<ResultData> themeclasslist2(String apiKey){
-        CommonResult<TenantInfo> tenantInfoCommonResult = apiKeyFacade.queryTenantByApiKey(apiKey);
+       /* CommonResult<TenantInfo> tenantInfoCommonResult = apiKeyFacade.queryTenantByApiKey(apiKey);
         TenantInfo data = tenantInfoCommonResult.getData();
         if (data==null){
             return ResponseEntity.ok().body(new ResultData(ErrorStatus.NOT_APIKEY.status(),ErrorStatus.NOT_APIKEY.message()));
         }
-        int tenanId = data.getId();
+        int tenanId = data.getId();*/
+        int tenanId = 55;
         List<ThemClassDTO> themListDTOS = launVehicleListMapper.themeclasslist2(tenanId + "");
         for (ThemClassDTO th:themListDTOS){
             //TODO 暂时方案
