@@ -46,7 +46,7 @@ public class LaunVehicleListController {
      * @Param
      * @return
      **/
-    @GetMapping("/theme/themTopAndAll")
+    @GetMapping("/them/themTopAndAll")
     @ApiOperation("主题列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "apiKey", value = "apiKey",paramType="query",required = true),
@@ -67,7 +67,7 @@ public class LaunVehicleListController {
      * @Param
      * @return
      **/
-    @GetMapping("/theme/themTopAndByClassId")
+    @GetMapping("/them/themTopAndByClassId")
     @ApiOperation("分类下的主题列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "apiKey", value = "apiKey",paramType="query",required = true),

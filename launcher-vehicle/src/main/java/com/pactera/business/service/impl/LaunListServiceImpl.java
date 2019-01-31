@@ -73,12 +73,13 @@ public class LaunListServiceImpl implements LaunListService {
      **/
     @Override
     public ResponseEntity<ResultData> themTopAndAll(String apiKey,int status, int pageNum, int pageSize,double version){
-        CommonResult<TenantInfo> tenantInfoCommonResult = apiKeyFacade.queryTenantByApiKey(apiKey);
+       /* CommonResult<TenantInfo> tenantInfoCommonResult = apiKeyFacade.queryTenantByApiKey(apiKey);
         TenantInfo data = tenantInfoCommonResult.getData();
         if (data==null){
             return ResponseEntity.ok().body(new ResultData(ErrorStatus.NOT_APIKEY.status(),ErrorStatus.NOT_APIKEY.message()));
         }
-        int tenanId = data.getId();
+        int tenanId = data.getId();*/
+        int tenanId = 55;
         PageHelper.startPage(pageNum, pageSize);
         LaunThemeAdministration LaunThemeVo = new LaunThemeAdministration();
         LaunThemeVo.setTenantId(tenanId);
@@ -110,7 +111,7 @@ public class LaunListServiceImpl implements LaunListService {
     @Override
     public ResponseEntity<ResultData> themTopAndByClassId(String apiKey, String id, int pageNum, int pageSize,double version){
         PageHelper.startPage(pageNum, pageSize);
-        CommonResult<TenantInfo> tenantInfoCommonResult = apiKeyFacade.queryTenantByApiKey(apiKey);
+        /*CommonResult<TenantInfo> tenantInfoCommonResult = apiKeyFacade.queryTenantByApiKey(apiKey);
         TenantInfo data = tenantInfoCommonResult.getData();
         if (data==null){
             return ResponseEntity.ok().body(new ResultData(ErrorStatus.NOT_APIKEY.status(),ErrorStatus.NOT_APIKEY.message()));
@@ -118,7 +119,8 @@ public class LaunListServiceImpl implements LaunListService {
         if (id==null){
             return ResponseEntity.ok().body(new ResultData("id不为空"));
         }
-        int tenanId = data.getId();
+        int tenanId = data.getId();*/
+        int tenanId = 55;
         LaunThemeAdministration LaunThemeVo = new LaunThemeAdministration();
         LaunThemeVo.setTenantId(tenanId);
         LaunThemeVo.setTypeId(id); // id
