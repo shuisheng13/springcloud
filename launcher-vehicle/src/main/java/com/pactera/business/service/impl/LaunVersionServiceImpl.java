@@ -30,10 +30,9 @@ public class LaunVersionServiceImpl implements LaunVersionService {
 
     @Override
     public int add(double version,String versionName, String apiKey) {
-        Integer tenantId = apiKeyFacade.queryTenantByApiKey(apiKey).getData().getId();
-        if(null == tenantId){return 0;}
+      /*  Integer tenantId = apiKeyFacade.queryTenantByApiKey(apiKey).getData().getId();
+        if(null == tenantId){return 0;}*/
         LaunVersions launVersions = new LaunVersions();
-
         //launVersions.setTenantId(tenantId).setVersion(version);
         launVersions.setVersion(version);
         List<LaunVersions> list = versionMapper.select(launVersions);
