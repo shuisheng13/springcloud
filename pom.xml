@@ -85,6 +85,21 @@
 		<!--</repository>-->
 	<!--</repositories>-->
 
+	<repositories>
+		<repository>
+			<id>maven-mapbar</id>
+			<name>Maven mapbar Mirror</name>
+			<url>https://wdnexus.mapbar.com/content/groups/public/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+
 	<modules>
 		<module>launcher-domain</module>
 		<module>launcher-common</module>
