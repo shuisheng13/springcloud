@@ -88,8 +88,8 @@
 	<modules>
 		<module>launcher-domain</module>
 		<module>launcher-common</module>
-		<module>launcher-system</module>
+		<!--<module>launcher-system</module>-->
 		<module>launcher-task</module>
-		<module>launcher-vehicle</module>
+		<!--<module>launcher-vehicle</module>-->
   </modules>
 </project>
