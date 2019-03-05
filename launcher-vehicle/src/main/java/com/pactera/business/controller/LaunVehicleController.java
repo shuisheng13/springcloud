@@ -1,5 +1,6 @@
 package com.pactera.business.controller;
 
+import com.pactera.business.service.LaunKeywordsService;
 import com.pactera.business.service.ThemeService;
 import com.pactera.result.ResultData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ public class LaunVehicleController {
 
     @Autowired
     private ThemeService themeService;
+    @Autowired
+    private LaunKeywordsService launKeywordsService;
 
     @GetMapping("/detail")
     ResultData detail(String id) {
@@ -51,5 +54,13 @@ public class LaunVehicleController {
         return new ResultData();
     }
 
+    /**
+     * 搜索热词
+     * @return 热词列表
+     */
+    @GetMapping("/keywords")
+    ResultData keywords() {
+        return new ResultData(launKeywordsService.keywords());
+    }
 
 }

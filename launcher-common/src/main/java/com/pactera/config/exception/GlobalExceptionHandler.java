@@ -1,4 +1,5 @@
 package com.pactera.config.exception;
+
 import com.pactera.config.exception.status.ErrorStatus;
 import com.pactera.result.ResultData;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolationException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -30,6 +32,13 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ResultData> IOExceptionHandler(Exception exception)  {
 		logger.error(exception.getMessage(),exception);
 		return new ResponseEntity<>(new ResultData(exception.getMessage(), ErrorStatus.IO_ERROR),HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@ExceptionHandler(value = ConstraintViolationException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ResponseEntity<ResultData> ConstraintViolationExceptionHandler(ConstraintViolationException exception)  {
+		logger.error(exception.getMessage(),exception);
+		return new ResponseEntity<>(new ResultData(exception.getMessage(), ErrorStatus.PARAMETER_ERROR),HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(value = Exception.class)
