@@ -13,6 +13,7 @@ import com.pactera.config.header.TenantFacadeV1;
 import com.pactera.constant.ConstantUtlis;
 import com.pactera.domain.*;
 import com.pactera.po.LaunThemeSavePo;
+import com.pactera.po.ThemesParam;
 import com.pactera.util.ThemeWidgetDetail;
 import com.pactera.utlis.*;
 import com.pactera.valid.ThemeSaveValidator;
@@ -38,7 +39,6 @@ import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Path;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -113,10 +113,18 @@ public class LaunThemeServiceImpl implements LaunThemeService {
     private ThemeSaveValidator validator;
 
     @Override
-    public LaunPage<LaunThemeVo> query(String typeId, String title, Integer status, int pageNum, int pageSize) {
+    public LaunPage<LaunThemeVo> query(ThemesParam themeParam) {
         //Integer tenantId = SaasHeaderContextV1.getUserType()==0?null:SaasHeaderContextV1.getTenantIdInt();
-        PageInfo<LaunThemeAdministration> pageInfo = PageHelper.startPage(pageNum, pageSize).doSelectPageInfo(
-                () -> launThemeMapper.query(null, typeId, title, status));
+        Integer widthResolution = null != themeParam.getResolution()?themeParam.getResolution()[0]:null;
+        Integer longResolution = null != themeParam.getResolution()?themeParam.getResolution()[1]:null;
+        PageInfo<LaunThemeAdministration> pageInfo = PageHelper.startPage(themeParam.getPageNum(), themeParam.getPageSize())
+                .doSelectPageInfo(() -> launThemeMapper.query(
+                        themeParam.getLayoutId(),
+                        longResolution,
+                        widthResolution,
+                        null,
+                        themeParam.getType(),
+                        themeParam.getTitle(), themeParam.getStatus()));
         BeanCopier beanCopier = BeanCopier.create(LaunThemeAdministration.class, LaunThemeVo.class, false);
         List<LaunThemeVo> themes = pageInfo.getList().stream().map(theme -> {
             LaunThemeVo themeVo = new LaunThemeVo();

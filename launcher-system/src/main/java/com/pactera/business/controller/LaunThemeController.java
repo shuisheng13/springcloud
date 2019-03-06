@@ -4,6 +4,7 @@ import com.pactera.business.service.LaunFontService;
 import com.pactera.business.service.LaunThemeService;
 import com.pactera.constant.ValidMessage;
 import com.pactera.domain.LaunFont;
+import com.pactera.po.ThemesParam;
 import com.pactera.result.ResultData;
 import com.pactera.valid.ThemeSaveValidator;
 import com.pactera.valid.annotation.ThemeStatus;
@@ -40,18 +41,11 @@ public class LaunThemeController {
 	/**
 	 * v2
 	 * 根据条件去查询主题列表
-	 * @param type 主题分类
-	 * @param title 主题名称
-	 * @param status 主题状态
-	 * @param pageNum 第几页
-	 * @param pageSize 每页条数
 	 * @return
 	 */
 	@GetMapping("/query")
-	public ResultData query(String type, String title, Integer status,
-                            @RequestParam(defaultValue = "1") int pageNum,
-			                @RequestParam(defaultValue = "10") int pageSize) {
-		return new ResultData(launThemeService.query(type, title, status, pageNum, pageSize));
+	public ResultData query(ThemesParam param) {
+		return new ResultData(launThemeService.query(param));
 	}
 
 

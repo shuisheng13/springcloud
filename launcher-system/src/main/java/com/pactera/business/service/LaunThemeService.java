@@ -2,6 +2,7 @@ package com.pactera.business.service;
 
 import com.github.pagehelper.PageInfo;
 import com.pactera.domain.LaunThemeAdministration;
+import com.pactera.po.ThemesParam;
 import com.pactera.vo.LaunPage;
 import com.pactera.vo.LaunThemeUploadFileVo;
 import com.pactera.vo.LaunThemeVo;
@@ -22,13 +23,8 @@ public interface LaunThemeService {
      * @description 根据条件去插叙年主题的实现类
      * @author liudawei
      * @since 2018年4月26日 上午11:31:16
-     * @param typeId 主题分类
-     * @param title 主题名称
-     * @param status 主题状态
-     * @param pageNum 第几页
-     * @param pageSize 每页条数
      */
-	LaunPage<LaunThemeVo> query(String typeId, String title, Integer status, int pageNum, int pageSize);
+	LaunPage<LaunThemeVo> query(ThemesParam themes);
 
     /**
      * v2 版本 删除，上下架 禁用启用使用

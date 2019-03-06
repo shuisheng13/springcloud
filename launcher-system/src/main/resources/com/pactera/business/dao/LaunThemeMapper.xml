@@ -131,6 +131,7 @@
         ON t1.version = t3.version
         <where>
 			t1.status != -1
+			AND t1.layout_id = #{layoutId}
             <if test="tenantId != null and tenantId != '' ">
                 AND (t1.tenant_id = #{tenantId} OR t1.tenant_id = -1)
             </if>
@@ -143,6 +144,12 @@
             <if test="status != null">
                 AND t1.status = #{status}
             </if>
+			<if test="longResolution != null">
+				AND t1.long_resolution = #{longResolution}
+			</if>
+			<if test="widthResolution != null">
+				AND t1.wide_resolution = #{widthResolution}
+			</if>
         </where>
 		ORDER BY t1.create_date DESC
 	</select>
