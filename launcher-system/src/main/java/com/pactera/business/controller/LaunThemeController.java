@@ -17,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
@@ -44,7 +45,7 @@ public class LaunThemeController {
 	 * @return
 	 */
 	@GetMapping("/query")
-	public ResultData query(ThemesParam param) {
+	public ResultData query(@Valid ThemesParam param) {
 		return new ResultData(launThemeService.query(param));
 	}
 

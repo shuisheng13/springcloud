@@ -7,6 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -39,6 +42,15 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ResultData> ConstraintViolationExceptionHandler(ConstraintViolationException exception)  {
 		logger.error(exception.getMessage(),exception);
 		return new ResponseEntity<>(new ResultData(exception.getMessage(), ErrorStatus.PARAMETER_ERROR),HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(value = BindException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ResponseEntity<ResultData> BindExceptionExceptionHandler(BindException exception)  {
+		logger.error(exception.getMessage(),exception);
+		List<String> message = exception.getAllErrors().stream().map(e ->
+				e.getDefaultMessage()).collect(Collectors.toList());
+		return new ResponseEntity<>(new ResultData(message, ErrorStatus.PARAMETER_ERROR),HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(value = Exception.class)
