@@ -3,14 +3,10 @@ package com.pactera.business.controller;
 import com.pactera.business.service.LaunFontService;
 import com.pactera.business.service.LaunThemeService;
 import com.pactera.constant.ValidMessage;
-import com.pactera.domain.LaunFont;
 import com.pactera.po.ThemesParam;
 import com.pactera.result.ResultData;
 import com.pactera.valid.ThemeSaveValidator;
 import com.pactera.valid.annotation.ThemeStatus;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -21,7 +17,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * @description: 主题管理
@@ -47,39 +42,6 @@ public class LaunThemeController {
 	@GetMapping("/query")
 	public ResultData query(@Valid ThemesParam param) {
 		return new ResultData(launThemeService.query(param));
-	}
-
-
-	/**
-	 * 添加字体
-	 * 
-	 * @author LL
-	 * @date 2018年7月10日 上午10:29:25
-	 * @param
-	 * @return ResponseEntity<ResultData>
-	 */
-	@PostMapping("addFont")
-	@ApiOperation("添加字体")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "fontName", value = "字体名称"),
-			@ApiImplicitParam(name = "filePath", value = "文件地址") })
-	public ResponseEntity<ResultData> addaFont(String fontName, String filePath) {
-		launFontService.addFont(fontName, filePath);
-		return ResponseEntity.ok(new ResultData());
-	}
-
-	/**
-	 * 查询字体列表
-	 * 
-	 * @author LL
-	 * @date 2018年7月10日 上午10:31:54
-	 * @param
-	 * @return ResponseEntity<ResultData>
-	 */
-	@GetMapping("selectFont")
-	@ApiOperation("查询字体列表")
-	public ResponseEntity<ResultData> selectFont(Long id) {
-		List<LaunFont> list = launFontService.getList();
-		return ResponseEntity.ok(new ResultData(list));
 	}
 
     /**
@@ -169,7 +131,7 @@ public class LaunThemeController {
 	 */
 	@PostMapping("/saveTheme")
 	public ResultData saveTheme(@NotNull(message = "themeJson不可为空") String themeJson) {
-		return new ResultData(launThemeService.saveTheme(null, null, themeJson, 0));
+		return new ResultData(launThemeService.saveTheme(null, null, themeJson));
 	}
 
 	/**
@@ -185,7 +147,7 @@ public class LaunThemeController {
 	public ResponseEntity<ResultData> updateTheme(@NotNull(message = "themeJson不可为空") String themeJson ) {
 	    //2019/1/4 xukj change start
 		//String i = launThemeService.updateTheme(baseJson, widgetJson, themeJson, saveType);
-        String i = launThemeService.saveTheme(null, null, themeJson, 0);
+        String i = launThemeService.saveTheme(null, null, themeJson);
         //2019/1/4 xukj change end
 
 		/*
