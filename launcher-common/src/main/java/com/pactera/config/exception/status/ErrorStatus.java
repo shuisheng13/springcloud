@@ -37,7 +37,7 @@ public enum ErrorStatus {
 	UPLOAD_THEME_NO_IMGS(150001,"上传资源包中缺少imgs包"),
 	UPLOAD_THEME_NO_CONFIG(150002,"上传资源包中缺少config文件"),
 	UPLOAD_THEME_NO_SKIN(150003,"上传资源包中缺少skin文件"),
-	UPLOAD_THEME_TOO_MANY_IMG(150004,"上传资源包中图片数量过多"),
+	UPLOAD_THEME_TOO_MANY_IMG(150004,"上传资源包中图片数量有误"),
 
 
 	IO_ERROR(500001,"IO异常"),

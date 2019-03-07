@@ -113,7 +113,7 @@
         <where>
             t2.status = 2
             <if test="value != null"> AND t3.classification_name LIKE CONCAT(CONCAT('%/', #{value}), '%') escape '/' </if>
-            <if test="v>0"> AND #{version} >= t2.version </if>
+            <if test="version>0"> AND #{version} >= t2.version </if>
         </where>
 
         UNION

@@ -32,4 +32,5 @@ public class LaunThemeSavePo {
     private String startTime;
     private String endTime;
     private Long fileSize;
+    private Long layoutId;
 }

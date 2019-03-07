@@ -200,4 +200,9 @@ public class LaunThemeController {
         launThemeService.themeAutoUpDown(timestamp);
     }
 
+    @GetMapping("/resolution")
+    public ResultData resolution(Integer layoutId) {
+        return new ResultData(launThemeService.resolution(layoutId));
+    }
+
 }

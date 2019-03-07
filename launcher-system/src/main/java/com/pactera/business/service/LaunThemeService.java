@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.pactera.domain.LaunThemeAdministration;
 import com.pactera.po.ThemesParam;
 import com.pactera.vo.LaunPage;
+import com.pactera.vo.LaunResolution;
 import com.pactera.vo.LaunThemeUploadFileVo;
 import com.pactera.vo.LaunThemeVo;
 import org.springframework.web.multipart.MultipartFile;
@@ -162,4 +163,6 @@ public interface LaunThemeService {
 	 * 删除主题分类时，更新主题
 	 */
 	int cleanThemeClassification(String id);
+
+	List<LaunResolution> resolution(Integer layoutId);
 }

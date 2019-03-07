@@ -25,4 +25,9 @@ public class LaunLayoutServiceImpl implements LaunLayoutService {
     public List<LaunLayout> query() {
         return launLayoutMapper.selectAll();
     }
+
+    @Override
+    public LaunLayout findById(Long id) {
+        return launLayoutMapper.selectByPrimaryKey(id);
+    }
 }

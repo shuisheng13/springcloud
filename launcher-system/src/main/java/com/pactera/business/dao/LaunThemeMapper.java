@@ -1,14 +1,14 @@
 package com.pactera.business.dao;
 
-import java.util.List;
-import java.util.Map;
-
-import org.apache.ibatis.annotations.Param;
-
 import com.pactera.config.mapper.BaseMapper;
 import com.pactera.domain.LaunThemeAdministration;
 import com.pactera.domain.LaunThemeClassification;
+import com.pactera.vo.LaunResolution;
 import com.pactera.vo.LaunThemeVo;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @description:主题的mapper
@@ -108,5 +108,7 @@ public interface LaunThemeMapper extends BaseMapper<LaunThemeAdministration> {
 	int changeStatus(@Param("ids") List<String> ids, @Param("status")Integer status);
 
 	int cleanClassification(@Param("id") String id);
+
+	List<LaunResolution> resolution(@Param("layoutId") Integer layoutId);
 
 }

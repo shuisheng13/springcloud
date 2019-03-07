@@ -44,4 +44,6 @@ public class LaunThemeVo implements Serializable {
 	private Integer recommendSort;
 	private Integer addition;
 	private String versionName;
+	private Long layoutId;
+	private String layoutName;
 }

@@ -12,15 +12,13 @@ import com.pactera.config.header.SaasHeaderContextV1;
 import com.pactera.config.header.TenantFacadeV1;
 import com.pactera.constant.ConstantUtlis;
 import com.pactera.domain.*;
+import com.pactera.dto.ImgPropertie;
 import com.pactera.po.LaunThemeSavePo;
 import com.pactera.po.ThemesParam;
 import com.pactera.util.ThemeWidgetDetail;
 import com.pactera.utlis.*;
 import com.pactera.valid.ThemeSaveValidator;
-import com.pactera.vo.LaunPage;
-import com.pactera.vo.LaunThemeFileVo;
-import com.pactera.vo.LaunThemeUploadFileVo;
-import com.pactera.vo.LaunThemeVo;
+import com.pactera.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -76,11 +74,29 @@ public class LaunThemeServiceImpl implements LaunThemeService {
     @Value("${upload.theme.img.path}")
     private String upThemeImgPath;
 
-    @Value("${upload.theme.img}")
+    @Value("${upload.imgs.amount}")
+    private Integer upImgsAmount;
+
+
+    @Value("${upload.theme.img.widget}")
     private String upThemeImgMain;
+
+    @Value("${upload.theme.img.icon}")
+    private String upThemeImgIcon;
+
+    @Value("${upload.theme.img.lockscreen}")
+    private String upThemeImgLockscreen;
 
     @Value("${upload.theme.preix}")
     private String upThemePreix;
+
+    @Value("${img.type.widget}")
+    private Integer imgTypeWidget;
+    @Value("${img.type.icon}")
+    private Integer imgTypeIcon;
+    @Value("${img.type.lockscreen}")
+    private Integer imgTypeLockscreen;
+
 
     @Autowired
     public FastFileStorageClient fastFileStorageClient;
@@ -112,11 +128,15 @@ public class LaunThemeServiceImpl implements LaunThemeService {
     @Autowired
     private ThemeSaveValidator validator;
 
+    @Autowired
+    private  LaunLayoutService launLayoutService;
+
+
     @Override
     public LaunPage<LaunThemeVo> query(ThemesParam themeParam) {
         //Integer tenantId = SaasHeaderContextV1.getUserType()==0?null:SaasHeaderContextV1.getTenantIdInt();
-        Integer widthResolution = null != themeParam.getResolution()?themeParam.getResolution()[0]:null;
-        Integer longResolution = null != themeParam.getResolution()?themeParam.getResolution()[1]:null;
+        Integer widthResolution = null != themeParam.getResolution() ? themeParam.getResolution()[0] : null;
+        Integer longResolution = null != themeParam.getResolution() ? themeParam.getResolution()[1] : null;
         PageInfo<LaunThemeAdministration> pageInfo = PageHelper.startPage(themeParam.getPageNum(), themeParam.getPageSize())
                 .doSelectPageInfo(() -> launThemeMapper.query(
                         themeParam.getLayoutId(),
@@ -143,8 +163,8 @@ public class LaunThemeServiceImpl implements LaunThemeService {
                 Arrays.stream(ConstantUtlis.themeStatus.values())
                         .filter(t -> t.getCode() == statusValue).findFirst().get();
 
-        if(status == ConstantUtlis.themeStatus.VALID.getCode()) {
-                status = ConstantUtlis.themeStatus.DOWN_SHELF.getCode();
+        if (status == ConstantUtlis.themeStatus.VALID.getCode()) {
+            status = ConstantUtlis.themeStatus.DOWN_SHELF.getCode();
         }
         return launThemeMapper.changeStatus(ids, status);
     }
@@ -242,6 +262,8 @@ public class LaunThemeServiceImpl implements LaunThemeService {
         }
         LaunThemeVo themeVo = new LaunThemeVo();
         BeanUtils.copyProperties(themeAdministration, themeVo);
+        Optional<LaunLayout> layout = Optional.ofNullable(launLayoutService.findById(themeAdministration.getLayoutId()));
+        themeVo.setLayoutName(layout.map(l->l.getName()).orElse(null));
         map.put("theme", themeVo);
         map.put("file", voList);
         return map;
@@ -306,11 +328,13 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 
     @Override
     public int recommendSort(String id, Integer sort) {
-        return 0;
+        return launThemeMapper.updateByPrimaryKeySelective(new LaunThemeAdministration().setId(id).setRecommendSort(sort));
     }
 
     private void themeJsonValid(LaunThemeSavePo launThemeSavePo) {
-        if (null == launThemeSavePo) { throw new DataStoreException(ErrorStatus.THEMEJSON_ERROR); }
+        if (null == launThemeSavePo) {
+            throw new DataStoreException(ErrorStatus.THEMEJSON_ERROR);
+        }
         BeanPropertyBindingResult beanPropertyBindingResult =
                 new BeanPropertyBindingResult(launThemeSavePo, LaunThemeSavePo.class.getName());
         validator.validate(launThemeSavePo, beanPropertyBindingResult);
@@ -344,14 +368,15 @@ public class LaunThemeServiceImpl implements LaunThemeService {
                 .setTitle(launThemeSavePo.getTitle())
                 .setZipUrl(launThemeSavePo.getZipUrl())
                 .setDescription(launThemeSavePo.getDescription())
-                .setAddition(launThemeSavePo.getAddition()==null?0:launThemeSavePo.getAddition())
+                .setAddition(launThemeSavePo.getAddition() == null ? 0 : launThemeSavePo.getAddition())
                 .setAuthor(launThemeSavePo.getAuthor())
                 .setReleaseTime(launThemeSavePo.getReleaseTime())
                 .setPrice(launThemeSavePo.getPrice())
+                .setLayoutId(launThemeSavePo.getLayoutId())
                 .setFileSize(launThemeSavePo.getFileSize());
 
         //Long adminId = 0L;
-        administration.setTenantId(SaasHeaderContextV1.getTenantIdInt());
+        //administration.setTenantId(SaasHeaderContextV1.getTenantIdInt());
         String themeId = null;
         /**
          * 当save为0时，只是保存widget。只保存对应json数据 当save为1是，保存整个主题，执行后续结构化数据及打包过程
@@ -670,6 +695,9 @@ public class LaunThemeServiceImpl implements LaunThemeService {
                 returnMap.put("previewPath", map2.getValue());
                 //xukj change end 2019/1/7
             } else {
+                //xukj add start 2019/3/7
+                themeFile.setType(i+1);
+                //xukj add start 2019/3/7
                 urls.append(filePath + map2.getValue()).append(",");
             }
             i++;
@@ -857,7 +885,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
      * 递归解析主题widget子父级关系并封装
      *
      * @param
-     * @return List<Map                                                                                                                               <                                                                                                                               String                                                                                                                               ,                                                                                                                               Object>>
+     * @return List<Map                                                                                                                                                                                                                                                               <                                                                                                                                                                                                                                                               String                                                                                                                                                                                                                                                               ,                                                                                                                                                                                                                                                               Object>>
      * @author LL
      * @date 2018年5月14日 下午2:25:56
      */
@@ -1058,8 +1086,9 @@ public class LaunThemeServiceImpl implements LaunThemeService {
     @Override
     public LaunThemeUploadFileVo upload(MultipartFile upload) {
 
-        if(!FileTool.checkFileType(upload.getOriginalFilename(),ConstantUtlis.file.ZIP))
-        {throw new DataStoreException(ErrorStatus.UPLOAD_THEME_ILLEGAL_FILE);}
+        if (!FileTool.checkFileType(upload.getOriginalFilename(), ConstantUtlis.file.ZIP)) {
+            throw new DataStoreException(ErrorStatus.UPLOAD_THEME_ILLEGAL_FILE);
+        }
 
         LaunThemeUploadFileVo launThemeUploadFileVo = new LaunThemeUploadFileVo();
         Path path = FileTool.createTempFile(upThemePreix, ConstantUtlis.file.ZIP,
@@ -1069,11 +1098,11 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 
         this.checkZip(tempPath);
         //主题主预览图
-        String imgMain = null;
+        ImgPropertie imgFileName = null;
 
         for (File file : FileTool.listFiles(tempPath)) {
             if (file.getName().equals(upThemeProp)) {
-                imgMain = this.parseProp(file, launThemeUploadFileVo);
+                imgFileName = this.parseProp(file, launThemeUploadFileVo);
                 continue;
             }
             launThemeUploadFileVo.setFileSize(file.length());
@@ -1081,8 +1110,10 @@ public class LaunThemeServiceImpl implements LaunThemeService {
             launThemeUploadFileVo.setZipUrl(zipPath);
         }
 
-        List<File> imgFiles = FileTool.listFiles(tempPath + upThemeImgPath);
-        List<LaunThemeFileVo> imgs = this.uploadImgs(imgFiles, imgMain);
+        //List<File> imgFiles = FileTool.listFiles(tempPath + upThemeImgPath);
+        Map<String, File> imgFiles = FileTool.mapFiles(tempPath + upThemeImgPath);
+
+        List<LaunThemeFileVo> imgs = this.uploadImgs(imgFiles, imgFileName);
         launThemeUploadFileVo.setThemeImgsList(imgs);
 
         FileTool.del(new File(tempPath));
@@ -1106,7 +1137,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
         List<String> upList = new ArrayList<>();
         List<String> downList = new ArrayList<>();
 
-        for(LaunThemeAdministration launThemeAdministration : list) {
+        for (LaunThemeAdministration launThemeAdministration : list) {
 
             Date startTime = launThemeAdministration.getStartTime();
             Date endTime = launThemeAdministration.getEndTime();
@@ -1115,25 +1146,29 @@ public class LaunThemeServiceImpl implements LaunThemeService {
                     startTime,
                     endTime,
                     timestamp);
-            if(null != startTime) {
+            if (null != startTime) {
                 String startTimeStr = TimeUtils.date2String(startTime, TimeUtils.DEFAULT_SIMPLE_TIME);
-                if(startTimeStr.equals(timestamp)) {
+                if (startTimeStr.equals(timestamp)) {
                     upList.add(launThemeAdministration.getId());
                     log.info("主题：{}，上架");
                 }
             }
 
-            if(null != endTime) {
+            if (null != endTime) {
                 String endTimeStr = TimeUtils.date2String(endTime, TimeUtils.DEFAULT_SIMPLE_TIME);
-                if(endTimeStr.equals(timestamp)) {
+                if (endTimeStr.equals(timestamp)) {
                     downList.add(launThemeAdministration.getId());
                     log.info("主题：{}，下架");
                 }
             }
 
         }
-        if(upList.size() > 0) {this.changeStatus(upList,ConstantUtlis.themeStatus.ON_SHELF.getCode());}
-        if(downList.size() > 0) {this.changeStatus(downList,ConstantUtlis.themeStatus.DOWN_SHELF.getCode());}
+        if (upList.size() > 0) {
+            this.changeStatus(upList, ConstantUtlis.themeStatus.ON_SHELF.getCode());
+        }
+        if (downList.size() > 0) {
+            this.changeStatus(downList, ConstantUtlis.themeStatus.DOWN_SHELF.getCode());
+        }
         log.info("执行定时上下架任务 end");
     }
 
@@ -1142,26 +1177,46 @@ public class LaunThemeServiceImpl implements LaunThemeService {
         return launThemeMapper.cleanClassification(id);
     }
 
-    private String parseProp(File file, LaunThemeUploadFileVo launThemeUploadFileVo) {
+    @Override
+    public List<LaunResolution> resolution(Integer layoutId) {
+        return launThemeMapper.resolution(layoutId);
+    }
+
+    private ImgPropertie parseProp(File file, LaunThemeUploadFileVo launThemeUploadFileVo) {
         Properties prop = FileTool.file2Prop(file);
         log.info("解析properties完成...prop:{}", prop.toString());
         launThemeUploadFileVo.setLongResolution(Long.valueOf(prop.getProperty(upThemeLong)));
         launThemeUploadFileVo.setWideResolution(Long.valueOf(prop.getProperty(upThemeWidth)));
-        return prop.getProperty(upThemeImgMain);
+        return new ImgPropertie(prop.getProperty(upThemeImgMain), prop.getProperty(upThemeImgIcon), prop.getProperty(upThemeImgLockscreen));
     }
 
-    private List<LaunThemeFileVo> uploadImgs(List<File> imgFiles, String imgMain) {
+    private List<LaunThemeFileVo> uploadImgs(Map<String, File> imgFiles, ImgPropertie imgFileName) {
         List<LaunThemeFileVo> imgs = new ArrayList<>();
-        for (File file : imgFiles) {
-            String ExName = FileTool.getExtentionWithoutPoint(file.getName());
-            String imgPath = this.upload2fastFDS(file, ExName);
-            imgs.add(new LaunThemeFileVo()
-                    .setFileName(file.getName())
-                    .setFilePath(imgPath)
-                    .setType(file.getName().equals(imgMain) ? 1 : 2));
+
+        if (null != imgFileName.getWidget()) {
+            imgs.add(this.img(imgFileName.getWidget(), imgTypeWidget, imgFiles));
         }
+
+        if (null != imgFileName.getIcon()) {
+            imgs.add(this.img(imgFileName.getIcon(), imgTypeIcon, imgFiles));
+        }
+
+        if (null != imgFileName.getLockscreen()) {
+            imgs.add(this.img(imgFileName.getLockscreen(), imgTypeLockscreen, imgFiles));
+        }
+
         log.info("上传图片完成...");
         return imgs;
+    }
+
+    private LaunThemeFileVo img(String name, Integer type, Map<String, File> imgFiles) {
+        File file = imgFiles.get(name);
+        String ExName = FileTool.getExtentionWithoutPoint(file.getName());
+        String imgPath = this.upload2fastFDS(file, ExName);
+        return new LaunThemeFileVo()
+                .setFileName(file.getName())
+                .setFilePath(imgPath)
+                .setType(type);
     }
 
     private String upload2fastFDS(File file, String exName) {
@@ -1196,11 +1251,8 @@ public class LaunThemeServiceImpl implements LaunThemeService {
             }
         }
 
-        if (imgFlag) {
-            int imgCount = FileTool.listFiles(tempPath + upThemeImgPath).size();
-            if (imgCount < 5 && imgCount > 0) {
-                imgCountFlag = !imgCountFlag;
-            }
+        if (imgFlag && FileTool.listFiles(tempPath + upThemeImgPath).size() == upImgsAmount) {
+            imgCountFlag = !imgCountFlag;
         }
 
         if (!imgFlag || !propFlag || !skinFlag || !imgCountFlag) {
@@ -1224,8 +1276,6 @@ public class LaunThemeServiceImpl implements LaunThemeService {
 
         return imgFlag && propFlag && skinFlag && imgCountFlag;
     }
-
-
 
 
 }
