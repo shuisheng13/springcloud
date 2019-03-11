@@ -38,8 +38,8 @@ public class LaunVehicleController {
      * @return 主题列表
      */
     @GetMapping("/search")
-    ResultData search(String value, String apiKey,double version) {
-        return new ResultData(themeService.search(value, apiKey,version));
+    ResultData search(@NotNull String value, String apiKey,@NotNull Double version, @NotNull String layoutName) {
+        return new ResultData(themeService.search(value, apiKey,version, layoutName));
     }
 
     /**

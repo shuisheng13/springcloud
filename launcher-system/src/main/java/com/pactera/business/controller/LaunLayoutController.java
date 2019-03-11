@@ -7,14 +7,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @ClassName LaunHotKeyword
- * @Description
+ * @ClassName LaunLayoutController
+ * @Description 格式接口
  * @Author xukj
  * @Date 2019/3/4 10:33
  * @Version
  */
 @RestController
-public class LaunLayout {
+public class LaunLayoutController {
 
     @Autowired
     private LaunLayoutService launLayoutService;

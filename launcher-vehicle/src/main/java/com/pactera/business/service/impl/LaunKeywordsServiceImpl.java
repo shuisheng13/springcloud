@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  */
 
 @Service
-public class LaunKeywordsImpl implements LaunKeywordsService {
+public class LaunKeywordsServiceImpl implements LaunKeywordsService {
 
     @Resource
     private LaunKeywordsMapper launKeywordsMapper;
