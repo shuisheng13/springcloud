@@ -146,7 +146,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
             int tenantId2 = SaasHeaderContextV1.getTenantId();
             themeClassVo.setTenantId(tenantId2 + "");
         }*/
-        String tenantId2 = SaasHeaderContextV1.getTenantId();
+        //String tenantId2 = SaasHeaderContextV1.getTenantId();
         //themeClassVo.setTenantId(tenantId2); // 你懂得，为啥不带了
         themeClassVo.setDisable(1);
         List<LauncThemeClassVo> launcThemeClass = LauncThemeClassMapper.selectLauncThemeClassVo(themeClassVo);
@@ -217,7 +217,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
             json.put("classificationName", launcTheme.getClassificationName());
             json.put("coverImage", launcTheme.getCoverImage());
         }
-        LaunPage<LaunThemeVo> query = launThemeService.query(new ThemesParam(id,null, null, null,null, pageNum, pageSize));
+        LaunPage<LaunThemeVo> query = launThemeService.query(new ThemesParam(id,null, 2, null,null, pageNum, pageSize));
         json.put("themlist", query);
         ResultData resultData = new ResultData();
         resultData.setData(json);
