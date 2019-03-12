@@ -101,6 +101,9 @@
               <if test="createDate!=null">
                   AND create_date = #{createDate}
               </if>
+              <if test="formatId>0">
+                  AND format_id = #{formatId}
+              </if>
               ORDER BY create_date desc
           </where>
 

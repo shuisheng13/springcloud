@@ -20,7 +20,7 @@ public interface LauncThemeClassificationV2Service {
      * @Param themeClassName,themeClassName,coverImage
      * @return ResponseEntity<ResultData>
      **/
-    ResponseEntity<ResultData> addthemeClass(String themeClassName, MultipartFile coverImage);
+    ResponseEntity<ResultData> addthemeClass(String themeClassName, MultipartFile coverImage, int formatId);
 
     /**
      * 编辑主题分类
@@ -56,7 +56,7 @@ public interface LauncThemeClassificationV2Service {
      * @Param apiKey
      * @return
      **/
-    ResponseEntity<ResultData> seThemeClassList(String shelfStatus,String classificationName,int pageNum,int pageSizet);
+    ResponseEntity<ResultData> seThemeClassList(String shelfStatus,String classificationName,int pageNum,int pageSizet,Integer formatId);
 
     /**
      *  上架或下架主题
@@ -92,7 +92,7 @@ public interface LauncThemeClassificationV2Service {
      * @Param
      * @return
      **/
-    ResponseEntity<ResultData> themeClassByTid();
+    ResponseEntity<ResultData> themeClassByTid(int formatId);
 
      /**
       * 单个权重排序

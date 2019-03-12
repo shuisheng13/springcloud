@@ -35,6 +35,8 @@ public class LauncThemeClassVo {
 
     private int disable;
 
+    private int formatId;
+
     private Date createDate;
 
     private Date updateDate;
