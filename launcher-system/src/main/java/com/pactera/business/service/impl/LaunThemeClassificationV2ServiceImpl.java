@@ -9,10 +9,9 @@ import com.pactera.business.service.LaunThemeService;
 import com.pactera.business.service.LauncThemeClassificationV2Service;
 import com.pactera.config.exception.status.ErrorStatus;
 import com.pactera.config.header.SaasHeaderContextV1;
-import com.pactera.domain.LaunThemeAdministration;
 import com.pactera.domain.LaunThemeClassificationV2;
+import com.pactera.po.ThemesParam;
 import com.pactera.result.ResultData;
-import com.pactera.utlis.HStringUtlis;
 import com.pactera.utlis.IdUtlis;
 import com.pactera.utlis.JsonUtils;
 import com.pactera.vo.LaunPage;
@@ -22,8 +21,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 主题分类管理
@@ -214,7 +217,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
             json.put("classificationName", launcTheme.getClassificationName());
             json.put("coverImage", launcTheme.getCoverImage());
         }
-        LaunPage<LaunThemeVo> query = launThemeService.query(id,null, null, pageNum, pageSize);
+        LaunPage<LaunThemeVo> query = launThemeService.query(new ThemesParam(id,null, null, null,null, pageNum, pageSize));
         json.put("themlist", query);
         ResultData resultData = new ResultData();
         resultData.setData(json);

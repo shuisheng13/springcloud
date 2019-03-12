@@ -45,29 +45,35 @@
 		<result column="price" jdbcType="DECIMAL" property="price" />
         <result column="tenant_id" jdbcType="INTEGER" property="tenantId" />
 		<result column="addition" jdbcType="INTEGER" property="addition" />
+		<result column="layout_id" jdbcType="INTEGER" property="layoutId" />
 	</resultMap>
 
 
-	<resultMap id="BaseResultVoMap" type="com.pactera.vo.LaunThemeVo">
-		<!-- WARNING - @mbg.generated -->
-		<id column="id" jdbcType="VARCHAR" property="id" />
-		<result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
-		<result column="file_size" jdbcType="BIGINT" property="fileSize" />
-		<result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
-		<result column="status" jdbcType="INTEGER" property="status" />
-		<result column="title" jdbcType="VARCHAR" property="title" />
-		<result column="basic_json" jdbcType="VARCHAR" property="basicJson" />
-		<result column="widget_json" jdbcType="VARCHAR" property="widgetJson" />
-		<result column="theme_json" jdbcType="VARCHAR" property="themeJson" />
-		<result column="zip_url" jdbcType="VARCHAR" property="zipUrl" />
-		<result column="typeName" jdbcType="VARCHAR" property="typeName" />
-		<result column="version" jdbcType="VARCHAR" property="version" />
+	<!--<resultMap id="BaseResultVoMap" type="com.pactera.vo.LaunThemeVo">-->
+		<!--&lt;!&ndash; WARNING - @mbg.generated &ndash;&gt;-->
+		<!--<id column="id" jdbcType="VARCHAR" property="id" />-->
+		<!--<result column="end_time" jdbcType="TIMESTAMP" property="endTime" />-->
+		<!--<result column="file_size" jdbcType="BIGINT" property="fileSize" />-->
+		<!--<result column="start_time" jdbcType="TIMESTAMP" property="startTime" />-->
+		<!--<result column="status" jdbcType="INTEGER" property="status" />-->
+		<!--<result column="title" jdbcType="VARCHAR" property="title" />-->
+		<!--<result column="basic_json" jdbcType="VARCHAR" property="basicJson" />-->
+		<!--<result column="widget_json" jdbcType="VARCHAR" property="widgetJson" />-->
+		<!--<result column="theme_json" jdbcType="VARCHAR" property="themeJson" />-->
+		<!--<result column="zip_url" jdbcType="VARCHAR" property="zipUrl" />-->
+		<!--<result column="typeName" jdbcType="VARCHAR" property="typeName" />-->
+		<!--<result column="version" jdbcType="VARCHAR" property="version" />-->
+		<!--<result column="long_resolution" jdbcType="INTEGER" property="longResolution" />-->
+		<!--<result column="wide_resolution" jdbcType="INTEGER" property="wideResolution" />-->
+		<!--<result column="sort" jdbcType="INTEGER" property="sort" />-->
+		<!--<result column="download_count" jdbcType="INTEGER" property="downloadCount" />-->
+		<!--<result column="used_count" jdbcType="INTEGER" property="usedCount" />-->
+		<!--<result column="create_id" jdbcType="INTEGER" property="createId" />-->
+	<!--</resultMap>-->
+
+	<resultMap id="resolution" type="com.pactera.vo.LaunResolution">
 		<result column="long_resolution" jdbcType="INTEGER" property="longResolution" />
 		<result column="wide_resolution" jdbcType="INTEGER" property="wideResolution" />
-		<result column="sort" jdbcType="INTEGER" property="sort" />
-		<result column="download_count" jdbcType="INTEGER" property="downloadCount" />
-		<result column="used_count" jdbcType="INTEGER" property="usedCount" />
-		<result column="create_id" jdbcType="INTEGER" property="createId" />
 	</resultMap>
 
     <sql id="themeAdmin">laun_theme_administration</sql>
@@ -116,7 +122,8 @@
         ${alias}.used_count,
         ${alias}.price,
         ${alias}.sort,
-        ${alias}.addition
+        ${alias}.addition,
+        ${alias}.layout_id
     </sql>
 
 	<select id="query" resultMap="BaseResultMap">
@@ -131,6 +138,7 @@
         ON t1.version = t3.version
         <where>
 			t1.status != -1
+			AND t1.layout_id = #{layoutId}
             <if test="tenantId != null and tenantId != '' ">
                 AND (t1.tenant_id = #{tenantId} OR t1.tenant_id = -1)
             </if>
@@ -143,74 +151,80 @@
             <if test="status != null">
                 AND t1.status = #{status}
             </if>
+			<if test="longResolution != null">
+				AND t1.long_resolution = #{longResolution}
+			</if>
+			<if test="widthResolution != null">
+				AND t1.wide_resolution = #{widthResolution}
+			</if>
         </where>
 		ORDER BY t1.create_date DESC
 	</select>
 
-	<select id="selectByCound" resultMap="BaseResultVoMap">
-		SELECT DISTINCT lta.id,
-		lta.title,lta.version
-		versionName,lta.end_time,lta.start_time,
-		lta.
-		STATUS,lta.create_id,IF
-		(lta.creator_channel_id = 0,'所有渠道',lc. NAME)
-		channelName,lta.creator_channel_id,
-		ltc.classification_name
-		typeName,lta.create_date,lta.zip_url
-		FROM
-		laun_theme_administration lta
-		LEFT JOIN
-		laun_channel lc ON
-		lta.creator_channel_id = lc.id
-		LEFT JOIN
-		laun_theme_classification ltc ON
-		lta.type_id = ltc.id
-		WHERE
-		(
-		(lc.channel_status = 0 OR lc.channel_status is null)
-		<if test="status != null">
-			AND lta.`status` = #{status}
-		</if>
-		<if test="status == null">
-			AND lta.`status` in (0,1,2,3)
-		</if>
-		<if test="type != null and type!= ''">
-			AND lta.type_id = #{type}
-		</if>
-		<if test="version != null and version != ''">
-			AND lta.version = #{version}
-		</if>
-		<if test="channel != null and channel != ''">
-			AND lta.creator_channel_id = #{channel}
-		</if>
-		<if test="title != null and title != ''">
-			And lta.title LIKE #{title}
-		</if>
-		)
-		<if test="isChannleManager != null and isChannleManager == 1">
-			OR
-			((lc.channel_status = 0 OR lc.channel_status is null) AND
-			lta.creator_channel_id = 0
-			<if test="status != null">
-				AND lta.`status` = #{status}
-			</if>
-			<if test="status == null">
-				AND lta.`status` in (1,2,3)
-			</if>
-			<if test="type != null and type!= ''">
-				AND lta.type_id = #{type}
-			</if>
-			<if test="version != null and version != ''">
-				AND lta.version = #{version}
-			</if>
-			<if test="title != null and title != ''">
-				And lta.title LIKE #{title}
-			</if>
-			)
-		</if>
-		ORDER BY
-		lta.create_date DESC
-	</select>
+	<!--<select id="selectByCound" resultMap="BaseResultVoMap">-->
+		<!--SELECT DISTINCT lta.id,-->
+		<!--lta.title,lta.version-->
+		<!--versionName,lta.end_time,lta.start_time,-->
+		<!--lta.-->
+		<!--STATUS,lta.create_id,IF-->
+		<!--(lta.creator_channel_id = 0,'所有渠道',lc. NAME)-->
+		<!--channelName,lta.creator_channel_id,-->
+		<!--ltc.classification_name-->
+		<!--typeName,lta.create_date,lta.zip_url-->
+		<!--FROM-->
+		<!--laun_theme_administration lta-->
+		<!--LEFT JOIN-->
+		<!--laun_channel lc ON-->
+		<!--lta.creator_channel_id = lc.id-->
+		<!--LEFT JOIN-->
+		<!--laun_theme_classification ltc ON-->
+		<!--lta.type_id = ltc.id-->
+		<!--WHERE-->
+		<!--(-->
+		<!--(lc.channel_status = 0 OR lc.channel_status is null)-->
+		<!--<if test="status != null">-->
+			<!--AND lta.`status` = #{status}-->
+		<!--</if>-->
+		<!--<if test="status == null">-->
+			<!--AND lta.`status` in (0,1,2,3)-->
+		<!--</if>-->
+		<!--<if test="type != null and type!= ''">-->
+			<!--AND lta.type_id = #{type}-->
+		<!--</if>-->
+		<!--<if test="version != null and version != ''">-->
+			<!--AND lta.version = #{version}-->
+		<!--</if>-->
+		<!--<if test="channel != null and channel != ''">-->
+			<!--AND lta.creator_channel_id = #{channel}-->
+		<!--</if>-->
+		<!--<if test="title != null and title != ''">-->
+			<!--And lta.title LIKE #{title}-->
+		<!--</if>-->
+		<!--)-->
+		<!--<if test="isChannleManager != null and isChannleManager == 1">-->
+			<!--OR-->
+			<!--((lc.channel_status = 0 OR lc.channel_status is null) AND-->
+			<!--lta.creator_channel_id = 0-->
+			<!--<if test="status != null">-->
+				<!--AND lta.`status` = #{status}-->
+			<!--</if>-->
+			<!--<if test="status == null">-->
+				<!--AND lta.`status` in (1,2,3)-->
+			<!--</if>-->
+			<!--<if test="type != null and type!= ''">-->
+				<!--AND lta.type_id = #{type}-->
+			<!--</if>-->
+			<!--<if test="version != null and version != ''">-->
+				<!--AND lta.version = #{version}-->
+			<!--</if>-->
+			<!--<if test="title != null and title != ''">-->
+				<!--And lta.title LIKE #{title}-->
+			<!--</if>-->
+			<!--)-->
+		<!--</if>-->
+		<!--ORDER BY-->
+		<!--lta.create_date DESC-->
+	<!--</select>-->
 
 
 	<select id="selectByStatus" resultMap="BaseResultMap">
@@ -320,4 +334,13 @@
 		update <include refid="themeAdmin"></include> as t1 set t1.type_id = null
 		where t1.type_id = #{id}
 	</update>
+
+	<select id="resolution" resultMap="resolution">
+		SELECT long_resolution,wide_resolution
+		FROM <include refid="themeAdmin"></include> theme
+		<if test="layoutId != null">
+			WHERE theme.layout_id = #{layoutId}
+		</if>
+		GROUP BY long_resolution,wide_resolution
+	</select>
 </mapper>

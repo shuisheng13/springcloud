@@ -2,6 +2,10 @@ package com.pactera.business.dao;
 
 import com.pactera.config.mapper.BaseMapper;
 import com.pactera.domain.LaunVersions;
+import com.pactera.dto.LaunVersionsDto;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @ClassName LaunVersionMapper
@@ -11,5 +15,7 @@ import com.pactera.domain.LaunVersions;
  * @Version
  */
 public interface LaunVersionMapper extends BaseMapper<LaunVersions> {
+
+    List<LaunVersionsDto> findByVersionAndLayout(@Param("version") Double version, @Param("layout") String layout);
 
 }

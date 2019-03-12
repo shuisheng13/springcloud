@@ -24,4 +24,5 @@ public class LaunVersions extends LaunBase {
     private String versionName;
     private Integer tenantId;
     private String description;
+    private Long layoutId;
 }

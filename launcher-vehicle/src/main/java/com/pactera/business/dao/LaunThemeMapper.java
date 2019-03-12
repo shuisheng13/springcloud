@@ -16,5 +16,5 @@ public interface LaunThemeMapper extends BaseMapper<LaunThemeAdministration> {
 
 	Integer count (@Param("type") int type, @Param("id") String id);
 
-    List<LaunThemeAdministration> search(@Param("value") String value, @Param("version") double version);
+    List<LaunThemeAdministration> search(@Param("value") String value, @Param("version") double version, @Param("layoutId") Long layoutId);
 }

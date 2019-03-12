@@ -14,6 +14,6 @@ public class LaunThemeFileVo implements Serializable {
 
 	private @ApiModelProperty("文件名称") String fileName;
 	private @ApiModelProperty("文件路径") String filePath;
-	private @ApiModelProperty("文件类型1:预览主图2:预览配图") Integer type;
+	private @ApiModelProperty("文件类型1:widget 2:icon 3.lockscreen") Integer type;
 
 }

@@ -32,7 +32,7 @@ public class LaunThemeAdministration {
 	private String widthOrHigthRatio;
 	private String folatPoint;
 	private Long level;
-	private double version;
+	private Double version;
 	private Long creatorChannelId;
 	private  String typeId;
 	private String title;
@@ -63,6 +63,8 @@ public class LaunThemeAdministration {
 	private Integer tenantId;
 	private Integer addition;
 	private String creator;
+	private Long layoutId;
+
 	@Transient
 	@JsonProperty("sTime")
 	private @ApiModelProperty("页面传值用的起止时间") String sTime;

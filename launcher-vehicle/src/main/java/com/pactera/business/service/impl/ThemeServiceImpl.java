@@ -2,6 +2,7 @@ package com.pactera.business.service.impl;
 
 import com.navinfo.wecloud.saas.api.facade.ApiKeyFacade;
 import com.pactera.business.dao.LaunThemeMapper;
+import com.pactera.business.service.LaunLayoutService;
 import com.pactera.business.service.RemoteThemeService;
 import com.pactera.business.service.ThemeService;
 import com.pactera.config.exception.DataStoreException;
@@ -37,13 +38,17 @@ public class ThemeServiceImpl implements ThemeService {
     @Autowired
     private ApiKeyFacade apiKeyFacade;
 
+    @Autowired
+    private LaunLayoutService launLayoutService;
+
     @Value("${fast.url}")
     private String fastUrl;
 
     @Override
-    public List<ThemeListVO> search(String value, String apiKey, double version) {
+    public List<ThemeListVO> search(String value, String apiKey, double version, String layoutName) {
         //Integer tenantId = apiKeyFacade.queryTenantByApiKey(apiKey).getData().getId();
-        List<LaunThemeAdministration> launThemeAdministrations = launThemeMapper.search(value, version);
+        Long layoutId = launLayoutService.findIdByName(layoutName);
+        List<LaunThemeAdministration> launThemeAdministrations = launThemeMapper.search(value, version, layoutId);
         BeanCopier beanCopier = BeanCopier.create(LaunThemeAdministration.class ,ThemeListVO.class,false);
         List<ThemeListVO> themeLists = launThemeAdministrations.stream().map(a->{
             ThemeListVO themeListVO = new ThemeListVO();

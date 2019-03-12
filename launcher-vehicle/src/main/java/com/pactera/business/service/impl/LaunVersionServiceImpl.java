@@ -1,15 +1,19 @@
 package com.pactera.business.service.impl;
 
 import com.navinfo.wecloud.saas.api.facade.ApiKeyFacade;
+import com.pactera.business.dao.LaunLayoutMapper;
 import com.pactera.business.dao.LaunVersionMapper;
 import com.pactera.business.service.LaunVersionService;
+import com.pactera.domain.LaunLayout;
 import com.pactera.domain.LaunVersions;
+import com.pactera.dto.LaunVersionsDto;
 import com.pactera.utlis.IdUtlis;
 import com.pactera.utlis.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -22,23 +26,32 @@ import java.util.List;
 @Service
 public class LaunVersionServiceImpl implements LaunVersionService {
 
-    @Autowired
+    @Resource
     private LaunVersionMapper versionMapper;
+    @Resource
+    private LaunLayoutMapper launLayoutMapper;
 
     @Autowired
     private ApiKeyFacade apiKeyFacade;
 
     @Override
-    public int add(double version,String versionName, String apiKey) {
-      /*  Integer tenantId = apiKeyFacade.queryTenantByApiKey(apiKey).getData().getId();
-        if(null == tenantId){return 0;}*/
+    @Transactional(rollbackFor = Exception.class)
+    public int add(double version,String versionName, String apiKey, String layoutName) {
+
+        List<LaunVersionsDto> dtos = versionMapper.findByVersionAndLayout(version, layoutName);
+        if(!dtos.isEmpty()) {return 0;}
+
+        LaunLayout launLayout = new LaunLayout().setName(layoutName);
+        if(0 == launLayoutMapper.selectCount(launLayout)) {
+            launLayoutMapper.insertSelective(launLayout.setId(IdUtlis.Id()));
+        }
+
+        Long launLayoutId = launLayoutMapper.selectOne(launLayout).getId();
+
         LaunVersions launVersions = new LaunVersions();
-        //launVersions.setTenantId(tenantId).setVersion(version);
-        launVersions.setVersion(version);
-        List<LaunVersions> list = versionMapper.select(launVersions);
-        if (!list.isEmpty()) { return 0; }
-        launVersions.setVersionName(versionName);
+        launVersions.setVersionName(versionName).setLayoutId(launLayoutId).setVersion(version);
         launVersions.setId(IdUtlis.Id()).setCreateDate(TimeUtils.nowTimeStamp());
+
         return versionMapper.insert(launVersions);
     }
 }
