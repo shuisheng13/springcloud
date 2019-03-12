@@ -13,7 +13,7 @@
             a.shelf_status = 1
             AND
              a.disable = 1
-             <if test="formatId>0">
+             <if test="layoutName!=null">
                  AND b.name = #{layoutName}
              </if>
            ORDER BY
