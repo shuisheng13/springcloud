@@ -32,8 +32,9 @@ public class LaunThemeClassificationController {
     @PostMapping("addthemeclass")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "themeClassName", value = "主题分类名",paramType="query"),
+            @ApiImplicitParam(name = "formatId", value = "格式id",paramType="query"),
     })
-    public ResponseEntity<ResultData> addthemeClass(String themeClassName, @ApiParam(name = "coverImage",value="上传文件",required=true) MultipartFile coverImage) {
+    public ResponseEntity<ResultData> addthemeClass(String themeClassName, @ApiParam(name = "coverImage",value="上传文件",required=true) MultipartFile coverImage, int formatId) {
 
         if (StringUtils.isBlank(themeClassName)){
             ResultData resultData = new ResultData(400,"themeClassName不能为空");
@@ -43,10 +44,9 @@ public class LaunThemeClassificationController {
             ResultData resultData = new ResultData(400,"coverImage不能为空");
             return  ResponseEntity.ok(resultData);
         }
-        ResponseEntity<ResultData> resultDataResponseEntity = launcThemeClassificationService.addthemeClass(themeClassName, coverImage);
+        ResponseEntity<ResultData> resultDataResponseEntity = launcThemeClassificationService.addthemeClass(themeClassName, coverImage, formatId);
         return  resultDataResponseEntity;
     }
-
 
     /**
      * 编辑主题分类
@@ -106,8 +106,16 @@ public class LaunThemeClassificationController {
      * @return
      **/
     @GetMapping("seThemeClassList")
-    public ResponseEntity<ResultData> seThemeClassList(String shelfStatus,String classificationName,@RequestParam(defaultValue = "1") int pageNum,@RequestParam(defaultValue = "4") int pageSize) {
-        ResponseEntity<ResultData> launcThemeClass = launcThemeClassificationService.seThemeClassList(shelfStatus,classificationName,pageNum,pageSize);
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "shelfStatus", value = "状态",paramType="query"),
+            @ApiImplicitParam(name = "classificationName", value = "分类名",paramType="query"),
+            @ApiImplicitParam(name = "pageSize", value = "每页大小",paramType="query"),
+            @ApiImplicitParam(name = "pageNum", value = "第几页",paramType="query"),
+            @ApiImplicitParam(name = "formatId", value = "格式id",paramType="query")
+
+    })
+    public ResponseEntity<ResultData> seThemeClassList(String shelfStatus,String classificationName,@RequestParam(defaultValue = "1") int pageNum,@RequestParam(defaultValue = "4") int pageSize, Integer formatId) {
+        ResponseEntity<ResultData> launcThemeClass = launcThemeClassificationService.seThemeClassList(shelfStatus,classificationName,pageNum,pageSize,formatId);
         return  launcThemeClass;
     }
 
@@ -145,7 +153,7 @@ public class LaunThemeClassificationController {
         return  resultDataResponseEntity;
     }
 
-   /* *
+    /**
      * 主题权重排序问题(整体排序)
      * @Author zhaodong
      * @Date 13:45 2018/12/24
@@ -179,8 +187,8 @@ public class LaunThemeClassificationController {
      * @return
      **/
     @GetMapping("themeClassByTid")
-    public ResponseEntity<ResultData> themeClassByTid(){
-        ResponseEntity<ResultData> resultDataResponseEntity = launcThemeClassificationService.themeClassByTid();
+    public ResponseEntity<ResultData> themeClassByTid(int formatId){
+        ResponseEntity<ResultData> resultDataResponseEntity = launcThemeClassificationService.themeClassByTid(formatId);
         return resultDataResponseEntity;
     }
 

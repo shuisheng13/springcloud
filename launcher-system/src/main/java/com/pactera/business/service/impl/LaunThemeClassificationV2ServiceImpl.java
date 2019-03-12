@@ -59,7 +59,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
      * @Param themeClassName, themeClassName, coverImage
      **/
     @Override
-    public ResponseEntity<ResultData> addthemeClass(String themeClassName, MultipartFile coverImage) {
+    public ResponseEntity<ResultData> addthemeClass(String themeClassName, MultipartFile coverImage, int formatId) {
 
         //System.out.println(SaasHeaderContextV1.getTenantName()+"-------"+SaasHeaderContextV1.getTenantId()+"======"+SaasHeaderContextV1.getUserType());
         //Integer tenantId2;
@@ -100,6 +100,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
         themeClass.setShelfCount(0);
         themeClass.setShelfStatus("0");
         themeClass.setSort(1);
+        themeClass.setFormatId(formatId);
         themeClass.setCreateDate(new Date());
         themeClass.setUpdateDate(new Date());
         String coverImageUrl = launFileCrudService.fileUpload(coverImage);
@@ -145,7 +146,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
             int tenantId2 = SaasHeaderContextV1.getTenantId();
             themeClassVo.setTenantId(tenantId2 + "");
         }*/
-        String tenantId2 = SaasHeaderContextV1.getTenantId();
+        //String tenantId2 = SaasHeaderContextV1.getTenantId();
         //themeClassVo.setTenantId(tenantId2); // 你懂得，为啥不带了
         themeClassVo.setDisable(1);
         List<LauncThemeClassVo> launcThemeClass = LauncThemeClassMapper.selectLauncThemeClassVo(themeClassVo);
@@ -216,7 +217,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
             json.put("classificationName", launcTheme.getClassificationName());
             json.put("coverImage", launcTheme.getCoverImage());
         }
-        LaunPage<LaunThemeVo> query = launThemeService.query(new ThemesParam(id,null, null, null,null, pageNum, pageSize));
+        LaunPage<LaunThemeVo> query = launThemeService.query(new ThemesParam(id,null, 2, null,null, pageNum, pageSize));
         json.put("themlist", query);
         ResultData resultData = new ResultData();
         resultData.setData(json);
@@ -232,7 +233,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
      * @Param
      **/
     @Override
-    public ResponseEntity<ResultData> seThemeClassList(String shelfStatus, String classificationName, int pageNum, int pageSize) {
+    public ResponseEntity<ResultData> seThemeClassList(String shelfStatus, String classificationName, int pageNum, int pageSize, Integer formatId) {
         String tenantId = SaasHeaderContextV1.getTenantId();
         PageHelper.startPage(pageNum, pageSize);
         LauncThemeClassVo themeClass = new LauncThemeClassVo();
@@ -242,6 +243,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
         //themeClass.setTenantId(tenantId); //这版为所有租户都能看到
         themeClass.setClassificationName(classificationName);
         themeClass.setDisable(1);
+        themeClass.setFormatId(formatId==null?0:formatId);
         themeClass.setShelfStatus(shelfStatus);
         List<LauncThemeClassVo> launcThemeClass = LauncThemeClassMapper.selectLauncThemeClassVo(themeClass);
         if(!launcThemeClass.isEmpty()) {
@@ -367,9 +369,10 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
      * @Param
      * @return
      **/
-    public ResponseEntity<ResultData> themeClassByTid(){
+    public ResponseEntity<ResultData> themeClassByTid(int formatId){
         LauncThemeClassVo vo = new LauncThemeClassVo();
         vo.setDisable(1);
+        vo.setFormatId(formatId);
         //vo.setTenantId(SaasHeaderContextV1.getTenantId()+""); //都能查询到，没有租户的概念
         List<LauncThemeClassVo> launcThemeClassVos = LauncThemeClassMapper.selectLauncThemeClassVo(vo);
         List<JSONObject> list = new ArrayList<>();
@@ -389,6 +392,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
     private String ThemeClassId(){
         // 获取id
        String id = IdUtlis.Id("ZTFL", SaasHeaderContextV1.getTenantName());
+       //String id = IdUtlis.Id("ZTFL", "123456");
        LaunThemeClassificationV2 launTheme = LauncThemeClassMapper.selectByPrimaryKey(id);
        if (launTheme == null){
             return id;

@@ -1,12 +1,10 @@
 package com.pactera.business.dao;
 import com.pactera.config.mapper.BaseMapper;
-import com.pactera.domain.LaunThemeAdministration;
 import com.pactera.domain.LaunThemeClassificationV2;
 import com.pactera.vo.LauncThemeClassVo;
 import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  *  主题分类管理

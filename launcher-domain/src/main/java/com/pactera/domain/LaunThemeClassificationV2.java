@@ -59,4 +59,7 @@ public class LaunThemeClassificationV2 {
     private @ApiModelProperty("是否有效")
     int disable;
 
+    private @ApiModelProperty("格式")
+    int formatId;
+
 }
