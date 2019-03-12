@@ -17,7 +17,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author zhaodong
@@ -43,21 +45,20 @@ public class LaunListServiceImpl implements LaunListService {
      * @return
      **/
     @Override
-    public ResponseEntity<ResultData> themeclasslist2(String apiKey){
+    public ResponseEntity<ResultData> themeclasslist2(String apiKey, String layoutName){
        /* CommonResult<TenantInfo> tenantInfoCommonResult = apiKeyFacade.queryTenantByApiKey(apiKey);
         TenantInfo data = tenantInfoCommonResult.getData();
         if (data==null){
             return ResponseEntity.ok().body(new ResultData(ErrorStatus.NOT_APIKEY.status(),ErrorStatus.NOT_APIKEY.message()));
         }
         int tenanId = data.getId();*/
-        int tenanId = 55;
-        List<ThemClassDTO> themListDTOS = launVehicleListMapper.themeclasslist2(tenanId + "");
+        //int tenanId = 55;
+        List<ThemClassDTO> themListDTOS = launVehicleListMapper.themeclasslist2(layoutName);
         for (ThemClassDTO th:themListDTOS){
             //TODO 暂时方案
             if (!th.getCoverImage().contains(fastUrl)){
                 th.setCoverImage(fastUrl+th.getCoverImage());
             }
-
         }
         JSONObject json = new JSONObject();
         json.put("list",themListDTOS);
@@ -73,23 +74,23 @@ public class LaunListServiceImpl implements LaunListService {
      * @return
      **/
     @Override
-    public ResponseEntity<ResultData> themTopAndAll(String apiKey,int status, int pageNum, int pageSize,double version){
+    public ResponseEntity<ResultData> themTopAndAll(String apiKey,int status, int pageNum, int pageSize,double version,String layoutName){
        /* CommonResult<TenantInfo> tenantInfoCommonResult = apiKeyFacade.queryTenantByApiKey(apiKey);
         TenantInfo data = tenantInfoCommonResult.getData();
         if (data==null){
             return ResponseEntity.ok().body(new ResultData(ErrorStatus.NOT_APIKEY.status(),ErrorStatus.NOT_APIKEY.message()));
         }
         int tenanId = data.getId();*/
-        int tenanId = 55;
+        //int tenanId = 55;
         PageHelper.startPage(pageNum, pageSize);
-        LaunThemeAdministration LaunThemeVo = new LaunThemeAdministration();
-        LaunThemeVo.setTenantId(tenanId);
-        LaunThemeVo.setVersion(version);
-        if (status==1) LaunThemeVo.setSort(-1);// 全部标记
-        else if (status==2) LaunThemeVo.setDownloadCount(-1);// 排行标记
-        else if (status==3) LaunThemeVo.setRecommendSort(-1);// 推荐标记
+        Map<String,Object> map =new HashMap();
+       // LaunThemeAdministration LaunThemeVo = new LaunThemeAdministration();
+        map.put("version",version);
+        if (status==1) map.put("sort",-1);// 全部标记
+        else if (status==2) map.put("downloadCount",-1);// 排行标记
+        else if (status==3) map.put("recommendSort",-1);// 推荐标记
         else return ResponseEntity.ok().body(new ResultData(ErrorStatus.SYS_ERROR.status(),ErrorStatus.SYS_ERROR.message()));// 暂时提供系统错误
-        List<ThemListDTO> themListDTOS = launVehicleListMapper.themTopAndByClassId(LaunThemeVo);
+        List<ThemListDTO> themListDTOS = launVehicleListMapper.themTopAndByClassId(map);
         for (ThemListDTO th:themListDTOS){
             if (!th.getPreviewPath().contains(fastUrl)){
                 th.setPreviewPath(fastUrl+th.getPreviewPath());
@@ -121,13 +122,12 @@ public class LaunListServiceImpl implements LaunListService {
             return ResponseEntity.ok().body(new ResultData("id不为空"));
         }
         int tenanId = data.getId();*/
-        int tenanId = 55;
-        LaunThemeAdministration LaunThemeVo = new LaunThemeAdministration();
-        LaunThemeVo.setTenantId(tenanId);
-        LaunThemeVo.setTypeId(id); // id
-        LaunThemeVo.setDownloadCount(-1);//分类的主题列表按照下载量排序
-        LaunThemeVo.setVersion(version);
-        List<ThemListDTO> themListDTOS = launVehicleListMapper.themTopAndByClassId(LaunThemeVo);
+        //int tenanId = 55;
+        Map<String,Object> map =new HashMap();
+        map.put("typeId",id);// id
+        map.put("downloadCount",-1);//分类的主题列表按照下载量排序
+        map.put("version",version);
+        List<ThemListDTO> themListDTOS = launVehicleListMapper.themTopAndByClassId(map);
         for (ThemListDTO th:themListDTOS){
             if (!th.getPreviewPath().contains(fastUrl)){
                 th.setPreviewPath(fastUrl+th.getPreviewPath());
