@@ -187,7 +187,7 @@ public class LaunThemeClassificationController {
      * @return
      **/
     @GetMapping("themeClassByTid")
-    public ResponseEntity<ResultData> themeClassByTid(Long formatId){
+    public ResponseEntity<ResultData> themeClassByTid(long formatId){
         ResponseEntity<ResultData> resultDataResponseEntity = launcThemeClassificationService.themeClassByTid(formatId);
         return resultDataResponseEntity;
     }
