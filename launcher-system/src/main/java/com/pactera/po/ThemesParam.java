@@ -4,7 +4,8 @@ import com.pactera.valid.annotation.ThemeResolution;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * @ClassName Themes
@@ -19,9 +20,9 @@ import org.hibernate.validator.constraints.NotEmpty;
 public class ThemesParam {
 
     private String type;
-    @NotEmpty
     private String title;
     private Integer status;
+    @NotNull
     private Long layoutId;
     @ThemeResolution private Integer[] resolution;
     private int pageNum = 1;
