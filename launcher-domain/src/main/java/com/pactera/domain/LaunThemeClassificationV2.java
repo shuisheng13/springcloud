@@ -60,6 +60,6 @@ public class LaunThemeClassificationV2 {
     int disable;
 
     private @ApiModelProperty("格式")
-    int formatId;
+    long formatId;
 
 }

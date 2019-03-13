@@ -59,7 +59,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
      * @Param themeClassName, themeClassName, coverImage
      **/
     @Override
-    public ResponseEntity<ResultData> addthemeClass(String themeClassName, MultipartFile coverImage, int formatId) {
+    public ResponseEntity<ResultData> addthemeClass(String themeClassName, MultipartFile coverImage, long formatId) {
 
         //System.out.println(SaasHeaderContextV1.getTenantName()+"-------"+SaasHeaderContextV1.getTenantId()+"======"+SaasHeaderContextV1.getUserType());
         //Integer tenantId2;
@@ -233,7 +233,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
      * @Param
      **/
     @Override
-    public ResponseEntity<ResultData> seThemeClassList(String shelfStatus, String classificationName, int pageNum, int pageSize, Integer formatId) {
+    public ResponseEntity<ResultData> seThemeClassList(String shelfStatus, String classificationName, int pageNum, int pageSize, Long formatId) {
         String tenantId = SaasHeaderContextV1.getTenantId();
         PageHelper.startPage(pageNum, pageSize);
         LauncThemeClassVo themeClass = new LauncThemeClassVo();
@@ -369,7 +369,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
      * @Param
      * @return
      **/
-    public ResponseEntity<ResultData> themeClassByTid(int formatId){
+    public ResponseEntity<ResultData> themeClassByTid(Long formatId){
         LauncThemeClassVo vo = new LauncThemeClassVo();
         vo.setDisable(1);
         vo.setFormatId(formatId);
