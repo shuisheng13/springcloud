@@ -138,7 +138,9 @@
         ON t1.version = t3.version
         <where>
 			t1.status != -1
-			AND t1.layout_id = #{layoutId}
+			<if test="layoutId != null and layoutId != '' ">
+				AND t1.layout_id = #{layoutId}
+			</if>
             <if test="tenantId != null and tenantId != '' ">
                 AND (t1.tenant_id = #{tenantId} OR t1.tenant_id = -1)
             </if>
