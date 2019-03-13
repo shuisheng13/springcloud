@@ -234,7 +234,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
      **/
     @Override
     public ResponseEntity<ResultData> seThemeClassList(String shelfStatus, String classificationName, int pageNum, int pageSize, Long formatId) {
-        String tenantId = SaasHeaderContextV1.getTenantId();
+        //String tenantId = SaasHeaderContextV1.getTenantId();
         PageHelper.startPage(pageNum, pageSize);
         LauncThemeClassVo themeClass = new LauncThemeClassVo();
        /* if (SaasHeaderContextV1.getUserType() == 1) {// 为1的时候为普通租户
