@@ -35,8 +35,8 @@ public class LaunVehicleListController  {
     @GetMapping("/themeclass/themeclasslist2")
     @ApiOperation("主题分类列表")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "apiKey", value = "apiKey",paramType="query",required = true),
-            @ApiImplicitParam(name = "layoutName", value = "layoutName",paramType="layoutName",required = true),
+            @ApiImplicitParam(name = "apiKey", value = "apiKey",paramType="query"),
+            @ApiImplicitParam(name = "layoutName", value = "layoutName",paramType="query"),
     })
     public ResponseEntity<ResultData> themeclasslist2(String apiKey,String layoutName){
         ResponseEntity<ResultData> resultDataResponse = launListService.themeclasslist2(apiKey, layoutName);
