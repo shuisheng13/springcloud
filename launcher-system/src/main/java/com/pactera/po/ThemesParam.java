@@ -22,7 +22,7 @@ public class ThemesParam {
     private String type;
     private String title;
     private Integer status;
-    @NotNull(message = "格式id不能为空")
+    //@NotNull(message = "格式id不能为空")
     private Long layoutId;
     @ThemeResolution private Integer[] resolution;
     private int pageNum = 1;
