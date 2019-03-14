@@ -119,13 +119,13 @@ public class LaunThemeClassificationController {
         return  launcThemeClass;
     }
 
-     /**
-      * 主题上架下架
-      * @Author zhaodong
-      * @Date 13:34 2018/12/21
-      * @Param
-      * @return
-      **/
+    /**
+     * 主题上架下架
+     * @Author zhaodong
+     * @Date 13:34 2018/12/21
+     * @Param
+     * @return
+     **/
     @PostMapping("themeClassUpOrDown")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "shelfStatus", value = "1-上架，0下架",paramType="query"),
@@ -187,7 +187,7 @@ public class LaunThemeClassificationController {
      * @return
      **/
     @GetMapping("themeClassByTid")
-    public ResponseEntity<ResultData> themeClassByTid(long formatId){
+    public ResponseEntity<ResultData> themeClassByTid(Long formatId){
         ResponseEntity<ResultData> resultDataResponseEntity = launcThemeClassificationService.themeClassByTid(formatId);
         return resultDataResponseEntity;
     }
