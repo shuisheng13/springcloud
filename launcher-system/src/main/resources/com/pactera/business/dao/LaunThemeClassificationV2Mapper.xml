@@ -19,7 +19,7 @@
         <result column="disable" jdbcType="INTEGER" property="disable" />
     </resultMap>
     <sql id="Base_Column_List">
-        id, classification_name, sort, cover_image, cover_image, shelf_status, disable, create_date, update_date, creator, tenant_id
+        id, classification_name, sort, cover_image, cover_image, shelf_status, disable, create_date, update_date, creator, tenant_id, format_id
     </sql>
     <update id="updateByThemClassId" parameterType="com.pactera.vo.LauncThemeClassVo">
         UPDATE
