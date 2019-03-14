@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.function.IntToLongFunction;
 
 /**
  * 主题分类管理
@@ -95,6 +96,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
         themeClass.setClassificationName(themeClassName);
         themeClass.setCreator(SaasHeaderContextV1.getUserName());
         themeClass.setTenantId(tenantId2 + "");// 存租户id，如今并没有什么卵用，就是处理成租户和管理员是一个，也就是说是租户
+        //themeClass.setTenantId("15");
         themeClass.setDisable(1);
         themeClass.setQuantity(0);
         themeClass.setShelfCount(0);
@@ -213,11 +215,11 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
         themeClassVo.setId(id);
         List<LauncThemeClassVo> launcThemeClass = LauncThemeClassMapper.selectLauncThemeClassVo(themeClassVo);
         JSONObject json = new JSONObject();
-        for (LauncThemeClassVo launcTheme : launcThemeClass) {
-            json.put("classificationName", launcTheme.getClassificationName());
-            json.put("coverImage", launcTheme.getCoverImage());
-        }
-        LaunPage<LaunThemeVo> query = launThemeService.query(new ThemesParam(id,null, 2, null,null, pageNum, pageSize));
+        launcThemeClass.forEach(laun->{
+            json.put("classificationName", laun.getClassificationName());
+            json.put("coverImage", laun.getCoverImage());
+        });
+        LaunPage<LaunThemeVo> query = launThemeService.query(new ThemesParam(id,null, null, null,null, pageNum, pageSize));
         json.put("themlist", query);
         ResultData resultData = new ResultData();
         resultData.setData(json);
@@ -258,12 +260,13 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
                 String id = vo.getId();
                 for (Map quantity : maps) {
                     if (quantity.containsValue(id)) {
-                        vo.setQuantity(Integer.parseInt(String.valueOf((long) quantity.get("quantity"))));
+                        vo.setQuantity((Integer)quantity.get("quantity"));
                     }
                 }
                 for (Map shelfCount : maps1) {
                     if (shelfCount.containsValue(id)) {
-                        vo.setShelfCount(Integer.parseInt(String.valueOf((long) shelfCount.get("shelfCount"))));
+                        vo.setShelfCount((Integer)shelfCount.get("shelfCount"));
+
                     }
                 }
             }
