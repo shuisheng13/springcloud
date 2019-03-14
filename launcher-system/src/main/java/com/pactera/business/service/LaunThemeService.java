@@ -97,5 +97,5 @@ public interface LaunThemeService {
 	 */
 	int cleanThemeClassification(String id);
 
-	List<LaunResolution> resolution(Integer layoutId);
+	List<LaunResolution> resolution(Long layoutId);
 }

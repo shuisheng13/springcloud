@@ -428,7 +428,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
     }
 
     @Override
-    public List<LaunResolution> resolution(Integer layoutId) {
+    public List<LaunResolution> resolution(Long layoutId) {
         return launThemeMapper.resolution(layoutId);
     }
 

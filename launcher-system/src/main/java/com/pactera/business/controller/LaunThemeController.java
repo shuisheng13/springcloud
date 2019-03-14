@@ -163,7 +163,7 @@ public class LaunThemeController {
     }
 
     @GetMapping("/resolution")
-    public ResultData resolution(@NotNull Integer layoutId) {
+    public ResultData resolution(@NotNull Long layoutId) {
         return new ResultData(launThemeService.resolution(layoutId));
     }
 

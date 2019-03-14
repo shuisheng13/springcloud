@@ -109,6 +109,6 @@ public interface LaunThemeMapper extends BaseMapper<LaunThemeAdministration> {
 
 	int cleanClassification(@Param("id") String id);
 
-	List<LaunResolution> resolution(@Param("layoutId") Integer layoutId);
+	List<LaunResolution> resolution(@Param("layoutId") Long layoutId);
 
 }
