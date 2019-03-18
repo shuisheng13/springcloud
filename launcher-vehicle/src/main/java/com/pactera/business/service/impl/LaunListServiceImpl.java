@@ -54,12 +54,7 @@ public class LaunListServiceImpl implements LaunListService {
         int tenanId = data.getId();*/
         //int tenanId = 55;
         List<ThemClassDTO> themListDTOS = launVehicleListMapper.themeclasslist2(layoutName);
-        for (ThemClassDTO th:themListDTOS){
-            //TODO 暂时方案
-            if (!th.getCoverImage().contains(fastUrl)){
-                th.setCoverImage(fastUrl+th.getCoverImage());
-            }
-        }
+        themListDTOS.stream().filter(t->!t.getCoverImage().contains(fastUrl)).forEach(t->t.setCoverImage(fastUrl+t.getCoverImage()));
         JSONObject json = new JSONObject();
         json.put("list",themListDTOS);
         ResultData resultData = new ResultData(json);
@@ -91,11 +86,7 @@ public class LaunListServiceImpl implements LaunListService {
         else if (status==3) map.put("recommendSort",-1);// 推荐标记
         else return ResponseEntity.ok().body(new ResultData(ErrorStatus.SYS_ERROR.status(),ErrorStatus.SYS_ERROR.message()));// 暂时提供系统错误
         List<ThemListDTO> themListDTOS = launVehicleListMapper.themTopAndByClassId(map);
-        for (ThemListDTO th:themListDTOS){
-            if (!th.getPreviewPath().contains(fastUrl)){
-                th.setPreviewPath(fastUrl+th.getPreviewPath());
-            }
-        }
+        themListDTOS.stream().filter(t->!t.getPreviewPath().contains(fastUrl)).forEach(t->t.setPreviewPath(fastUrl+t.getPreviewPath()));
         PageInfo<ThemListDTO> PageInfo = new PageInfo<>(themListDTOS);
         JSONObject json = new JSONObject();
         json.put("list",new LaunPage(PageInfo, themListDTOS));
@@ -128,11 +119,7 @@ public class LaunListServiceImpl implements LaunListService {
         map.put("downloadCount",-1);//分类的主题列表按照下载量排序
         map.put("version",version);
         List<ThemListDTO> themListDTOS = launVehicleListMapper.themTopAndByClassId(map);
-        for (ThemListDTO th:themListDTOS){
-            if (!th.getPreviewPath().contains(fastUrl)){
-                th.setPreviewPath(fastUrl+th.getPreviewPath());
-            }
-        }
+        themListDTOS.stream().filter(t->!t.getPreviewPath().contains(fastUrl)).forEach(t->t.setPreviewPath(fastUrl+t.getPreviewPath()));
         PageInfo<ThemListDTO> PageInfo = new PageInfo<>(themListDTOS);
         JSONObject json = new JSONObject();
         json.put("list",new LaunPage(PageInfo, themListDTOS));
