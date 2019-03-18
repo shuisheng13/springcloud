@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -36,7 +37,7 @@ public class LaunVersionServiceImpl implements LaunVersionService {
     @Override
     public LaunPage<LaunVersionsVo> query(int pageNum, int pageSize) {
         PageInfo<LaunVersionsVo> pageInfo = PageHelper.startPage(pageNum, pageSize)
-                .doSelectPageInfo(() -> list());
+                .doSelectPageInfo(() -> list(null));
         return new LaunPage(pageInfo, pageInfo.getList());
     }
 
@@ -50,9 +51,10 @@ public class LaunVersionServiceImpl implements LaunVersionService {
     }
 
     @Override
-    public List<LaunVersionsVo> list() {
+    public List<LaunVersionsVo> list(String layoutId) {
         Example example = new Example(LaunVersions.class);
         //example.createCriteria().andEqualTo("tenantId", SaasHeaderContextV1.getTenantIdInt());
+        Optional.ofNullable(layoutId).ifPresent(id-> example.createCriteria().andEqualTo("layoutId", id));
         example.setOrderByClause("version DESC");
         List<LaunVersions> list = versionMapper.selectByExample(example);
         return this.po2vo(list);
