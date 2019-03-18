@@ -1,6 +1,7 @@
 package com.pactera.vo;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.util.Date;
 
@@ -11,6 +12,7 @@ import java.util.Date;
  * @Date 2018年12月20日 14:04
  */
 @Data
+@Accessors(chain = true)
 public class LauncThemeClassVo {
 
     private String id;
