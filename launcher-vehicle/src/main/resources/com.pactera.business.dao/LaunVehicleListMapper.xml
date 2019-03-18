@@ -41,7 +41,7 @@
               </if>
           ORDER BY
               <if test="sort==-1"> a.sort desc </if>
-              <if test="downloadCount==-1"> a.downloadCount desc </if>
+              <if test="downloadCount==-1"> a.download_count desc </if>
               <if test="recommendSort==-1"> a.recommend_sort desc </if>
     </select>
 
