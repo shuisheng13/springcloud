@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -16,6 +17,7 @@ import java.util.Date;
 @Entity
 @ApiModel("主题分类")
 @Data
+@Accessors(chain = true)
 public class LaunThemeClassificationV2 {
 
     private static final long serialVersionUID = 7592025457847638111L;
