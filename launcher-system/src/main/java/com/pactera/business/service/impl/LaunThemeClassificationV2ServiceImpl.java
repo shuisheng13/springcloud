@@ -81,6 +81,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
         //检查添加的分类是否重名
         LauncThemeClassVo themeClassVo = new LauncThemeClassVo();
         themeClassVo.setDisable(1);
+        themeClassVo.setFormatId(formatId);
         String tenantId2 = SaasHeaderContextV1.getTenantId();
         //themeClassVo.setTenantId(tenantId2); //现在处理成一个租户，重名问题为查询所有租户
         List<LauncThemeClassVo> launcThemeClass = LauncThemeClassMapper.selectLauncThemeClassVo(themeClassVo);
@@ -89,21 +90,19 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
             ResultData resultData = new ResultData(ErrorStatus.NAME_CLASS_LAUNTHEM_ADD.status(), ErrorStatus.NAME_CLASS_LAUNTHEM_ADD.message());
             return ResponseEntity.ok(resultData);
         }
-        LaunThemeClassificationV2 themeClass = new LaunThemeClassificationV2();
-        // 封装属性
-        themeClass.setId(ThemeClassId());
-        themeClass.setClassificationName(themeClassName);
-        themeClass.setCreator(SaasHeaderContextV1.getUserName());
-        themeClass.setTenantId(tenantId2 + "");// 存租户id，如今并没有什么卵用，就是处理成租户和管理员是一个，也就是说是租户
-        //themeClass.setTenantId("15");
-        themeClass.setDisable(1);
-        themeClass.setQuantity(0);
-        themeClass.setShelfCount(0);
-        themeClass.setShelfStatus("0");
-        themeClass.setSort(1);
-        themeClass.setFormatId(formatId);
-        themeClass.setCreateDate(new Date());
-        themeClass.setUpdateDate(new Date());
+        LaunThemeClassificationV2 themeClass = new LaunThemeClassificationV2()
+                .setId(ThemeClassId())
+                .setClassificationName(themeClassName)
+                .setCreator(SaasHeaderContextV1.getUserName())
+                .setTenantId(tenantId2 + "")// 存租户id，如今并没有什么卵用，就是处理成租户和管理员是一个，也就是说是租户
+                .setDisable(1)
+                .setQuantity(0)
+                .setShelfCount(0)
+                .setShelfStatus("0")
+                .setSort(1)
+                .setFormatId(formatId)
+                .setCreateDate(new Date())
+                .setUpdateDate(new Date());
         String coverImageUrl = launFileCrudService.fileUpload(coverImage);
         if (coverImageUrl == null) {
             ResultData resultData = new ResultData(ErrorStatus.WIDGETUPLOAD_ERROR.status(), ErrorStatus.WIDGETUPLOAD_ERROR.message());
@@ -149,7 +148,9 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
         }*/
         //String tenantId2 = SaasHeaderContextV1.getTenantId();
         //themeClassVo.setTenantId(tenantId2); // 你懂得，为啥不带了
+        LaunThemeClassificationV2 V2 = LauncThemeClassMapper.selectByPrimaryKey(id);
         themeClassVo.setDisable(1);
+        themeClassVo.setFormatId(V2.getFormatId());
         List<LauncThemeClassVo> launcThemeClass = LauncThemeClassMapper.selectLauncThemeClassVo(themeClassVo);
         if(launcThemeClass.stream().filter(t->{
             if (themeClassName.equals(t.getClassificationName())){
@@ -237,15 +238,16 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
     public ResponseEntity<ResultData> seThemeClassList(String shelfStatus, String classificationName, int pageNum, int pageSize, Long formatId) {
         //String tenantId = SaasHeaderContextV1.getTenantId();
         PageHelper.startPage(pageNum, pageSize);
-        LauncThemeClassVo themeClass = new LauncThemeClassVo();
+
        /* if (SaasHeaderContextV1.getUserType() == 1) {// 为1的时候为普通租户
             themeClass.setTenantId(tenantId + "");
         }*/
         //themeClass.setTenantId(tenantId); //这版为所有租户都能看到
-        themeClass.setClassificationName(classificationName);
-        themeClass.setDisable(1);
-        themeClass.setFormatId(formatId==null?0:formatId);
-        themeClass.setShelfStatus(shelfStatus);
+        LauncThemeClassVo themeClass = new LauncThemeClassVo()
+                .setClassificationName(classificationName)
+                .setDisable(1)
+                .setFormatId(formatId==null?0:formatId)
+                .setShelfStatus(shelfStatus);
         List<LauncThemeClassVo> launcThemeClass = LauncThemeClassMapper.selectLauncThemeClassVo(themeClass);
         if(!launcThemeClass.isEmpty()) {
             //主题分类id给我组合
