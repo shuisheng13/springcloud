@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 主题分类管理
@@ -83,11 +84,10 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
         String tenantId2 = SaasHeaderContextV1.getTenantId();
         //themeClassVo.setTenantId(tenantId2); //现在处理成一个租户，重名问题为查询所有租户
         List<LauncThemeClassVo> launcThemeClass = LauncThemeClassMapper.selectLauncThemeClassVo(themeClassVo);
-        for (LauncThemeClassVo laun : launcThemeClass) {
-            if (themeClassName.equals(laun.getClassificationName())) {
-                ResultData resultData = new ResultData(ErrorStatus.NAME_CLASS_LAUNTHEM_ADD.status(), ErrorStatus.NAME_CLASS_LAUNTHEM_ADD.message());
-                return ResponseEntity.ok(resultData);
-            }
+        long count = launcThemeClass.stream().filter(t -> themeClassName.equals(t.getClassificationName())).count();
+        if (count>0){
+            ResultData resultData = new ResultData(ErrorStatus.NAME_CLASS_LAUNTHEM_ADD.status(), ErrorStatus.NAME_CLASS_LAUNTHEM_ADD.message());
+            return ResponseEntity.ok(resultData);
         }
         LaunThemeClassificationV2 themeClass = new LaunThemeClassificationV2();
         // 封装属性
@@ -255,19 +255,11 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
             List<Map> maps = LauncThemeClassMapper.seQuantityTheme(listId);
             // 查询分类下面有多少上架的主题
             List<Map> maps1 = LauncThemeClassMapper.seQuantityThemeUp(listId);
-            for (LauncThemeClassVo vo : launcThemeClass) {
-                String id = vo.getId();
-                for (Map quantity : maps) {
-                    if (quantity.containsValue(id)) {
-                        vo.setQuantity(Integer.parseInt(String.valueOf((long) quantity.get("quantity"))));
-                    }
-                }
-                for (Map shelfCount : maps1) {
-                    if (shelfCount.containsValue(id)) {
-                        vo.setShelfCount(Integer.parseInt(String.valueOf((long) shelfCount.get("shelfCount"))));
-                    }
-                }
-            }
+            launcThemeClass.forEach(L->{
+                String id = L.getId();
+                maps.stream().filter(t->t.containsValue(id)).forEach(t->L.setQuantity(Integer.parseInt(String.valueOf((long) t.get("quantity")))));
+                maps1.stream().filter(t->t.containsValue(id)).forEach(t->L.setShelfCount(Integer.parseInt(String.valueOf((long) t.get("shelfCount")))));
+            });
         }
         PageInfo<LauncThemeClassVo> PageInfo = new PageInfo<>(launcThemeClass);
         ResultData resultData = new ResultData();
@@ -302,8 +294,8 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
             themeClassVo.setShelfStatus(shelfStatus);
             int i = LauncThemeClassMapper.updateByThemClassId(themeClassVo);
             log.info("租户上下架主题分类>>>>>>>>>>>>>>>>租户添加" + i + ">>>>" + new Date());
-        ResultData resultData = new ResultData();
-        return ResponseEntity.ok(resultData);
+            ResultData resultData = new ResultData();
+            return ResponseEntity.ok(resultData);
     }
 
      /**
@@ -376,13 +368,12 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
         vo.setFormatId(formatId);
         //vo.setTenantId(SaasHeaderContextV1.getTenantId()+""); //都能查询到，没有租户的概念
         List<LauncThemeClassVo> launcThemeClassVos = LauncThemeClassMapper.selectLauncThemeClassVo(vo);
-        List<JSONObject> list = new ArrayList<>();
-        for (LauncThemeClassVo laun:launcThemeClassVos){
+        List<JSONObject> list = launcThemeClassVos.stream().map(t -> {
             JSONObject json1 = new JSONObject();
-            json1.put("themeClassName",laun.getClassificationName());
-            json1.put("classNameId",laun.getId());
-            list.add(json1);
-        }
+            json1.put("themeClassName", t.getClassificationName());
+            json1.put("classNameId", t.getId());
+            return json1;
+        }).collect(Collectors.toList());
         JSONObject json = new JSONObject();
         json.put("list",list);
         ResultData resultData = new ResultData(json);
