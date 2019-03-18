@@ -38,8 +38,8 @@ public class LaunVersionController {
      * @return
      */
     @GetMapping("list")
-    ResultData versions() {
-        return new ResultData(launVersionService.list());
+    ResultData versions(String layoutId) {
+        return new ResultData(launVersionService.list(layoutId));
     }
 
     /**
