@@ -218,7 +218,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
             json.put("classificationName", laun.getClassificationName());
             json.put("coverImage", laun.getCoverImage());
         });
-        LaunPage<LaunThemeVo> query = launThemeService.query(new ThemesParam(id,null, 2, null,null, pageNum, pageSize));
+        LaunPage<LaunThemeVo> query = launThemeService.query(new ThemesParam(id,null, null, null,null, pageNum, pageSize));
         json.put("themlist", query);
         ResultData resultData = new ResultData();
         resultData.setData(json);
