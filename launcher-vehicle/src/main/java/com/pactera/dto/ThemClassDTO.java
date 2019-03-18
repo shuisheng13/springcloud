@@ -13,7 +13,7 @@ public class ThemClassDTO {
 
     private String coverImage;
 
-    private int formatId;
+    private Long formatId;
 
     private String classificationName;
 }
