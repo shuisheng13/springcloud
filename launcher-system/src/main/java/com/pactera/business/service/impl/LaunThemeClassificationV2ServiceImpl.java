@@ -151,15 +151,15 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
         //themeClassVo.setTenantId(tenantId2); // 你懂得，为啥不带了
         themeClassVo.setDisable(1);
         List<LauncThemeClassVo> launcThemeClass = LauncThemeClassMapper.selectLauncThemeClassVo(themeClassVo);
-        for (LauncThemeClassVo laun : launcThemeClass) {
-            if (themeClassName.equals(laun.getClassificationName())) {
-                if (id.equals(laun.getId())) {// 如果为本身原来名字编辑，可以
-                    continue;
-                } else {
-                    ResultData resultData = new ResultData(ErrorStatus.NAME_CLASS_LAUNTHEM_UP.status(), ErrorStatus.NAME_CLASS_LAUNTHEM_UP.message());
-                    return ResponseEntity.ok(resultData);
-                }
+        if(launcThemeClass.stream().filter(t->{
+            if (themeClassName.equals(t.getClassificationName())){
+                return !id.equals(t.getId()); // 如果为本身原来名字编辑，可以
+            }else{
+                return false;
             }
+        }).count()>0){
+            ResultData resultData = new ResultData(ErrorStatus.NAME_CLASS_LAUNTHEM_UP.status(), ErrorStatus.NAME_CLASS_LAUNTHEM_UP.message());
+            return ResponseEntity.ok(resultData);
         }
         LauncThemeClassVo themeClass = new LauncThemeClassVo();
         themeClass.setUpdateDate(new Date());
