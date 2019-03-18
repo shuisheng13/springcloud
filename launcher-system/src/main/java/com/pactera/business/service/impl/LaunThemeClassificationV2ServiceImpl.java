@@ -62,17 +62,6 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
     @Override
     public ResponseEntity<ResultData> addthemeClass(String themeClassName, MultipartFile coverImage, long formatId) {
 
-        //System.out.println(SaasHeaderContextV1.getTenantName()+"-------"+SaasHeaderContextV1.getTenantId()+"======"+SaasHeaderContextV1.getUserType());
-        //Integer tenantId2;
-        // 判断用户的性质
-        /*if (SaasHeaderContextV1.getUserType() == 0) {// 最高管理员的租户id为前台拿到的租户id
-            tenantId2 = tenantId;
-        } else if (SaasHeaderContextV1.getUserType() == 1) {// 用户为租户自己的时候，租户id通过网关来获取
-            tenantId2 = SaasHeaderContextV1.getTenantId();
-        } else {
-            ResultData resultData = new ResultData(400, "该用户没有添加分类权限");
-            return ResponseEntity.ok(resultData);
-        }*/
         // 检查分类名是否超过限制
         if (themeClassName.length() > 8) {
             ResultData resultData = new ResultData(ErrorStatus.NAME_CLASS_LAUNTHEM_REEOR.status(), ErrorStatus.NAME_CLASS_LAUNTHEM_REEOR.message());
@@ -83,7 +72,6 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
         themeClassVo.setDisable(1);
         themeClassVo.setFormatId(formatId);
         String tenantId2 = SaasHeaderContextV1.getTenantId();
-        //themeClassVo.setTenantId(tenantId2); //现在处理成一个租户，重名问题为查询所有租户
         List<LauncThemeClassVo> launcThemeClass = LauncThemeClassMapper.selectLauncThemeClassVo(themeClassVo);
         long count = launcThemeClass.stream().filter(t -> themeClassName.equals(t.getClassificationName())).count();
         if (count>0){
@@ -139,15 +127,6 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
         }
         // 检查租户下编辑是否重名
         LauncThemeClassVo themeClassVo = new LauncThemeClassVo();
-       /* if (SaasHeaderContextV1.getUserType() == 1) {// 管理员去查一下租户id
-            LaunThemeClassificationV2 laun = LauncThemeClassMapper.selectByPrimaryKey(id);
-            themeClassVo.setTenantId(laun.getTenantId());
-        } else {// 普通租户就直接获取id
-            int tenantId2 = SaasHeaderContextV1.getTenantId();
-            themeClassVo.setTenantId(tenantId2 + "");
-        }*/
-        //String tenantId2 = SaasHeaderContextV1.getTenantId();
-        //themeClassVo.setTenantId(tenantId2); // 你懂得，为啥不带了
         LaunThemeClassificationV2 V2 = LauncThemeClassMapper.selectByPrimaryKey(id);
         themeClassVo.setDisable(1);
         themeClassVo.setFormatId(V2.getFormatId());
@@ -165,9 +144,6 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
         LauncThemeClassVo themeClass = new LauncThemeClassVo();
         themeClass.setUpdateDate(new Date());
         themeClass.setClassificationName(themeClassName);
-       /* if (SaasHeaderContextV1.getUserType() == 1) {// 如果为普通租户，修改加上租户id, 保证租户自己更新的安全, 如果最高的管理员空就没必要了。
-            themeClass.setTenantId(SaasHeaderContextV1.getTenantId() + "");
-        }*/
         themeClass.setTenantId(SaasHeaderContextV1.getTenantId() + "");
         themeClass.setId(id);
         themeClass.setCoverImage(coverImage);
@@ -186,14 +162,6 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
      **/
     @Override
     public ResponseEntity<ResultData> deThemeClass(String id) {
-        //LauncThemeClassification ThemeClass = new LauncThemeClassification();
-        //ThemeClass.setClassificationId(themeClassId);
-        //LauncThemeClassMapper.delete(ThemeClass);//真删除
-       /* if (SaasHeaderContextV1.getUserType() == 0) {// 如果为最高管理员,直接删除
-            LauncThemeClassMapper.deleteByThemClassId(id, null);
-        } else {
-            LauncThemeClassMapper.deleteByThemClassId(id, SaasHeaderContextV1.getTenantId() + "");
-        }*/
         LauncThemeClassMapper.deleteByThemClassId(id);
         launThemeService.cleanThemeClassification(id);
         ResultData resultData = new ResultData();
@@ -236,13 +204,7 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
      **/
     @Override
     public ResponseEntity<ResultData> seThemeClassList(String shelfStatus, String classificationName, int pageNum, int pageSize, Long formatId) {
-        //String tenantId = SaasHeaderContextV1.getTenantId();
         PageHelper.startPage(pageNum, pageSize);
-
-       /* if (SaasHeaderContextV1.getUserType() == 1) {// 为1的时候为普通租户
-            themeClass.setTenantId(tenantId + "");
-        }*/
-        //themeClass.setTenantId(tenantId); //这版为所有租户都能看到
         LauncThemeClassVo themeClass = new LauncThemeClassVo()
                 .setClassificationName(classificationName)
                 .setDisable(1)
@@ -279,25 +241,16 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
      **/
     @Override
     public ResponseEntity<ResultData> themeClassUpOrDown(String shelfStatus, String id) {
-        String tenantId = SaasHeaderContextV1.getTenantId();
-        // 租户id为空,不行
-        /*if (SaasHeaderContextV1.getUserType() == 0) {// 最高管理员直接修改
-            LauncThemeClassVo themeClassVo = new LauncThemeClassVo();
-            themeClassVo.setUpdateDate(new Date());
-            themeClassVo.setShelfStatus(shelfStatus);
-            LauncThemeClassMapper.updateByThemClassId(themeClassVo);
-        } else {*/
-            LauncThemeClassVo themeClassVo = new LauncThemeClassVo();
-            themeClassVo.setUpdateDate(new Date());
-            themeClassVo.setShelfCount(-2);
-            themeClassVo.setQuantity(-2);
-           //themeClassVo.setTenantId(tenantId); //限制条件去掉，就因为没有租户，只有管理员
-            themeClassVo.setId(id);
-            themeClassVo.setShelfStatus(shelfStatus);
-            int i = LauncThemeClassMapper.updateByThemClassId(themeClassVo);
-            log.info("租户上下架主题分类>>>>>>>>>>>>>>>>租户添加" + i + ">>>>" + new Date());
-            ResultData resultData = new ResultData();
-            return ResponseEntity.ok(resultData);
+        LauncThemeClassVo themeClassVo = new LauncThemeClassVo()
+                .setUpdateDate(new Date())
+                .setShelfCount(-2)
+                .setQuantity(-2)
+                .setId(id)
+                .setShelfStatus(shelfStatus);
+        int i = LauncThemeClassMapper.updateByThemClassId(themeClassVo);
+        log.info("租户上下架主题分类>>>>>>>>>>>>>>>>租户添加" + i + ">>>>" + new Date());
+        ResultData resultData = new ResultData();
+        return ResponseEntity.ok(resultData);
     }
 
      /**
@@ -339,7 +292,6 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
      **/
     @Override
     public ResponseEntity<ResultData> themeClassIsUpOrDown(String id) {
-
         LauncThemeClassVo themeClassVo = new LauncThemeClassVo();
         themeClassVo.setDisable(1);
         themeClassVo.setId(id);
@@ -368,7 +320,6 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
         LauncThemeClassVo vo = new LauncThemeClassVo();
         vo.setDisable(1);
         vo.setFormatId(formatId);
-        //vo.setTenantId(SaasHeaderContextV1.getTenantId()+""); //都能查询到，没有租户的概念
         List<LauncThemeClassVo> launcThemeClassVos = LauncThemeClassMapper.selectLauncThemeClassVo(vo);
         List<JSONObject> list = launcThemeClassVos.stream().map(t -> {
             JSONObject json1 = new JSONObject();
@@ -385,14 +336,13 @@ public class LaunThemeClassificationV2ServiceImpl implements LauncThemeClassific
     //判断是否有id重复的
     private String ThemeClassId(){
         // 获取id
-       String id = IdUtlis.Id("ZTFL", SaasHeaderContextV1.getTenantName());
-       //String id = IdUtlis.Id("ZTFL", "123456");
-       LaunThemeClassificationV2 launTheme = LauncThemeClassMapper.selectByPrimaryKey(id);
-       if (launTheme == null){
+        String id = IdUtlis.Id("ZTFL", SaasHeaderContextV1.getTenantName());
+        LaunThemeClassificationV2 launTheme = LauncThemeClassMapper.selectByPrimaryKey(id);
+        if (launTheme == null){
             return id;
-       }else{
+        }else{
             return this.ThemeClassId();
-       }
+        }
     }
 
 }
