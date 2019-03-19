@@ -1,29 +1,23 @@
 package com.pactera;
-import javax.annotation.Resource;
-import javax.servlet.MultipartConfigElement;
-//import com.pactera.config.header.SaasCommonHeaderFilter;
+
+import com.github.tobato.fastdfs.FdfsClientConfig;
 import com.navinfo.wecloud.common.filter.SaasCommonHeaderFilter;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
-import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.consul.discovery.ConsulDiscoveryClient;
 import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableAsync;
-import com.github.tobato.fastdfs.FdfsClientConfig;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
+import javax.servlet.MultipartConfigElement;
+
 
 @EnableAsync
 @EnableDiscoveryClient
@@ -40,9 +34,6 @@ public class SystemStartBean  {
 
     @Value("${wecloud.saas.header.filter.urlPatterns:/*}")
     public String urlPattens;
-
-    @Resource
-    private ConsulDiscoveryClient consulDiscoveryClient;
 
     @Bean
     public FilterRegistrationBean headerFilter() {

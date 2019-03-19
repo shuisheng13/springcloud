@@ -35,5 +35,5 @@ public interface LaunVersionService {
      * 获取所有版本列表
      * @return
      */
-    List<LaunVersionsVo> list();
+    List<LaunVersionsVo> list(String layoutId);
 }
