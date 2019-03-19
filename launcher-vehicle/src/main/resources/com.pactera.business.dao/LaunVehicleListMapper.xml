@@ -20,7 +20,7 @@
              a.sort desc
     </select>
 
-    <select id="themTopAndByClassId" resultType="com.pactera.dto.ThemListDTO" parameterType="java.util.Map">
+    <select id="themTopAndByClassId" resultType="com.pactera.dto.ThemListDTO" parameterType="com.pactera.vo.ThemeParaVO">
           SELECT
               a.id, a.preview_path as previewPath, a.title, a.version, a.price, a.addition + a.download_count as downloadCount, name as layoutName
           FROM
@@ -36,7 +36,7 @@
               <if test="typeId!=null">
                 AND a.type_id = #{typeId}
               </if>
-              <if test="name!=null">
+              <if test="layoutName!=null">
                 AND b.name= #{layoutName}
               </if>
           ORDER BY
