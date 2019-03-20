@@ -2,6 +2,7 @@ package com.pactera.business.dao;
 import com.pactera.domain.LaunThemeAdministration;
 import com.pactera.dto.ThemClassDTO;
 import com.pactera.dto.ThemListDTO;
+import com.pactera.vo.ThemeParaVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -29,5 +30,5 @@ public interface LaunVehicleListMapper {
      * @Param
      * @return
      **/
-    List<ThemListDTO> themTopAndByClassId(Map map);
+    List<ThemListDTO> themTopAndByClassId(ThemeParaVO themeParaVO);
 }
