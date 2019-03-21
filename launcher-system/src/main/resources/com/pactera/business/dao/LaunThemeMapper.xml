@@ -256,7 +256,6 @@
         t2.version_name as versionName
 		FROM <include refid="themeAdmin"></include> AS t1,
         <include refid="versions"/> as t2
-        ON t1.version = t2.version
 		<where>
 		  	t1.version = t2.version and t1.layout_id = t2.layout_id and
 			t1.id = #{id}
