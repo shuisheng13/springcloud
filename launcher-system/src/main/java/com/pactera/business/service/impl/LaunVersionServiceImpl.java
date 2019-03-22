@@ -51,7 +51,7 @@ public class LaunVersionServiceImpl implements LaunVersionService {
     }
 
     @Override
-    public List<LaunVersionsVo> list(String layoutId) {
+    public List<LaunVersionsVo> list(Long layoutId) {
         Example example = new Example(LaunVersions.class);
         //example.createCriteria().andEqualTo("tenantId", SaasHeaderContextV1.getTenantIdInt());
         Optional.ofNullable(layoutId).ifPresent(id-> example.createCriteria().andEqualTo("layoutId", id));

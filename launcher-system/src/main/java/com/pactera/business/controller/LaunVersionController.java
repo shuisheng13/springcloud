@@ -38,7 +38,7 @@ public class LaunVersionController {
      * @return
      */
     @GetMapping("list")
-    ResultData versions(String layoutId) {
+    ResultData versions(Long layoutId) {
         return new ResultData(launVersionService.list(layoutId));
     }
 
