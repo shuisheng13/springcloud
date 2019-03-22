@@ -76,6 +76,7 @@ public class SaasHeaderContextV1 {
                 e.printStackTrace();
             }
         }else{
+            log.info("TENANT_NAME为>>>>>>>>>>>>>>>>>  "+SaasHeaderContext.getHeaders().get(GatewayHeaderKey.TENANT_NAME));
             int exception = SaasHeaderContextV1.exception();
             if (exception==-1){
                 return "XTYH";
