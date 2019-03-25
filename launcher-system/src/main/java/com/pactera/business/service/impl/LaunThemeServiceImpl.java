@@ -363,7 +363,9 @@ public class LaunThemeServiceImpl implements LaunThemeService {
         List<LaunThemeFileVo> imgs = this.uploadImgs(imgFiles, imgFileName);
         launThemeUploadFileVo.setThemeImgsList(imgs);
         //传skin
-        String zipPath = this.upload2fastFDS(prop, FileTool.getExtentionWithoutPoint(prop.getAbsolutePath()));
+        Optional<Entry<String, File>> skinOptional = files.entrySet().stream().filter(x->x.getKey().contains("skin")).findFirst();
+        File skin = skinOptional.get().getValue();
+        String zipPath = this.upload2fastFDS(skin, FileTool.getExtentionWithoutPoint(skin.getAbsolutePath()));
         launThemeUploadFileVo.setZipUrl(zipPath);
 
         FileTool.del(new File(tempPath));
