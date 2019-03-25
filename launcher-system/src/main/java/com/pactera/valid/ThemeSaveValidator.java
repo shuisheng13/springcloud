@@ -41,8 +41,24 @@ public class ThemeSaveValidator implements Validator {
 
             int result = TimeUtils.compareDate(Long.valueOf(launThemeSavePo.getStartTime()), Long.valueOf(launThemeSavePo.getEndTime()));
 
-            if(result != -1) {
-                errors.reject("endTime","结束时间有误");}
+            if(result != -1) { errors.reject("endTime","结束时间有误");}
         }
+
+        if(null !=launThemeSavePo.getAddition() && !isNumeric(launThemeSavePo.getAddition())) {
+            errors.reject("addtion","附加值填写有误");
+        }
+
+        if(null !=launThemeSavePo.getAddition() && launThemeSavePo.getAddition().length() > 5) {
+            errors.reject("addtion","附加值长度过长");
+        }
+    }
+
+    private boolean isNumeric(String str){
+        for(int i=str.length();--i>=0;){
+            int chr=str.charAt(i);
+            if(chr<48 || chr>57)
+                return false;
+        }
+        return true;
     }
 }

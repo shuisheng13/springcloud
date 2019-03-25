@@ -230,7 +230,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
                 .setTitle(launThemeSavePo.getTitle())
                 .setZipUrl(launThemeSavePo.getZipUrl())
                 .setDescription(launThemeSavePo.getDescription())
-                .setAddition(launThemeSavePo.getAddition() == null ? 0 : launThemeSavePo.getAddition())
+                .setAddition(launThemeSavePo.getAddition() == null ? 0 : Integer.parseInt(launThemeSavePo.getAddition()))
                 .setAuthor(launThemeSavePo.getAuthor())
                 .setReleaseTime(launThemeSavePo.getReleaseTime())
                 .setPrice(launThemeSavePo.getPrice())

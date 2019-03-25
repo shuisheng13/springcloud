@@ -25,7 +25,7 @@ public class LaunThemeSavePo {
     private String title;
     private String zipUrl;
     private String description;
-    private Integer addition;
+    private String addition;
     private String author;
     private Date releaseTime;
     private BigDecimal price;
