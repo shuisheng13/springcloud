@@ -36,7 +36,7 @@ public class LaunVersionServiceImpl implements LaunVersionService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int add(double version,String versionName, String apiKey, String layoutName) {
+    public int add(Double version,String versionName, String apiKey, String layoutName) {
 
         List<LaunVersionsDto> dtos = versionMapper.findByVersionAndLayout(version, layoutName);
         if(!dtos.isEmpty()) {return 0;}
