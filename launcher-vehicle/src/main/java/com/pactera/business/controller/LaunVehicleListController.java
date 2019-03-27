@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @Author zhaodong
  * @Date 2019/1/7
@@ -79,7 +81,7 @@ public class LaunVehicleListController  {
             @ApiImplicitParam(name = "pageSize", value = "页码大小",paramType="query"),
             @ApiImplicitParam(name = "version", value = "主题商店版本号",paramType="query")
     })
-    public ResponseEntity<ResultData> themTopAndByClassId(String apiKey, String id, @RequestParam(defaultValue = "1")int pageNum, @RequestParam(defaultValue = "10")int pageSize,double version){
+    public ResponseEntity<ResultData> themTopAndByClassId(String apiKey, @NotNull String id, @RequestParam(defaultValue = "1")int pageNum, @RequestParam(defaultValue = "10")int pageSize, double version){
         ResponseEntity<ResultData> responseEntity = launListService.themTopAndByClassId(apiKey, id, pageNum, pageSize,version);
         return responseEntity;
     }
