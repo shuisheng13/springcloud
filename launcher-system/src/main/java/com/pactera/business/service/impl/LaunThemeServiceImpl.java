@@ -357,7 +357,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
         File prop = files.get(upThemeProp);
         //先读prop文件
         ImgPropertie imgFileName = this.parseProp(prop, launThemeUploadFileVo);
-        launThemeUploadFileVo.setFileSize(prop.length());
+        //launThemeUploadFileVo.setFileSize(prop.length());
         Map<String, File> imgFiles = FileTool.mapFiles(tempPath + upThemeImgPath);
         //传图片包
         List<LaunThemeFileVo> imgs = this.uploadImgs(imgFiles, imgFileName);
@@ -365,6 +365,7 @@ public class LaunThemeServiceImpl implements LaunThemeService {
         //传skin
         Optional<Entry<String, File>> skinOptional = files.entrySet().stream().filter(x->x.getKey().contains("skin")).findFirst();
         File skin = skinOptional.get().getValue();
+        launThemeUploadFileVo.setFileSize(skin.length());
         String zipPath = this.upload2fastFDS(skin, FileTool.getExtentionWithoutPoint(skin.getAbsolutePath()));
         launThemeUploadFileVo.setZipUrl(zipPath);
 
