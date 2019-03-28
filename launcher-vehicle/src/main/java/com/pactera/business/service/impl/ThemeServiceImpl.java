@@ -54,6 +54,7 @@ public class ThemeServiceImpl implements ThemeService {
             ThemeListVO themeListVO = new ThemeListVO();
             beanCopier.copy(a, themeListVO, null);
             themeListVO.setPreviewPath(fastUrl + themeListVO.getPreviewPath());
+            themeListVO.setDownloadCount(a.getDownloadCount() + a.getAddition());
             return themeListVO;
         }).collect(Collectors.toList());
         return themeLists;

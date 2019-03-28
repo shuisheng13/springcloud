@@ -134,8 +134,8 @@
         FROM <include refid="themeAdmin"/> as t1
         LEFT JOIN <include refid="themeClass"/> as t2
         ON t1.type_id = t2.id
-        LEFT JOIN <include refid="versions"/> as t3
-        ON t1.version = t3.version
+		LEFT JOIN <include refid="versions"/> as t3
+		ON t1.version = t3.version AND t1.layout_id = t3.layout_id
         <where>
 			t1.status != -1
 			<if test="layoutId != null and layoutId != '' ">
@@ -254,10 +254,10 @@
 	<select id="selectByTheme" resultMap="BaseResultMap">
 		SELECT <include refid="themeColumns"><property name="alias" value="t1"/></include>,
         t2.version_name as versionName
-		FROM <include refid="themeAdmin"></include> AS t1,
-        <include refid="versions"/> as t2
+		FROM <include refid="themeAdmin"></include> AS t1
+		LEFT JOIN <include refid="versions"/> as t2
+		ON t1.version = t2.version and t1.layout_id = t2.layout_id
 		<where>
-		  	t1.version = t2.version and t1.layout_id = t2.layout_id and
 			t1.id = #{id}
 		</where>
 	</select>
