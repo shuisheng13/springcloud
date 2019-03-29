@@ -23,5 +23,7 @@ public class ThemListDTO {
 
     private double version;
 
+    private String  layoutName;
+
 
 }

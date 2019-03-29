@@ -3,21 +3,20 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.navinfo.wecloud.saas.api.facade.ApiKeyFacade;
-import com.navinfo.wecloud.saas.api.response.TenantInfo;
-import com.navinfo.wecloud.solar.common.rest.response.CommonResult;
 import com.pactera.business.dao.LaunVehicleListMapper;
 import com.pactera.business.service.LaunListService;
 import com.pactera.config.exception.status.ErrorStatus;
-import com.pactera.domain.LaunThemeAdministration;
 import com.pactera.dto.ThemClassDTO;
 import com.pactera.dto.ThemListDTO;
 import com.pactera.result.ResultData;
 import com.pactera.vo.LaunPage;
+import com.pactera.vo.ThemeParaVO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
+
 
 /**
  * @Author zhaodong
@@ -43,22 +42,9 @@ public class LaunListServiceImpl implements LaunListService {
      * @return
      **/
     @Override
-    public ResponseEntity<ResultData> themeclasslist2(String apiKey){
-       /* CommonResult<TenantInfo> tenantInfoCommonResult = apiKeyFacade.queryTenantByApiKey(apiKey);
-        TenantInfo data = tenantInfoCommonResult.getData();
-        if (data==null){
-            return ResponseEntity.ok().body(new ResultData(ErrorStatus.NOT_APIKEY.status(),ErrorStatus.NOT_APIKEY.message()));
-        }
-        int tenanId = data.getId();*/
-        int tenanId = 55;
-        List<ThemClassDTO> themListDTOS = launVehicleListMapper.themeclasslist2(tenanId + "");
-        for (ThemClassDTO th:themListDTOS){
-            //TODO 暂时方案
-            if (!th.getCoverImage().contains(fastUrl)){
-                th.setCoverImage(fastUrl+th.getCoverImage());
-            }
-
-        }
+    public ResponseEntity<ResultData> themeclasslist2(String apiKey, String layoutName){
+        List<ThemClassDTO> themListDTOS = launVehicleListMapper.themeclasslist2(layoutName);
+        themListDTOS.stream().filter(t->!t.getCoverImage().contains(fastUrl)).forEach(t->t.setCoverImage(fastUrl+t.getCoverImage()));
         JSONObject json = new JSONObject();
         json.put("list",themListDTOS);
         ResultData resultData = new ResultData(json);
@@ -73,28 +59,15 @@ public class LaunListServiceImpl implements LaunListService {
      * @return
      **/
     @Override
-    public ResponseEntity<ResultData> themTopAndAll(String apiKey,int status, int pageNum, int pageSize,double version){
-       /* CommonResult<TenantInfo> tenantInfoCommonResult = apiKeyFacade.queryTenantByApiKey(apiKey);
-        TenantInfo data = tenantInfoCommonResult.getData();
-        if (data==null){
-            return ResponseEntity.ok().body(new ResultData(ErrorStatus.NOT_APIKEY.status(),ErrorStatus.NOT_APIKEY.message()));
-        }
-        int tenanId = data.getId();*/
-        int tenanId = 55;
+    public ResponseEntity<ResultData> themTopAndAll(String apiKey,int status, int pageNum, int pageSize,double version,String layoutName){
         PageHelper.startPage(pageNum, pageSize);
-        LaunThemeAdministration LaunThemeVo = new LaunThemeAdministration();
-        LaunThemeVo.setTenantId(tenanId);
-        LaunThemeVo.setVersion(version);
-        if (status==1) LaunThemeVo.setSort(-1);// 全部标记
-        else if (status==2) LaunThemeVo.setDownloadCount(-1);// 排行标记
-        else if (status==3) LaunThemeVo.setRecommendSort(-1);// 推荐标记
+        ThemeParaVO para = new ThemeParaVO().setVersion(version).setLayoutName(layoutName);
+        if (status==1) para.setSort(-1);// 全部标记
+        else if (status==2) para.setDownloadCount(-1);// 排行标记
+        else if (status==3) para.setRecommendSort(-1);// 推荐标记
         else return ResponseEntity.ok().body(new ResultData(ErrorStatus.SYS_ERROR.status(),ErrorStatus.SYS_ERROR.message()));// 暂时提供系统错误
-        List<ThemListDTO> themListDTOS = launVehicleListMapper.themTopAndByClassId(LaunThemeVo);
-        for (ThemListDTO th:themListDTOS){
-            if (!th.getPreviewPath().contains(fastUrl)){
-                th.setPreviewPath(fastUrl+th.getPreviewPath());
-            }
-        }
+        List<ThemListDTO> themListDTOS = launVehicleListMapper.themTopAndByClassId(para);
+        themListDTOS.stream().filter(t->!t.getPreviewPath().contains(fastUrl)).forEach(t->t.setPreviewPath(fastUrl+t.getPreviewPath()));
         PageInfo<ThemListDTO> PageInfo = new PageInfo<>(themListDTOS);
         JSONObject json = new JSONObject();
         json.put("list",new LaunPage(PageInfo, themListDTOS));
@@ -112,27 +85,9 @@ public class LaunListServiceImpl implements LaunListService {
     @Override
     public ResponseEntity<ResultData> themTopAndByClassId(String apiKey, String id, int pageNum, int pageSize,double version){
         PageHelper.startPage(pageNum, pageSize);
-        /*CommonResult<TenantInfo> tenantInfoCommonResult = apiKeyFacade.queryTenantByApiKey(apiKey);
-        TenantInfo data = tenantInfoCommonResult.getData();
-        if (data==null){
-            return ResponseEntity.ok().body(new ResultData(ErrorStatus.NOT_APIKEY.status(),ErrorStatus.NOT_APIKEY.message()));
-        }
-        if (id==null){
-            return ResponseEntity.ok().body(new ResultData("id不为空"));
-        }
-        int tenanId = data.getId();*/
-        int tenanId = 55;
-        LaunThemeAdministration LaunThemeVo = new LaunThemeAdministration();
-        LaunThemeVo.setTenantId(tenanId);
-        LaunThemeVo.setTypeId(id); // id
-        LaunThemeVo.setDownloadCount(-1);//分类的主题列表按照下载量排序
-        LaunThemeVo.setVersion(version);
-        List<ThemListDTO> themListDTOS = launVehicleListMapper.themTopAndByClassId(LaunThemeVo);
-        for (ThemListDTO th:themListDTOS){
-            if (!th.getPreviewPath().contains(fastUrl)){
-                th.setPreviewPath(fastUrl+th.getPreviewPath());
-            }
-        }
+        ThemeParaVO para = new ThemeParaVO().setTypeId(id).setDownloadCount(-1).setVersion(version);
+        List<ThemListDTO> themListDTOS = launVehicleListMapper.themTopAndByClassId(para);
+        themListDTOS.stream().filter(t->!t.getPreviewPath().contains(fastUrl)).forEach(t->t.setPreviewPath(fastUrl+t.getPreviewPath()));
         PageInfo<ThemListDTO> PageInfo = new PageInfo<>(themListDTOS);
         JSONObject json = new JSONObject();
         json.put("list",new LaunPage(PageInfo, themListDTOS));

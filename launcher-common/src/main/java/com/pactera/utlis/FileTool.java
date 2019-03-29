@@ -1,14 +1,13 @@
 package com.pactera.utlis;
 
-import com.pactera.config.exception.DataStoreException;
 import com.pactera.config.exception.IORuntimeException;
-import com.pactera.config.exception.status.ErrorStatus;
 import com.pactera.constant.ConstantUtlis;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipFile;
 import org.apache.tools.zip.ZipOutputStream;
+import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -18,10 +17,8 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.zip.ZipException;
 
 /**
@@ -576,6 +573,17 @@ public class FileTool {
 			}
 		}
 		return fileList;
+	}
+
+	/**
+	 * v2
+	 * 获取文件列表的map格式
+	 * @param dirName
+	 * @return
+	 */
+	public static Map<String, File> mapFiles(String dirName) {
+		List<File> imgFiles = listFiles(dirName);
+		return imgFiles.stream().collect(Collectors.toMap(File::getName, f->f));
 	}
 
 	/**

@@ -17,11 +17,12 @@ public class LaunVersions extends LaunBase {
     /**
      * 版本号
      */
-    private double version;
+    private Double version;
     /**
      * 版本名称
      */
     private String versionName;
     private Integer tenantId;
     private String description;
+    private Long layoutId;
 }

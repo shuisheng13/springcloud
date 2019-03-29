@@ -78,6 +78,8 @@
             <artifactId>wecloud-saas-api</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+
+
     </dependencies>
     <build>
         <plugins>

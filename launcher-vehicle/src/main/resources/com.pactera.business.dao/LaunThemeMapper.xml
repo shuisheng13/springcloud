@@ -104,6 +104,7 @@
              t1.status = 2
              <if test="value != null"> AND t1.title LIKE CONCAT(CONCAT('%/', #{value}), '%') escape '/' </if>
              <if test="version>0"> AND #{version} >= t1.version </if>
+            <if test="layoutId != null"> AND t1.layout_id = #{layoutId} </if>
         </where>
         UNION
 	    SELECT
@@ -114,6 +115,7 @@
             t2.status = 2
             <if test="value != null"> AND t3.classification_name LIKE CONCAT(CONCAT('%/', #{value}), '%') escape '/' </if>
             <if test="version>0"> AND #{version} >= t2.version </if>
+            <if test="layoutId != null"> AND t2.layout_id = #{layoutId} </if>
         </where>
 
         UNION
@@ -125,6 +127,7 @@
             t4.status = 2
             <if test="value != null">AND t4.author LIKE CONCAT(CONCAT('%/', #{value}), '%') escape '/'</if>
             <if test="version>0"> AND #{version} >= t4.version </if>
+            <if test="layoutId != null"> AND t4.layout_id = #{layoutId} </if>
         </where>
 	</select>
 

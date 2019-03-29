@@ -17,9 +17,10 @@
         <result column="shelf_status" jdbcType="VARCHAR" property="shelfStatus" />
         <result column="tenant_id" jdbcType="VARCHAR" property="tenantId" />
         <result column="disable" jdbcType="INTEGER" property="disable" />
+        <result column="format_id" jdbcType="BIGINT" property="formatId" />
     </resultMap>
     <sql id="Base_Column_List">
-        id, classification_name, sort, cover_image, cover_image, shelf_status, disable, create_date, update_date, creator, tenant_id
+        id, classification_name, sort, cover_image, cover_image, shelf_status, disable, create_date, update_date, creator, tenant_id, format_id
     </sql>
     <update id="updateByThemClassId" parameterType="com.pactera.vo.LauncThemeClassVo">
         UPDATE
@@ -100,6 +101,9 @@
               </if>
               <if test="createDate!=null">
                   AND create_date = #{createDate}
+              </if>
+              <if test="formatId>0">
+                  AND format_id = #{formatId}
               </if>
               ORDER BY create_date desc
           </where>

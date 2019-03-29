@@ -2,9 +2,11 @@ package com.pactera.business.dao;
 import com.pactera.domain.LaunThemeAdministration;
 import com.pactera.dto.ThemClassDTO;
 import com.pactera.dto.ThemListDTO;
+import com.pactera.vo.ThemeParaVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author zhaodong
@@ -19,7 +21,7 @@ public interface LaunVehicleListMapper {
      * @Param
      * @return
      **/
-    List<ThemClassDTO> themeclasslist2(@Param("tenanId") String tenanId);
+    List<ThemClassDTO> themeclasslist2(@Param("layoutName") String layoutName);
 
     /**
      * 查询分类下的主题列表(上架的主题)
@@ -28,5 +30,5 @@ public interface LaunVehicleListMapper {
      * @Param
      * @return
      **/
-    List<ThemListDTO> themTopAndByClassId(LaunThemeAdministration launThemeVo);
+    List<ThemListDTO> themTopAndByClassId(ThemeParaVO themeParaVO);
 }

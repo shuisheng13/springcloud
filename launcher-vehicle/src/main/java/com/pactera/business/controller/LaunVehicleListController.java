@@ -11,13 +11,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @Author zhaodong
  * @Date 2019/1/7
  */
 @Api(description = "车机接口")
 @RestController
-public class LaunVehicleListController {
+public class LaunVehicleListController  {
 
     @Autowired
     private LaunListService launListService;
@@ -32,10 +34,11 @@ public class LaunVehicleListController {
     @GetMapping("/themeclass/themeclasslist2")
     @ApiOperation("主题分类列表")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "apiKey", value = "apiKey",paramType="query",required = true)
+            @ApiImplicitParam(name = "apiKey", value = "apiKey",paramType="query"),
+            @ApiImplicitParam(name = "layoutName", value = "layoutName",paramType="query"),
     })
-    public ResponseEntity<ResultData> themeclasslist2(String apiKey){
-        ResponseEntity<ResultData> resultDataResponse = launListService.themeclasslist2(apiKey);
+    public ResponseEntity<ResultData> themeclasslist2(String apiKey,String layoutName){
+        ResponseEntity<ResultData> resultDataResponse = launListService.themeclasslist2(apiKey, layoutName);
         return resultDataResponse;
     }
 
@@ -53,10 +56,12 @@ public class LaunVehicleListController {
             @ApiImplicitParam(name = "status", value = "1-全部主题，2-主题排行，3-推荐主题",paramType="query",required = true),
             @ApiImplicitParam(name = "pageNum", value = "当前页",paramType="query"),
             @ApiImplicitParam(name = "pageSize", value = "页码大小",paramType="query"),
-            //@ApiImplicitParam(name = "version", value = "主题商店版本号",paramType="query" )
+            @ApiImplicitParam(name = "version", value = "主题商店版本号",paramType="query" ),
+            @ApiImplicitParam(name = "layoutName", value = "格式",paramType="query" ),
+
     })
-    public ResponseEntity<ResultData> themTopAndAll(String apiKey, int status, @RequestParam(defaultValue = "1")int pageNum, @RequestParam(defaultValue = "10")int pageSize,double version){
-        ResponseEntity<ResultData> resultDataResponse = launListService.themTopAndAll(apiKey, status, pageNum, pageSize,version);
+    public ResponseEntity<ResultData> themTopAndAll(String apiKey, int status, @RequestParam(defaultValue = "1")int pageNum, @RequestParam(defaultValue = "10")int pageSize, double version, String layoutName){
+        ResponseEntity<ResultData> resultDataResponse = launListService.themTopAndAll(apiKey, status, pageNum, pageSize,version,layoutName);
         return resultDataResponse;
     }
 
@@ -76,7 +81,7 @@ public class LaunVehicleListController {
             @ApiImplicitParam(name = "pageSize", value = "页码大小",paramType="query"),
             @ApiImplicitParam(name = "version", value = "主题商店版本号",paramType="query")
     })
-    public ResponseEntity<ResultData> themTopAndByClassId(String apiKey, String id, @RequestParam(defaultValue = "1")int pageNum, @RequestParam(defaultValue = "10")int pageSize,double version){
+    public ResponseEntity<ResultData> themTopAndByClassId(String apiKey, @NotNull String id, @RequestParam(defaultValue = "1")int pageNum, @RequestParam(defaultValue = "10")int pageSize, double version){
         ResponseEntity<ResultData> responseEntity = launListService.themTopAndByClassId(apiKey, id, pageNum, pageSize,version);
         return responseEntity;
     }

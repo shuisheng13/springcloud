@@ -16,7 +16,7 @@ public interface LaunListService {
      * @Param
      * @return
      **/
-    ResponseEntity<ResultData> themeclasslist2(String apiKey);
+    ResponseEntity<ResultData> themeclasslist2(String apiKey, String layoutName);
 
     /**
      * 1-全部主题，2-主题排行，3-推荐主题
@@ -25,7 +25,7 @@ public interface LaunListService {
      * @Param
      * @return
      **/
-    ResponseEntity<ResultData> themTopAndAll(String apiKey,int status, int pageNum, int pageSize,double version);
+    ResponseEntity<ResultData> themTopAndAll(String apiKey,int status, int pageNum, int pageSize,double version,String layoutName);
 
     /**
      * 分类下的主题列表

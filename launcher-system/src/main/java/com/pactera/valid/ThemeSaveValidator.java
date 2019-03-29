@@ -34,14 +34,31 @@ public class ThemeSaveValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "author", "author.empty","作者不能为空");
         ValidationUtils.rejectIfEmpty(errors, "releaseTime", "releaseTime.empty","发布时间不能为空");
         ValidationUtils.rejectIfEmpty(errors, "fileSize", "fileSize.empty","文件大小不能为空");
+        ValidationUtils.rejectIfEmpty(errors, "layoutId", "layoutId.empty","主题格式不能为空");
         LaunThemeSavePo launThemeSavePo = (LaunThemeSavePo) obj;
 
         if(!HStringUtlis.isBlank(launThemeSavePo.getStartTime()) && !HStringUtlis.isBlank(launThemeSavePo.getEndTime())) {
 
             int result = TimeUtils.compareDate(Long.valueOf(launThemeSavePo.getStartTime()), Long.valueOf(launThemeSavePo.getEndTime()));
 
-            if(result != -1) {
-                errors.reject("endTime","结束时间有误");}
+            if(result != -1) { errors.reject("endTime","结束时间有误");}
         }
+
+        if(null !=launThemeSavePo.getAddition() && !isNumeric(launThemeSavePo.getAddition())) {
+            errors.reject("addtion","附加值填写有误");
+        }
+
+        if(null !=launThemeSavePo.getAddition() && launThemeSavePo.getAddition().length() > 5) {
+            errors.reject("addtion","附加值长度过长");
+        }
+    }
+
+    private boolean isNumeric(String str){
+        for(int i=str.length();--i>=0;){
+            int chr=str.charAt(i);
+            if(chr<48 || chr>57)
+                return false;
+        }
+        return true;
     }
 }
