@@ -1,0 +1,16 @@
+spring:
+  cloud:
+    config:
+      name: scloud-zuul
+      profile:  beta
+      label:  master
+      username: admin
+      password: enjoy
+      discovery:
+        enabled: true   # 通过配置中心加载配置文件
+        service-id: SCLOUD-CONFIG   # 在eureka之中注册的服务ID
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://admin:enjoy@eureka1:7301/eureka,http://admin:enjoy@eureka2:7302/eureka,http://admin:enjoy@eureka3:7303/eureka
